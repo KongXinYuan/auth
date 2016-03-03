@@ -1,10 +1,8 @@
 package com.xuguruogu.auth.dto;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.xuguruogu.auth.dal.dataobject.KssLogLoginDO;
-import com.xuguruogu.auth.service.AdminManager;
 import com.xuguruogu.auth.util.AbstractConverter;
 
 /**
@@ -16,9 +14,6 @@ import com.xuguruogu.auth.util.AbstractConverter;
  */
 @Component("logLoginDTOConverter")
 public class LogLoginDTOConverter extends AbstractConverter<KssLogLoginDO, LogLoginDTO> {
-
-	@Autowired
-	private AdminManager adminManager;
 
 	@Override
 	protected LogLoginDTO doConvert(KssLogLoginDO kssLogLoginDO) {

@@ -27,8 +27,8 @@ public class SoftDTOConverter extends AbstractConverter<KssSoftDO, SoftDTO> {
 
 		dto.setIntervaltime(kssSoftDO.getIntervaltime());
 
-		dto.setPublickey(kssSoftDO.getPublickey());
-		dto.setPrivatekey(kssSoftDO.getPrivatekey());
+		dto.setClientpublickey(kssSoftDO.getClientpubkey());
+		dto.setServerprivatekey(kssSoftDO.getServerprivkey());
 
 		return dto;
 	}

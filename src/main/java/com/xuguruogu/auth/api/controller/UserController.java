@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.xuguruogu.auth.api.service.RequestAdapter;
+import com.xuguruogu.auth.config.AuthConfigHolder;
+import com.xuguruogu.auth.config.SoftConfigDO;
+import com.xuguruogu.auth.interceptor.ApiException;
 
 @Controller
 public class UserController {
@@ -20,9 +23,17 @@ public class UserController {
 	private RequestAdapter requestAdapter;
 
 	@RequestMapping(value = { "/api/v1/user" }, method = { RequestMethod.POST })
-	public void doRequest(String req, Model model) {
+	public void doRequest(long softcode, String req, Model model) {
+		if (0 == softcode) {
+			throw new ApiException("软件编号未注明");
+		}
 
-		String resp = requestAdapter.doRequestAdapt(req);
+		SoftConfigDO config = AuthConfigHolder.getSoftConfig(softcode);
+		if (null == config) {
+			throw new ApiException("软件编号不存在");
+		}
+
+		String resp = requestAdapter.doRequestAdapt(config, req);
 		model.addAttribute("msg", resp);
 
 		logger.info(MessageFormat.format("request is: {0}\nresposne: {1}", req, resp));

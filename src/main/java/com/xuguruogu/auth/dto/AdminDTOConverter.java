@@ -1,10 +1,8 @@
 package com.xuguruogu.auth.dto;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.xuguruogu.auth.dal.dataobject.KssAdminDO;
-import com.xuguruogu.auth.service.AdminManager;
 import com.xuguruogu.auth.util.AbstractConverter;
 
 /**
@@ -16,9 +14,6 @@ import com.xuguruogu.auth.util.AbstractConverter;
  */
 @Component("adminDTOConverter")
 public class AdminDTOConverter extends AbstractConverter<KssAdminDO, AdminDTO> {
-
-	@Autowired
-	private AdminManager adminManager;
 
 	@Override
 	protected AdminDTO doConvert(KssAdminDO kssAdminDO) {

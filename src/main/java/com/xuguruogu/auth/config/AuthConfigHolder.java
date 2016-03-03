@@ -1,26 +1,30 @@
 package com.xuguruogu.auth.config;
 
+import com.alibaba.appengine.api.cache.CacheService;
+import com.alibaba.appengine.api.cache.CacheServiceFactory;
+
 /**
  * @author benli.lbl 配置
  */
 public class AuthConfigHolder {
-	private static String publicKey;
-	private static String privateKey;
 
-	public static String getPublicKey() {
-		return publicKey;
+	private static final String SOFT_CACHEKEY_PREFIX = "soft";
+	private static final String JOIN = "-";
+
+	/**
+	 * 获取软件配置的缓存key
+	 *
+	 * @param softCode
+	 * @return
+	 */
+	public static String getSoftCacheKey(long softCode) {
+		return SOFT_CACHEKEY_PREFIX + JOIN + softCode;
 	}
 
-	public static void setPublicKey(String publicKey) {
-		AuthConfigHolder.publicKey = publicKey;
-	}
+	public static SoftConfigDO getSoftConfig(long softCode) {
 
-	public static String getPrivateKey() {
-		return privateKey;
-	}
-
-	public static void setPrivateKey(String privateKey) {
-		AuthConfigHolder.privateKey = privateKey;
+		CacheService cache = CacheServiceFactory.getCacheService();
+		return (SoftConfigDO) cache.get(getSoftCacheKey(softCode));
 	}
 
 }

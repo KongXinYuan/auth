@@ -12,7 +12,7 @@
 	</resultMap>
 
 	<insert id="insert" parameterType="KssLogLoginDO">
-		INSERT INTO LX_ADMIN_LOGIN_LOG (
+		INSERT INTO KSS_LOG_LOGIN (
 		GMT_LOGIN,
 		ADMIN_ID,
 		IPADR
@@ -24,7 +24,7 @@
 	</insert>
 	
 	<select id="selectById" parameterType="long" resultMap="KssLogLoginResult">
-		select * from LX_ADMIN_LOGIN_LOG WHERE id=#{id}
+		select * from KSS_LOG_LOGIN WHERE id=#{id}
 	</select>
 
 	<delete id="deleteById" parameterType="long">

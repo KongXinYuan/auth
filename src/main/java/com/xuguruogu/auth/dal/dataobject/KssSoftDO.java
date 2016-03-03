@@ -11,7 +11,7 @@ public class KssSoftDO extends Entity {
 	private static final long serialVersionUID = -8464398454249392934L;
 
 	/** 软件编号 */
-	private Integer softcode;
+	private long softcode;
 
 	/** 软件校验码 */
 	private String softkey;
@@ -26,16 +26,16 @@ public class KssSoftDO extends Entity {
 	private Integer intervaltime;
 
 	/** 公匙 */
-	private String publickey;
+	private String clientpubkey;
 
 	/** 私匙 */
-	private String privatekey;
+	private String serverprivkey;
 
-	public Integer getSoftcode() {
+	public long getSoftcode() {
 		return softcode;
 	}
 
-	public void setSoftcode(Integer softcode) {
+	public void setSoftcode(long softcode) {
 		this.softcode = softcode;
 	}
 
@@ -71,20 +71,20 @@ public class KssSoftDO extends Entity {
 		this.intervaltime = intervaltime;
 	}
 
-	public String getPublickey() {
-		return publickey;
+	public String getClientpubkey() {
+		return clientpubkey;
 	}
 
-	public void setPublickey(String publickey) {
-		this.publickey = publickey;
+	public void setClientpubkey(String clientpubkey) {
+		this.clientpubkey = clientpubkey;
 	}
 
-	public String getPrivatekey() {
-		return privatekey;
+	public String getServerprivkey() {
+		return serverprivkey;
 	}
 
-	public void setPrivatekey(String privatekey) {
-		this.privatekey = privatekey;
+	public void setServerprivkey(String serverprivkey) {
+		this.serverprivkey = serverprivkey;
 	}
 
 }

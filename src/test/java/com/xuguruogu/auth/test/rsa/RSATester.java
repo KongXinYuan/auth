@@ -13,23 +13,19 @@ public class RSATester {
 	static String privateKey;
 
 	@Test
-	public void testGenerateKey() {
-		try {
-			Map<String, Object> keyMap = RSAUtils.genKeyPair();
-			publicKey = RSAUtils.getPublicKey(keyMap);
-			privateKey = RSAUtils.getPrivateKey(keyMap);
-			System.err.println("公钥: \n\r" + publicKey);
-			System.err.println("私钥： \n\r" + privateKey);
-			System.out.println();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void testGenerateKey() throws Exception {
+		Map<String, Object> keyMap = RSAUtils.genKeyPair();
+		publicKey = RSAUtils.getPublicKey(keyMap);
+		privateKey = RSAUtils.getPrivateKey(keyMap);
+		System.err.println("lenth:" + publicKey.length() + "\n公钥: \n" + publicKey);
+		System.err.println("lenth:" + privateKey.length() + "\n私钥： \n" + privateKey);
+		System.out.println();
 	}
 
 	@Test
 	public void testHello() throws Exception {
-		publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCdPEpa9tVnGYtfYj+aHFviF9sliQlNfJVbX7x7HZciZpZnbd9ryE7Zop2x77p8495KevcdNbf/SR+tcrkIrB/9RaJofuPIE7/nwDgZEpOrBn08TAAZm8XCpITbqS4ipMobUvp5MHW9wtY0AGI82omf1T7TuyvoI/qlEkPJ8alHFQIDAQAB";
-		privateKey = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAJ08Slr21WcZi19iP5ocW+IX2yWJCU18lVtfvHsdlyJmlmdt32vITtminbHvunzj3kp69x01t/9JH61yuQisH/1Fomh+48gTv+fAOBkSk6sGfTxMABmbxcKkhNupLiKkyhtS+nkwdb3C1jQAYjzaiZ/VPtO7K+gj+qUSQ8nxqUcVAgMBAAECgYBdqgyhI2j8gbsElwJMS5hwlsV1Fqzz+8L9K4qbzIS7eWEfO9Rb4HcYLkbCOIxe2V8R/y41uEpjSKwWJsES6XYj+kXKJ/cf/C+1dN2E8oBSTz5YZH8C5zlaI64E0VEFTMAHKlkR3tcW2XkUUwGng5/zTTP4gz9AU2BcYdFX09MmAQJBANaIfr9BE22YASx54ru9HRDvI8zeLiY2OM0Uabo6tfKrabF9v7Po0nYDMKQbVTzSebFXtRd5keMWZO8BQFMQJQcCQQC7oJlKieSTKu67EVkRI1Ku8ODfFX2sj/L9J/7ylbB8yV6tckHu2jTYDQwYJV3t0ugnAK6lAniLYP/p4nltomgDAkEAtRxwXEe0/h2ISCLx7epegnBQueCL90hpNYDZLRXpit95EBWH5HtWSbixtKk6kWliwPu5bwL7zUmXlkppInaLuwJBAKtIbSgywcvnwZBcweZ3TKAPnfmJcPT7ZGPfA0sJg9gnLJtCVxZpdRxWrNfOJPVbODuCz+wrWUhEANvOt/Nx82kCQQChTUI3IcoWbdkpGDx7RhIKlm1zTTWSnygOhMHIwdsBJOgcIdbrIxjmZPw3Q8qmAB7/5R3EC5HARVD0CBt6bg31";
+		publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCtu6E9nrWLbqO7avJqdGWFRYwvFKpwz1MHAQZgqAJ0Yz5s9OpZL1ZOTveqC1tYplctmD6KWUUsPIWc35LXYJNkL52uQmvkGUR67zPverG_HMQqW-20rwNKpiGHJGOseBfkwSyKT1HK8RJ8-h-cBi8B7KZjbBnlyF_MzpHilSv7FQIDAQAB";
+		privateKey = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAK27oT2etYtuo7tq8mp0ZYVFjC8UqnDPUwcBBmCoAnRjPmz06lkvVk5O96oLW1imVy2YPopZRSw8hZzfktdgk2Qvna5Ca-QZRHrvM-96sb8cxCpb7bSvA0qmIYckY6x4F-TBLIpPUcrxEnz6H5wGLwHspmNsGeXIX8zOkeKVK_sVAgMBAAECgYANVYdMmW_JodZDPjQY45IfJnVZ77YdLmxq7zM0G_EESdGyvyF1cuKm4_yyOmjqZunt_-9c4vkiKgr_PVGh4jGtsAzj54RkYk0H7DDXa0ga4d2H1BOzmgevhEoRiuJBDt7oBzAeg825--5Q9fWo8mY7fiVy4KxiBUJ9oeEMHBiQgQJBAPaZX44LqUe8DuQ-l0AJZ2yb8IpZwi9bHnxg9YVZhpi5bgih-7br2rBBrDlAV14iCoR0O5ayPri2jR6C9Q3uIjECQQC0WyLQDCgn4UXPRV7w4nSzFoe1GdEGDhYtih7BJj6m4LVRA5l9nYa3FFuuhLs86IgHwOnwhLqfdp02ltEsNSolAkEA3OCBu0xsoqkqOXxqo1wI_Dos2O8OxLX793ItV_TZX0Bv82GLgct9xPP93AXqe5FIFF275f3fujkg65xm_MQ4cQJADu9ZE6deD-dcs4xID2SBS287L6kCoSC7f2vnnhD_sSv8d8f3huprhG-gI_SD2Mhcs1-rP6qOFbRp0mJs0d9ZLQJBALc2xEwhJjG-hqHVTPMs-vtPQx99nHrE3DpeBSOlvh8j7jxXH5EayA5Ri9nRwgajTNpY40ySYTWktNvSEr4a6hI";
 
 		String source = "hello";
 		byte[] data = source.getBytes("UTF-8");
@@ -60,21 +56,4 @@ public class RSATester {
 		System.out.println("解密后文字: \r\n" + target);
 	}
 
-	@Test
-	public void testSign() throws Exception {
-		System.err.println("私钥加密——公钥解密");
-		String source = "这是一行测试RSA数字签名的无意义文字";
-		System.out.println("原文字：\r\n" + source);
-		byte[] data = source.getBytes();
-		byte[] encodedData = RSAUtils.encryptByPrivateKey(data, privateKey);
-		System.out.println("加密后：\r\n" + new String(encodedData));
-		byte[] decodedData = RSAUtils.decryptByPublicKey(encodedData, publicKey);
-		String target = new String(decodedData);
-		System.out.println("解密后: \r\n" + target);
-		System.err.println("私钥签名——公钥验证签名");
-		String sign = RSAUtils.sign(encodedData, privateKey);
-		System.err.println("签名:\r" + sign);
-		boolean status = RSAUtils.verify(encodedData, publicKey, sign);
-		System.err.println("验证结果:\r" + status);
-	}
 }

@@ -5,14 +5,14 @@
 
 <mapper namespace="KSS_SOFT">
 	<resultMap type="KssSoftDO" id="kssSoftResult">
-		<id property="id" column="ID" javaType="java.lang.Short" jdbcType="SMALLINT" />
+		<id property="id" column="ID" javaType="java.lang.Long" jdbcType="INTEGER" />
 		<result property="softcode" column="SOFTCODE" javaType="java.lang.Integer" jdbcType="INTEGER" />
 		<result property="softkey" column="SOFTKEY" javaType="java.lang.String" jdbcType="VARCHAR" />
 		<result property="softname" column="SOFTNAME" javaType="java.lang.String" jdbcType="VARCHAR" />
 		<result property="islock" column="ISLOCK" javaType="java.lang.Boolean" jdbcType="BOOLEAN" />
 		<result property="intervaltime" column="INTERVALTIME" javaType="java.lang.Integer" jdbcType="INTEGER" />
-		<result property="publickey" column="PUBLICKEY" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="privatekey" column="PRIVATEKEY" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="clientpubkey" column="CLIENTPUBKEY" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="serverprivkey" column="SERVERPRIVKEY" javaType="java.lang.String" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<insert id="insert" parameterType="KssSoftDO">
@@ -22,28 +22,51 @@
 		softname,
 		islock,
 		intervaltime,
-		publickey,
-		privatekey)
+		clientpubkey,
+		serverprivkey)
 		VALUES (
 		#{softcode},
 		#{softkey},
 		#{softname},
 		#{islock},
 		#{intervaltime},
-		#{publickey},
-		#{privatekey})
+		#{clientpubkey},
+		#{serverprivkey})
 	</insert>
 
+	<select id="selectLastId" resultType="java.lang.Integer">
+		SELECT LAST_INSERT_ID()
+	</select>
+	
+	<update id="updateSoftcode" parameterType="java.util.Map">
+		UPDATE KSS_SOFT
+		<set>
+			softcode = #{softcode},
+			islock = 0
+		</set>
+		where id=#{id}
+	</update>
+	
+	
 	<update id="update" parameterType="java.util.Map">
 		UPDATE KSS_SOFT
 		<set>
 			islock = #{islock},
 			intervaltime = #{intervaltime},
-			publickey = #{publickey},
-			privateke = #{privateke}
+			clientpubkey = #{clientpubkey},
+			serverprivkey = #{serverprivkey}
 		</set>
 		where id=#{id}
 	</update>
+	
+	<update id="updateLock" parameterType="java.util.Map">
+		UPDATE KSS_SOFT
+		<set>
+			islock = #{islock}
+		</set>
+		where id=#{id}
+	</update>
+	
 
 	<select id="selectById" parameterType="int" resultMap="kssSoftResult">
 		select
@@ -64,15 +87,27 @@
 		</foreach>
 	</delete>
 
-	<select id="selectCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="java.lang.Integer">
 		select COUNT(*) from KSS_SOFT
+		<include refid="QueryCondition" />
 	</select>
 
-	<select id="selectByPage" parameterType="java.util.Map" resultMap="kssSoftResult">
+	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="kssSoftResult">
 		SELECT * FROM KSS_SOFT
+		<include refid="QueryCondition" />
 		<include refid="Pagination" />
 	</select>
-
+	
+	
+	<!-- 查询条件 -->
+	<sql id="QueryCondition">
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test="softcode != null">
+				softcode = #{softcode}
+			</if>	
+		</trim>
+	</sql>
+	
 	<!-- 分页 -->
 	<sql id="Pagination">
 		<if test="startIndex != null and pageSize != null">

@@ -1,6 +1,5 @@
 package com.xuguruogu.auth.dal.querycondition;
 
-
 public class KssSoftQueryCondition extends QueryCondition<KssSoftQueryCondition> {
 
 	/**  */
@@ -8,7 +7,7 @@ public class KssSoftQueryCondition extends QueryCondition<KssSoftQueryCondition>
 
 	private static final String softcode = "softcode";
 
-	public KssSoftQueryCondition putSoftcode(Integer softcode) {
+	public KssSoftQueryCondition putSoftcode(long softcode) {
 		addIfExist(KssSoftQueryCondition.softcode, softcode);
 		return this;
 	}
