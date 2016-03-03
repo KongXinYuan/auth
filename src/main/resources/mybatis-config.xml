@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<settings>
+		<setting name="logImpl" value="STDOUT_LOGGING" />
+	</settings>
+	
+	<typeAliases>
+		<typeAlias alias="KssAdminDO" type="com.xuguruogu.auth.dal.dataobject.KssAdminDO" />
+		<typeAlias alias="KssLogLoginDO" type="com.xuguruogu.auth.dal.dataobject.KssLogLoginDO" />
+		<typeAlias alias="KssSoftDO" type="com.xuguruogu.auth.dal.dataobject.KssSoftDO" />
+	</typeAliases>
+	
+	<mappers>
+		<mapper resource="sqlmap/KssAdmin-sqlmap-mapping.xml" />
+		<mapper resource="sqlmap/KssLogLogin-sqlmap-mapping.xml" />
+		<mapper resource="sqlmap/KssSoft-sqlmap-mapping.xml" />
+	</mappers>
+
+</configuration> 

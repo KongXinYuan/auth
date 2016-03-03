@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<mvc:default-servlet-handler />
+
+	<!-- 添加处理的组件 -->
+	<!-- 需要把Dao，Controller 都扫描到Spring 容器中 -->
+	<context:component-scan base-package="com.xuguruogu.auth" />
+	
+	<!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL -->
+	<mvc:default-servlet-handler />
+	
+	<!-- 定义无需Controller的url<->view直接映射 -->
+	<mvc:view-controller path="/" view-name="index" />
+	
+	<!-- 拦截器 -->
+	<mvc:interceptors>
+		<!-- 使用bean定义一个Interceptor，直接定义在mvc:interceptors根下面的Interceptor将拦截所有的请求 -->
+		<bean class="com.xuguruogu.auth.interceptor.GlobalInterceptor" />
+		<!-- <mvc:interceptor>
+			<mvc:mapping path="/api/*" />
+			<bean class="com.xuguruogu.lingxi.interceptor.ApiAuthInterceptor" />
+		</mvc:interceptor> -->
+		<!-- <mvc:interceptor>
+			<mvc:mapping path="/admin/*" />
+			<bean class="com.xuguruogu.lingxi.interceptor.AdminAuthInterceptor">
+				<property name="LoginUrl" value="/login"/>
+			</bean>
+		</mvc:interceptor> -->
+	</mvc:interceptors>
+	
+	<!-- 默认注解处理、拦截器、内容转换 -->
+	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
+	
+	<!-- 内容协商管理器 -->
+	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<!-- 扩展名至mimeType的映射,即 /user.json => application/json -->
+		<property name="favorPathExtension" value="true" />
+        <!-- 用于开启 /userinfo/123?format=json 的支持 -->
+        <property name= "favorParameter" value= "true" />
+        <property name= "parameterName" value= "format"/>
+		<!-- 是否忽略Accept Header -->
+		<property name="ignoreAcceptHeader" value="false" />
+		<!-- 默认的content type -->
+		<property name="defaultContentType" value="text/html" />
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json" />
+				<entry key="xml" value="application/xml" />
+				<entry key="html" value="text/html"/>
+			</map>
+		</property>
+	</bean>
+
+
+	<!-- 视图解析 -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<!-- 内容协商管理器 用于决定media type -->
+		<property name= "contentNegotiationManager" ref= "contentNegotiationManager"/>
+		<property name="viewResolvers">
+			<list>
+				<!-- 针对jsp的视图配置 -->
+				<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+					<property name="prefix" value="/WEB-INF/views/" />
+					<property name="suffix" value=".jsp"/>
+					<property name="order" value="0"/>
+				</bean>
+			</list>
+		</property>
+
+		<property name="defaultViews">
+			<list>
+				<bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+			</list>
+		</property>
+	</bean>
+
+</beans>

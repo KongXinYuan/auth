@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- 打开注解注入 -->
+	<context:annotation-config />
+	<!-- 扫描包名 -->
+	<context:component-scan base-package="com.xuguruogu" />
+	<!-- 添加AOP annotation支持 -->
+	<aop:aspectj-autoproxy />
+
+	<!-- 集成mybatis -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+	</bean>
+
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<!-- json -->
+	<bean id="objectMapper " class="com.fasterxml.jackson.databind.ObjectMapper "/>
+
+	<!-- 数据源配置, 使用Tomcat JDBC连接池 -->
+	<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource"
+		destroy-method="close">
+		<!-- Connection Info -->
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+
+		<!-- 连接的最大数量 -->
+		<property name="maxActive" value="${jdbc.pool.maxActive}" />
+		<!-- 初始化连接数量 -->
+		<property name="initialSize" value="${jdbc.pool.initialSize}" />
+		<!-- 空闲时，连接数降低到最小值 -->
+		<property name="maxIdle" value="${jdbc.pool.maxIdle}" />
+		<!-- 空闲时连接池的最小值 -->
+		<property name="minIdle" value="${jdbc.pool.minIdle}" />
+		<!-- 最大等待时间 -->
+		<property name="maxWait" value="${jdbc.pool.maxWait}" />
+	</bean>
+
+	<!-- jdbc template -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<context:property-placeholder location="classpath:/application.properties" />
+
+</beans>

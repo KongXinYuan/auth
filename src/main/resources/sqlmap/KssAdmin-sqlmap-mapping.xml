@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KSS_ADMIN">
+	<resultMap type="KssAdminDO" id="kssAdminResult">
+		<id property="id" column="ID" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="parentid" column="PARENTID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+		<result property="level" column="LEVEL" javaType="java.lang.Integer" jdbcType="INTEGER" />
+		<result property="isdel" column="ISDEL" javaType="java.lang.Boolean" jdbcType="BOOLEAN" />
+		<result property="username" column="USERNAME" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="password" column="PASSWORD" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="islock" column="ISLOCK" javaType="java.lang.Boolean" jdbcType="BOOLEAN" />
+		<result property="addtime" column="ADDTIME" javaType="java.util.Date" jdbcType="DATE" />
+		<result property="lastlogintime" column="LASTLOGINTIME" javaType="java.util.Date" jdbcType="DATE" />
+		<result property="lastloginip" column="LASTLOGINIP" javaType="java.lang.Long" jdbcType="BIGINT" />
+		<result property="powerlist" column="POWERLIST" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="money" column="money" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+		<result property="exmoney" column="EXMONEY" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="KssAdminDO">
+		INSERT INTO KSS_ADMIN (
+		parentid,
+		level,
+		isdel,
+		username,
+		password,
+		islock,
+		addtime,
+		lastlogintime,
+		lastloginip,
+		powerlist,
+		money,
+		exmoney)
+		VALUES (
+		#{parentid},
+		#{level},
+		#{isdel},
+		#{username},
+		#{password},
+		#{islock},
+		#{addtime},
+		#{lastlogintime},
+		#{lastloginip},
+		#{powerlist},
+		#{money},
+		#{exmoney})
+	</insert>
+
+	<update id="updatePassword" parameterType="java.util.Map">
+		UPDATE KSS_ADMIN
+		<set>
+			password = #{password}
+		</set>
+		where id=#{id}
+	</update>
+
+	<update id="updateLock" parameterType="java.util.Map">
+		UPDATE KSS_ADMIN
+		<set>
+			islock = #{islock}
+		</set>
+		where id=#{id}
+	</update>
+
+	<update id="updateLastLogin" parameterType="java.util.Map">
+		UPDATE KSS_ADMIN
+		<set>
+			lastlogintime = #{lastlogintime},
+			lastloginip = #{lastloginip}
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	
+	<update id="updatePowerlist" parameterType="java.util.Map">
+		UPDATE KSS_ADMIN
+		<set>
+			powerlist = #{powerlist}
+		</set>
+		where id=#{id}
+	</update>
+	
+	<update id="updateMoney" parameterType="java.util.Map">
+		UPDATE KSS_ADMIN
+		<set>
+			money = #{money},
+			exmoney = #{exmoney}
+		</set>
+		where id=#{id}
+	</update>
+
+
+	<select id="selectById" parameterType="long" resultMap="kssAdminResult">
+		select
+		* from KSS_ADMIN WHERE id=#{id}
+	</select>
+
+	<delete id="deleteById" parameterType="long">
+		delete from KSS_ADMIN
+		WHERE
+		ID=#{id}
+	</delete>
+
+	<delete id="deleteByIds" parameterType="java.util.List">
+		delete from KSS_ADMIN
+		WHERE ID in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select COUNT(*) from KSS_ADMIN
+		<include refid="QueryCondition" />
+	</select>
+
+	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="kssAdminResult">
+		SELECT * FROM KSS_ADMIN
+		<include refid="QueryCondition" />
+		<include refid="Pagination" />
+	</select>
+
+
+	<!-- 查询条件 -->
+	<sql id="QueryCondition">
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test="parentid != null">
+				PARENTID = #{parentid}
+			</if>
+			<if test="username != null">
+				or USERNAME = #{username}
+			</if>
+		</trim>
+	</sql>
+
+	<!-- 分页 -->
+	<sql id="Pagination">
+		<if test="startIndex != null and pageSize != null">
+			LIMIT #{startIndex},#{pageSize}
+		</if>
+	</sql>
+
+</mapper>

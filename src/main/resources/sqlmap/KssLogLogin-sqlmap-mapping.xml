@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KSS_LOG_LOGIN">
+	<resultMap type="KssLogLoginDO" id="KssLogLoginResult">
+		<id property="id" column="ID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+		<result property="managerid" column="MANAGERID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+		<result property="loginip" column="LOGINIP" javaType="java.lang.Long" jdbcType="BIGINT" />
+		<result property="logintime" column="LOGINTIME" javaType="java.util.Date" jdbcType="DATE" />
+	</resultMap>
+
+	<insert id="insert" parameterType="KssLogLoginDO">
+		INSERT INTO LX_ADMIN_LOGIN_LOG (
+		GMT_LOGIN,
+		ADMIN_ID,
+		IPADR
+		)
+		VALUES (
+		CURRENT_TIMESTAMP,
+		#{adminId},
+		#{ipAdr})
+	</insert>
+	
+	<select id="selectById" parameterType="long" resultMap="KssLogLoginResult">
+		select * from LX_ADMIN_LOGIN_LOG WHERE id=#{id}
+	</select>
+
+	<delete id="deleteById" parameterType="long">
+		delete from LX_ADMIN_LOGIN_LOG
+		WHERE ID=#{id}
+	</delete>
+	
+	<delete id="deleteByIds" parameterType="java.util.List">
+		delete from LX_ADMIN_LOGIN_LOG
+		WHERE ID in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select COUNT(*) from LX_ADMIN_LOGIN_LOG
+		<include refid="QueryCondition" />
+	</select>
+
+	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="KssLogLoginResult">
+		SELECT * FROM LX_ADMIN_LOGIN_LOG
+		<include refid="QueryCondition" />
+		<include refid="Pagination" />
+	</select>
+
+	<!-- 查询条件 -->
+	<sql id="QueryCondition">
+		<trim prefix="where" prefixOverrides="and|or">
+
+			<if test="adminId != null or ipAdr != null">
+				(
+				<trim prefixOverrides="and|or">
+					<if test="adminId != null">
+						ADMIN_ID = #{adminId}
+					</if>
+					<if test="ipAdr != null">
+						or IPADR = #{ipAdr}
+					</if>
+				</trim>
+				)
+			</if>
+
+			<if test="gmtLoginBegin != null ">
+                <![CDATA[
+				and GMT_LOGIN >= #{gmtLoginBegin}
+				]]>
+			</if>
+			<if test="gmtLoginEnd != null ">
+                <![CDATA[
+				and GMT_LOGIN <= #{gmtLoginEnd}
+				]]>
+			</if>
+		</trim>
+	</sql>
+
+	<!-- 分页 -->
+	<sql id="Pagination">
+		<if test="startIndex != null and pageSize != null">
+			LIMIT #{startIndex},#{pageSize}
+		</if>
+	</sql>
+</mapper>
