@@ -17,12 +17,17 @@ public class RandomUtil {
 		String str = "";
 		Random random = new Random();
 		for (int i = 0; i < length; i++) {
-			boolean b = random.nextBoolean();
-			if (b) { // 字符串
-				// int choice = random.nextBoolean() ? 65 : 97; 取得65大写字母还是97小写字母
-				str += (char) (65 + random.nextInt(26));// 取得大写字母
-			} else { // 数字
-				str += String.valueOf(random.nextInt(10));
+
+			// 0-9数字
+			// 10-35大写字母
+			// 36-61小写字母
+			int value = random.nextInt(62);
+			if (value <= 9) {
+				str += String.valueOf(value);
+			} else if (value <= 35) {
+				str += (char) (65 + value - 10);
+			} else {
+				str += (char) (97 + value - 36);
 			}
 		}
 		return str;

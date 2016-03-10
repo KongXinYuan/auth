@@ -7,14 +7,22 @@ public class KssLogLoginQueryCondition extends QueryCondition<KssLogLoginQueryCo
 
 	private static final String adminid = "adminid";
 	private static final String loginip = "loginip";
+	private static final String desc = "desc";
 
-	public KssLogLoginQueryCondition putAdminid(Integer adminid) {
+	public KssLogLoginQueryCondition putAdminid(long adminid) {
 		addIfExist(KssLogLoginQueryCondition.adminid, adminid);
 		return this;
 	}
 
-	public KssLogLoginQueryCondition putLoginip(Long loginip) {
+	public KssLogLoginQueryCondition putLoginip(long loginip) {
 		addIfExist(KssLogLoginQueryCondition.loginip, loginip);
+		return this;
+	}
+
+	public KssLogLoginQueryCondition desc(boolean desc) {
+		if (desc) {
+			addIfExist(KssLogLoginQueryCondition.desc, "desc");
+		}
 		return this;
 	}
 

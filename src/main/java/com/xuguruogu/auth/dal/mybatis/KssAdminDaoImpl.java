@@ -19,7 +19,7 @@ public class KssAdminDaoImpl extends KssDaoImplBase<KssAdminDO, KssAdminQueryCon
 	}
 
 	@Override
-	public int updatePassword(Long id, String password) {
+	public int updatePassword(long id, String password) {
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("password", password);
@@ -29,17 +29,17 @@ public class KssAdminDaoImpl extends KssDaoImplBase<KssAdminDO, KssAdminQueryCon
 	}
 
 	@Override
-	public int updateLock(Long id, Boolean lock) {
+	public int updateLock(long id, boolean lock) {
 
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("lock", lock);
+		param.put("islock", lock);
 		param.put("id", id);
 
 		return sqlSessionTemplate.update(this.getMybatisStatementName("updateLock"), param);
 	}
 
 	@Override
-	public int updateLastLogin(Long id, Date lastlogintime, Integer lastloginip) {
+	public int updateLastLogin(long id, Date lastlogintime, long lastloginip) {
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("lastlogintime", lastlogintime);
@@ -50,7 +50,7 @@ public class KssAdminDaoImpl extends KssDaoImplBase<KssAdminDO, KssAdminQueryCon
 	}
 
 	@Override
-	public int updatePowerlist(Long id, String powerlist) {
+	public int updatePowerlist(long id, String powerlist) {
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("powerlist", powerlist);
@@ -60,7 +60,7 @@ public class KssAdminDaoImpl extends KssDaoImplBase<KssAdminDO, KssAdminQueryCon
 	}
 
 	@Override
-	public int updateMoney(Long id, BigDecimal money, BigDecimal exmoney) {
+	public int updateMoney(long id, BigDecimal money, BigDecimal exmoney) {
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("money", money);

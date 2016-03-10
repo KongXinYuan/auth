@@ -21,14 +21,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xuguruogu.auth.web.result.ErrorResult;
 
 @ControllerAdvice
-public class ApiExceptionHandler {
+public class KssExceptionHandler {
 
-	private static Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(KssExceptionHandler.class);
 
 	@Autowired
 	ObjectMapper objectMapper;
 
-	private Pattern allowedUrls = Pattern.compile("(.*\\.json$|^/api/)");
+	private Pattern allowedUrls = Pattern.compile("(.*\\.json$|^/api/.*)");
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@ExceptionHandler(Throwable.class)
@@ -45,7 +45,6 @@ public class ApiExceptionHandler {
 			jsonGenerator.writeObject(new ErrorResult(ex));
 			return null;
 		} else {
-
 			return new ModelAndView("error/500", new ErrorResult(ex));
 		}
 	}

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KSS_SOFT_USER">
+	<resultMap type="KssSoftUserDO" id="kssSoftUserResult">
+		<id property="id" column="ID" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="adminid" column="ADMINID" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="username" column="USERNAME" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="password" column="PASSWORD" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="cday" column="CDAY" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+		<result property="lock" column="ISLOCK" javaType="java.lang.Boolean" jdbcType="BOOLEAN" />
+		<result property="public" column="ISPUBLIC" javaType="java.lang.Boolean" jdbcType="BOOLEAN" />
+		<result property="linecode" column="LINECODE" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="pccode" column="PCCODE" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="addtime" column="ADDTIME" javaType="java.util.Date" jdbcType="DATE" />
+		<result property="starttime" column="STARTTIME" javaType="java.util.Date" jdbcType="DATE" />
+		<result property="endtime" column="ENDTIME" javaType="java.util.Date" jdbcType="DATE" />
+		<result property="lastlogintime" column="LASTLOGINTIME" javaType="java.util.Date" jdbcType="DATE" />
+		<result property="lastloginip" column="LASTLOGINIP" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="activetimes" column="ACTIVETIMES" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="locktimes" column="LOCKTIMES" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="lockendtime" column="LOCKENDTIME" javaType="java.util.Date" jdbcType="DATE" />
+		<result property="rechargetimes" column="RECHARGETIMES" javaType="java.lang.Long" jdbcType="INTEGER" />
+	</resultMap>
+	
+	
+	
+	<insert id="insertWithSeg" parameterType="KssSoftUserDO">
+		INSERT INTO KSS_SOFT_USER (
+		adminid,
+		username,
+		password,
+		cday,
+		addtime,
+		starttime,
+		endtime,
+		rechargetimes)
+		VALUES (
+		#{adminid},
+		#{username},
+		#{password},
+		#{cday},
+		#{addtime},
+		#{starttime},
+		#{endtime},
+		#{rechargetimes})
+	</insert>
+	
+
+	<update id="updatePasswordWithSeg" parameterType="java.util.Map">
+		UPDATE KSS_SOFT_USER
+		<set>
+			password = #{password}
+		</set>
+		where id=#{id}
+	</update>
+	
+	<update id="updateLockWithSeg" parameterType="java.util.Map">
+		UPDATE KSS_SOFT_USER
+		<set>
+			islock = #{islock},
+			lockendtime = #{lockendtime},
+			locktimes = locktimes+1
+		</set>
+		where id=#{id}
+	</update>
+	
+	
+	<update id="updatePublicWithSeg" parameterType="java.util.Map">
+		UPDATE KSS_SOFT_USER
+		<set>
+			ispub = #{ispub}
+		</set>
+		where id=#{id}
+	</update>
+	
+	
+	
+	<update id="updateLastLoginWithSeg" parameterType="java.util.Map">
+		UPDATE KSS_SOFT_USER
+		<set>
+			lastlogintime = #{lastlogintime},
+			lastloginip = #{lastloginip},
+			pccode = #{pccode},
+			linecode = #{linecode},
+			activetimes = activetimes+1
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	
+	<update id="updateRechargeWithSeg" parameterType="java.util.Map">
+		UPDATE KSS_SOFT_USER
+		<set>
+			cday = #{cday},
+			starttime = #{starttime},
+			endtime = #{endtime},
+			rechargetimes = rechargetimes+1
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+
+	<select id="selectByIdWithSeg" parameterType="java.lang.Long" resultMap="kssSoftUserResult">
+		select
+		* from KSS_SOFT_USER WHERE id=#{id}
+	</select>
+
+	<delete id="deleteByIdWithSeg" parameterType="java.lang.Long">
+		delete from KSS_SOFT_USER
+		WHERE
+		ID=#{id}
+	</delete>
+
+	<delete id="deleteByIdsWithSeg" parameterType="java.util.List">
+		delete from KSS_SOFT_USER
+		WHERE ID in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="selectCountByQueryConditionWithSeg" parameterType="java.util.Map" resultType="java.lang.Long">
+		select COUNT(*) from KSS_SOFT_USER
+		<include refid="QueryCondition" />
+	</select>
+
+	<select id="selectByQueryConditionWithSeg" parameterType="java.util.Map" resultMap="kssSoftUserResult">
+		SELECT * FROM KSS_SOFT_USER
+		<include refid="QueryCondition" />
+		<include refid="Pagination" />
+	</select>
+	
+	
+	<!-- 查询条件 -->
+	<sql id="QueryCondition">
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test="adminid != null">
+				adminid = #{adminid}
+			</if>
+			<if test="username != null">
+				and username = #{username}
+			</if>
+		</trim>
+	</sql>
+	
+	<!-- 分页 -->
+	<sql id="Pagination">
+		<if test="startIndex != null and pageSize != null">
+			LIMIT #{startIndex},#{pageSize}
+		</if>
+	</sql>
+
+</mapper>

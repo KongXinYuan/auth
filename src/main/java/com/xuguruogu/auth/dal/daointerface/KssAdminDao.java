@@ -8,13 +8,13 @@ import com.xuguruogu.auth.dal.querycondition.KssAdminQueryCondition;
 
 public interface KssAdminDao extends KssDaoBase<KssAdminDO, KssAdminQueryCondition> {
 
-	public int updatePassword(Long id, String password);
+	public int updatePassword(long id, String password);
 
-	public int updateLock(Long id, Boolean lock);
+	public int updateLock(long id, boolean lock);
 
-	public int updateLastLogin(Long id, Date lastlogintime, Integer lastloginip);
+	public int updateLastLogin(long id, Date lastlogintime, long lastloginip);
 
-	public int updatePowerlist(Long id, String powerlist);
+	public int updatePowerlist(long id, String powerlist);
 
-	public int updateMoney(Long id, BigDecimal money, BigDecimal exmoney);
+	public int updateMoney(long id, BigDecimal money, BigDecimal exmoney);
 }

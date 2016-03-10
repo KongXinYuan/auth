@@ -23,7 +23,7 @@ public class SoftDTOConverter extends AbstractConverter<KssSoftDO, SoftDTO> {
 		dto.setSoftcode(kssSoftDO.getSoftcode());
 		dto.setSoftkey(kssSoftDO.getSoftkey());
 		dto.setSoftname(kssSoftDO.getSoftname());
-		dto.setIslock(kssSoftDO.getIslock());
+		dto.setLock(kssSoftDO.isLock());
 
 		dto.setIntervaltime(kssSoftDO.getIntervaltime());
 

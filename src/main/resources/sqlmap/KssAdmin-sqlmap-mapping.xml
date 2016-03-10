@@ -1,23 +1,23 @@
-<?xml version="1.0" encoding="GB2312" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="KSS_ADMIN">
 	<resultMap type="KssAdminDO" id="kssAdminResult">
-		<id property="id" column="ID" javaType="java.lang.Long" jdbcType="INTEGER" />
-		<result property="parentid" column="PARENTID" javaType="java.lang.Integer" jdbcType="INTEGER" />
-		<result property="level" column="LEVEL" javaType="java.lang.Integer" jdbcType="INTEGER" />
-		<result property="isdel" column="ISDEL" javaType="java.lang.Boolean" jdbcType="BOOLEAN" />
-		<result property="username" column="USERNAME" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="password" column="PASSWORD" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="islock" column="ISLOCK" javaType="java.lang.Boolean" jdbcType="BOOLEAN" />
-		<result property="addtime" column="ADDTIME" javaType="java.util.Date" jdbcType="DATE" />
-		<result property="lastlogintime" column="LASTLOGINTIME" javaType="java.util.Date" jdbcType="DATE" />
-		<result property="lastloginip" column="LASTLOGINIP" javaType="java.lang.Long" jdbcType="BIGINT" />
-		<result property="powerlist" column="POWERLIST" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="money" column="money" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
-		<result property="exmoney" column="EXMONEY" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+		<id property="id" column="ID" jdbcType="INTEGER" />
+		<result property="parentid" column="PARENTID" jdbcType="INTEGER" />
+		<result property="level" column="LEVEL" jdbcType="INTEGER" />
+		<result property="del" column="ISDEL" jdbcType="BOOLEAN" />
+		<result property="username" column="USERNAME" jdbcType="VARCHAR" />
+		<result property="password" column="PASSWORD" jdbcType="VARCHAR" />
+		<result property="lock" column="ISLOCK" jdbcType="BOOLEAN" />
+		<result property="addtime" column="ADDTIME" jdbcType="TIMESTAMP" />
+		<result property="lastlogintime" column="LASTLOGINTIME" jdbcType="TIMESTAMP" />
+		<result property="lastloginip" column="LASTLOGINIP" jdbcType="INTEGER" />
+		<result property="powerlist" column="POWERLIST" jdbcType="VARCHAR" />
+		<result property="money" column="money" jdbcType="DECIMAL" />
+		<result property="exmoney" column="EXMONEY" jdbcType="DECIMAL" />
 	</resultMap>
 	
 	<insert id="insert" parameterType="KssAdminDO">
@@ -124,19 +124,19 @@
 	</select>
 
 
-	<!-- 查询条件 -->
+	<!-- 鏌ヨ鏉′欢 -->
 	<sql id="QueryCondition">
 		<trim prefix="where" prefixOverrides="and|or">
 			<if test="parentid != null">
 				PARENTID = #{parentid}
 			</if>
 			<if test="username != null">
-				or USERNAME = #{username}
+				and USERNAME = #{username}
 			</if>
 		</trim>
 	</sql>
 
-	<!-- 分页 -->
+	<!-- 鍒嗛〉 -->
 	<sql id="Pagination">
 		<if test="startIndex != null and pageSize != null">
 			LIMIT #{startIndex},#{pageSize}

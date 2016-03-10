@@ -8,7 +8,7 @@ public class KssAdminQueryCondition extends QueryCondition<KssAdminQueryConditio
 	private static final String parentid = "parentid";
 	private static final String username = "username";
 
-	public KssAdminQueryCondition putParentid(Integer parentid) {
+	public KssAdminQueryCondition putParentid(long parentid) {
 		addIfExist(KssAdminQueryCondition.parentid, parentid);
 		return this;
 	}

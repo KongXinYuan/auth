@@ -14,13 +14,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.xuguruogu.auth.facade.AdminFacade;
+import com.xuguruogu.auth.service.AdminManager;
 
 @Component("adminAuthenticationSuccessHandler")
 public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
 	@Autowired
-	private AdminFacade adminFacade;
+	private AdminManager adminManager;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -48,6 +48,6 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
 		}
 
-		adminFacade.onLoginSucess(userDetails.getAdminid(), ip);
+		adminManager.onLoginSucess(userDetails.getAdminid(), ip);
 	}
 }

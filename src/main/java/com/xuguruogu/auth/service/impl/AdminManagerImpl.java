@@ -8,7 +8,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.xuguruogu.auth.dal.daointerface.KssAdminDao;
+import com.xuguruogu.auth.dal.daointerface.KssLogLoginDao;
 import com.xuguruogu.auth.dal.dataobject.KssAdminDO;
+import com.xuguruogu.auth.dal.dataobject.KssLogLoginDO;
 import com.xuguruogu.auth.dal.querycondition.KssAdminQueryCondition;
 import com.xuguruogu.auth.service.AdminManager;
 import com.xuguruogu.auth.util.IPv4Util;
@@ -24,17 +26,34 @@ public class AdminManagerImpl implements AdminManager {
 
 	@Autowired
 	private KssAdminDao kssAdminDao;
+	@Autowired
+	private KssLogLoginDao kssLogLoginDao;
 
 	@Autowired
 	private PasswordEncoder bcryptEncoder;
 
 	@Override
-	public void updatePassword(final Long adminId, final String password) {
+	public void onLoginSucess(long adminid, String ip) {
+		// 更新最新记录
+		int ipint = IPv4Util.ipToIntWithDefault(ip);
+		Date now = new Date();
+		kssAdminDao.updateLastLogin(adminid, now, ipint);
+
+		// 插入登录日志记录
+		KssLogLoginDO logDO = new KssLogLoginDO();
+		logDO.setAdminid(adminid);
+		logDO.setLoginip(ipint);
+		logDO.setLogintime(now);
+		kssLogLoginDao.insert(logDO);
+	}
+
+	@Override
+	public void updatePassword(final long adminId, final String password) {
 		kssAdminDao.updatePassword(adminId, bcryptEncoder.encode(password));
 	}
 
 	@Override
-	public void deleteById(Long adminid) {
+	public void deleteById(long adminid) {
 		kssAdminDao.deleteById(adminid);
 	}
 
@@ -44,9 +63,9 @@ public class AdminManagerImpl implements AdminManager {
 	}
 
 	@Override
-	public void create(Long parentid, Integer level, String username, String password) {
+	public void create(long parentid, long level, String username, String password) {
 		KssAdminDO kssAdminDO = new KssAdminDO();
-		kssAdminDO.setParentid(parentid.intValue());
+		kssAdminDO.setParentid(parentid);
 		kssAdminDO.setLevel(level);
 		kssAdminDO.setUsername(username);
 		kssAdminDO.setPassword(password);
@@ -54,7 +73,7 @@ public class AdminManagerImpl implements AdminManager {
 	}
 
 	@Override
-	public KssAdminDO queryById(Long adminid) {
+	public KssAdminDO queryById(long adminid) {
 		return kssAdminDao.selectById(adminid);
 	}
 
@@ -66,26 +85,22 @@ public class AdminManagerImpl implements AdminManager {
 	}
 
 	@Override
-	public void updateLastLogin(Long adminid, String ip) {
-		kssAdminDao.updateLastLogin(adminid, new Date(), IPv4Util.ipToIntWithDefault(ip));
-	}
-
-	@Override
-	public List<KssAdminDO> queryByPage(int limit, int pageIndex, Long parentid) {
+	public List<KssAdminDO> queryByPage(long parentid, int limit, int pageIndex) {
 		KssAdminQueryCondition query = new KssAdminQueryCondition();
-		query.putParentid(parentid.intValue()).pagination(pageIndex, limit);
+		query.putParentid(parentid).pagination(pageIndex, limit);
 		return kssAdminDao.selectListByQueryCondition(query);
 	}
 
 	@Override
-	public int queryCount(Long parentid) {
+	public long queryCount(long parentid) {
 		KssAdminQueryCondition query = new KssAdminQueryCondition();
-		query.putParentid(parentid.intValue());
+		query.putParentid(parentid);
 		return kssAdminDao.selectCountByQueryCondition(query);
 	}
 
 	@Override
-	public void updateLock(Long adminid, boolean lock) {
+	public void updateLock(long adminid, boolean lock) {
 		kssAdminDao.updateLock(adminid, lock);
 	}
+
 }

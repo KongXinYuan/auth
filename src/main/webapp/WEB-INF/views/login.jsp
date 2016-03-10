@@ -8,14 +8,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="author" content="虚谷若谷,06libenli@163.com" />
+<meta name="robots" content="none">
+<meta name="description" content="授权认证系统 powered by kent">
+<link rel="shortcut icon" href="favicon.ico" />
 <title>登录</title>
-<link href="${ctx}/static/css/login.css" rel="stylesheet" type="text/css"/>
+<link href="${ctx}/static/css/login.css" rel="stylesheet"
+	type="text/css" />
 </head>
 
 <body class="login">
 
-	<form:form class="login_m" action="${ctx}/login" method="post">
+	<form:form class="login_m" action="${ctx}/login" method="post" >
 		<div class="login_logo">
 			<img src="${ctx}/static/images/logo.png" width="196" height="46">
 		</div>
@@ -31,8 +36,8 @@
 				</label>
 				<div class="rem_sub">
 					<div class="rem_sub_l">
-						<input type="checkbox" name="rememberMe" id="rememberMe"> <label
-							for="rememberMe">记住</label>
+						<input type="checkbox" name="rememberMe" id="rememberMe">
+						<label for="rememberMe">记住</label>
 					</div>
 					<label> <input type="submit" class="sub_button"
 						name="button" id="button" value="登录" style="opacity: 0.7;">
@@ -41,9 +46,9 @@
 			</div>
 		</div>
 		<div>
-		<c:if test="${error}">
-			<p style="color:red">用户名或密码错误</p>
-		</c:if>
+			<c:if test="${error}">
+				<p style="color: red">用户名或密码错误</p>
+			</c:if>
 		</div>
 	</form:form>
 </body>

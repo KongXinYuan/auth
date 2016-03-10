@@ -28,7 +28,7 @@
 		<spring-redis.version>1.5.2.RELEASE</spring-redis.version>
 		<jedis.version>2.7.3</jedis.version>
 		<dwr.version>3.0.0-RELEASE</dwr.version>
-		<spring-security.version>4.0.2.RELEASE</spring-security.version>
+		<spring-security.version>4.0.4.RELEASE</spring-security.version>
 		<spring-jpa.version>1.8.1.RELEASE</spring-jpa.version>
 
 		<!-- Plugin的属性定义 -->
@@ -262,7 +262,11 @@
 			<artifactId>spring-security-test</artifactId>
 			<version>${spring-security.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
 		<!-- ace libs -->
 		<dependency>
 			<groupId>com.alibaba.appengine</groupId>
@@ -270,7 +274,7 @@
 			<version>1.4.24</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 	</dependencies>
 
 

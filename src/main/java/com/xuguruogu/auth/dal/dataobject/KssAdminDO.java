@@ -15,13 +15,13 @@ public class KssAdminDO extends Entity {
 	private static final long serialVersionUID = 2500557805132606740L;
 
 	/** 上级id */
-	private Integer parentid;
+	private long parentid;
 
 	/** 层级 */
-	private Integer level;
+	private long level;
 
 	/** 删除标记 */
-	private Boolean isdel;
+	private boolean del;
 
 	/** 用户名 */
 	private String username;
@@ -30,7 +30,7 @@ public class KssAdminDO extends Entity {
 	private String password;
 
 	/** 锁定 */
-	private Boolean islock;
+	private boolean lock;
 
 	/** 添加时间 */
 	private Date addtime;
@@ -39,7 +39,7 @@ public class KssAdminDO extends Entity {
 	private Date lastlogintime;
 
 	/** 上次登录ip */
-	private Long lastloginip;
+	private int lastloginip;
 
 	/** 权限列表 */
 	private String powerlist;
@@ -50,28 +50,28 @@ public class KssAdminDO extends Entity {
 	/** 累计金额 */
 	private BigDecimal exmoney;
 
-	public Integer getParentid() {
+	public long getParentid() {
 		return parentid;
 	}
 
-	public void setParentid(Integer parentid) {
+	public void setParentid(long parentid) {
 		this.parentid = parentid;
 	}
 
-	public Integer getLevel() {
+	public long getLevel() {
 		return level;
 	}
 
-	public void setLevel(Integer level) {
+	public void setLevel(long level) {
 		this.level = level;
 	}
 
-	public Boolean getIsdel() {
-		return isdel;
+	public boolean isDel() {
+		return del;
 	}
 
-	public void setIsdel(Boolean isdel) {
-		this.isdel = isdel;
+	public void setDel(boolean del) {
+		this.del = del;
 	}
 
 	public String getUsername() {
@@ -90,12 +90,12 @@ public class KssAdminDO extends Entity {
 		this.password = password;
 	}
 
-	public Boolean getIslock() {
-		return islock;
+	public boolean isLock() {
+		return lock;
 	}
 
-	public void setIslock(Boolean islock) {
-		this.islock = islock;
+	public void setLock(boolean lock) {
+		this.lock = lock;
 	}
 
 	public Date getAddtime() {
@@ -114,11 +114,11 @@ public class KssAdminDO extends Entity {
 		this.lastlogintime = lastlogintime;
 	}
 
-	public Long getLastloginip() {
+	public int getLastloginip() {
 		return lastloginip;
 	}
 
-	public void setLastloginip(Long lastloginip) {
+	public void setLastloginip(int lastloginip) {
 		this.lastloginip = lastloginip;
 	}
 

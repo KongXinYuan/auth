@@ -17,10 +17,10 @@ public class SoftDTO implements Serializable {
 	private String softname;
 
 	/** 锁定标记 */
-	private Boolean islock;
+	private boolean lock;
 
 	/** 校验在线最长间隔时间 */
-	private int intervaltime;
+	private long intervaltime;
 
 	/** 公匙 */
 	private String clientpublickey;
@@ -52,19 +52,19 @@ public class SoftDTO implements Serializable {
 		this.softname = softname;
 	}
 
-	public Boolean getIslock() {
-		return islock;
+	public boolean isLock() {
+		return lock;
 	}
 
-	public void setIslock(Boolean islock) {
-		this.islock = islock;
+	public void setLock(boolean lock) {
+		this.lock = lock;
 	}
 
-	public int getIntervaltime() {
+	public long getIntervaltime() {
 		return intervaltime;
 	}
 
-	public void setIntervaltime(int intervaltime) {
+	public void setIntervaltime(long intervaltime) {
 		this.intervaltime = intervaltime;
 	}
 

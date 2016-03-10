@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.xuguruogu.auth.dal.dataobject.KssAdminDO;
 import com.xuguruogu.auth.util.AbstractConverter;
+import com.xuguruogu.auth.util.IPv4Util;
 
 /**
  * 用户摘要信息转换器
@@ -24,10 +25,10 @@ public class AdminDTOConverter extends AbstractConverter<KssAdminDO, AdminDTO> {
 		dto.setParentid(kssAdminDO.getParentid());
 		dto.setLevel(kssAdminDO.getLevel());
 		dto.setUsername(kssAdminDO.getUsername());
-		dto.setIslock(kssAdminDO.getIslock());
+		dto.setLock(kssAdminDO.isLock());
 		dto.setAddtime(kssAdminDO.getAddtime());
 		dto.setLastlogintime(kssAdminDO.getLastlogintime());
-		dto.setLastloginip(kssAdminDO.getLastloginip());
+		dto.setLastloginip(IPv4Util.intToIpWithDefault(kssAdminDO.getLastloginip()));
 		dto.setPowerlist(kssAdminDO.getPowerlist());
 		dto.setMoney(kssAdminDO.getMoney());
 		dto.setExmoney(kssAdminDO.getExmoney());

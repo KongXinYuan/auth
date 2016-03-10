@@ -9,48 +9,48 @@ public interface KssDaoBase<T extends Entity, C extends QueryCondition<?>> {
 
 	/**
 	 * 插入
-	 * 
+	 *
 	 * @param T
 	 *            entity
 	 * @return
 	 */
-	public int insert(T entity);
+	public long insert(T entity);
 
 	/**
 	 * selectOne
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
-	public T selectById(Long id);
+	public T selectById(long id);
 
 	/**
 	 * 删除
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
-	public int deleteById(Long id);
+	public long deleteById(long id);
 
 	/**
 	 * 删除
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
-	public int deleteByIds(List<Long> ids);
+	public long deleteByIds(List<Long> ids);
 
 	/**
 	 * 查找计数
-	 * 
+	 *
 	 * @param queryCondition
 	 * @return
 	 */
-	public int selectCountByQueryCondition(C queryCondition);
+	public long selectCountByQueryCondition(C queryCondition);
 
 	/**
 	 * 查找
-	 * 
+	 *
 	 * @param queryCondition
 	 * @return
 	 */
@@ -58,7 +58,7 @@ public interface KssDaoBase<T extends Entity, C extends QueryCondition<?>> {
 
 	/**
 	 * 查找
-	 * 
+	 *
 	 * @param queryCondition
 	 * @return
 	 */

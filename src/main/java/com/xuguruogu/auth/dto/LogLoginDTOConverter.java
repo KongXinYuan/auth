@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.xuguruogu.auth.dal.dataobject.KssLogLoginDO;
 import com.xuguruogu.auth.util.AbstractConverter;
+import com.xuguruogu.auth.util.IPv4Util;
 
 /**
  * 用户摘要信息转换器
@@ -22,7 +23,7 @@ public class LogLoginDTOConverter extends AbstractConverter<KssLogLoginDO, LogLo
 
 		dto.setId(kssLogLoginDO.getId());
 		dto.setAdminid(kssLogLoginDO.getAdminid());
-		dto.setLoginip(kssLogLoginDO.getLoginip());
+		dto.setLoginip(IPv4Util.intToIpWithDefault(kssLogLoginDO.getLoginip()));
 		dto.setLogintime(kssLogLoginDO.getLogintime());
 
 		return dto;

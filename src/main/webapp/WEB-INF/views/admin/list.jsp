@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 
 <html>
@@ -13,33 +14,19 @@
 		<form:form id="searchForm" class="form-horizontal span24">
 			<div class="row">
 				<div class="control-group span8">
-					<label class="control-label">管理员id：</label>
-					<div class="controls">
-						<input type="text" class="control-text" name="adminId">
-					</div>
-				</div>
-				<div class="control-group span8">
 					<label class="control-label">用户名：</label>
 					<div class="controls">
 						<input type="text" class="control-text" name="username">
 					</div>
 				</div>
-				<div class="control-group span8">
-					<label class="control-label">昵称：</label>
-					<div class="controls">
-						<input type="text" class="control-text" name="nickname">
+				<sec:authorize access="hasRole('OWNER')">
+					<div class="control-group span8">
+						<label class="control-label">总代理：</label>
+						<div class="controls">
+							<input type="text" class="control-text" name="parentusername">
+						</div>
 					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="control-group span9">
-					<label class="control-label">创建时间：</label>
-					<div class="controls">
-						<input type="text" class=" calendar" name="gmtCreatedBegin">
-						<span>-</span>
-						<input type="text" class=" calendar" name="gmtCreatedEnd">
-					</div>
-				</div>
+				</sec:authorize>
 				<div class="span3 offset2">
 					<button type="button" id="btnSearch" class="button button-primary">搜索</button>
 				</div>
@@ -60,22 +47,18 @@
 							class="input-normal control-text">
 					</div>
 				</div>
-			</div>
-			<div class="row">
 				<div class="control-group span8">
-					<label class="control-label">邮箱</label>
+					<label class="control-label">级别</label>
 					<div class="controls">
-						<input name="email" type="text" data-rules="{required:true,name:email}"
-							class="input-normal control-text">
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="control-group span8">
-					<label class="control-label">昵称</label>
-					<div class="controls">
-						<input name="nickname" type="text" data-rules="{required:true}"
-							class="input-normal control-text">
+						<select name="level" class="input-normal" data-rules="{required:true}">
+							<sec:authorize access="hasRole('OWNER')">
+									<option value="1" selected="selected">总代理</option>
+									<option value="2">代理</option>
+							</sec:authorize>
+							<sec:authorize access="hasRole('ADMIN')">
+									<option value="2" selected="selected">代理</option>
+							</sec:authorize>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -111,20 +94,11 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="control-group span8">
-					<label class="control-label">昵称</label>
-					<div class="controls">
-						<input name="nickname" type="text" readonly="readonly"
-							class="input-normal control-text">
-					</div>
-				</div>
-			</div>
 
 			<div class="control-group span8">
 				<label class="control-label">状态</label>
 				<div class="controls">
-					<select name="status"
+					<select name="lock"
 						class="input-normal">
 						<option value="">请选择</option>
 						<option value="0">激活</option>

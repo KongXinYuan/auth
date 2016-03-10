@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.xuguruogu.auth.dto.AdminDTO;
+import com.xuguruogu.auth.dto.LogLoginDTO;
 
 /**
  * 管理域
@@ -14,23 +15,23 @@ import com.xuguruogu.auth.dto.AdminDTO;
  */
 public interface AdminFacade {
 
-	public AdminDTO create(Long parentid, Integer level, String username, String password);
+	public AdminDTO create(long parentid, long level, String username, String password);
 
-	public AdminDTO profile(Long adminid);
+	public AdminDTO profile(long adminid);
 
-	public void chagePassword(Long adminid, String oldPassword, String newPassword);
+	public List<LogLoginDTO> queryLatestLogLogin(long adminid);
 
-	public void resetPassword(Long adminid, String password);
+	public void chagePassword(long adminid, String oldPassword, String newPassword);
 
-	public Map<String, Object> querylogLoginByPage(Long adminid, int limit, int pageIndex);
+	public void resetPassword(long adminid, String password);
 
-	void onLoginSucess(Long adminid, String ip);
+	public Map<String, Object> querylogLoginByPage(long adminid, int limit, int pageIndex);
 
-	public Map<String, Object> queryByPage(int limit, int pageIndex, Long parentid);
+	public Map<String, Object> queryByPage(long parentid, int limit, int pageIndex);
 
-	public void deleteById(Long adminid);
+	public void deleteById(long adminid);
 
 	public void deleteByIds(List<Long> adminids);
 
-	public void updateLock(Long adminid, boolean lock);
+	public void updateLock(long adminid, boolean lock);
 }

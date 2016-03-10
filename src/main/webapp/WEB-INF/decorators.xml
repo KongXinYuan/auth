@@ -2,11 +2,15 @@
 <decorators defaultdir="/WEB-INF/layouts/">
 	<excludes>
 		<pattern>*.json</pattern>
+    	<pattern>/static/*</pattern>
+		<pattern>favicon.ico</pattern>
 	</excludes>
 	
 	<decorator name="default" page="default.jsp">
 		<pattern>/home/*</pattern>
 		<pattern>/admin/*</pattern>
 		<pattern>/user/*</pattern>
+		<pattern>/error/*</pattern>
 	</decorator>
+	
 </decorators>

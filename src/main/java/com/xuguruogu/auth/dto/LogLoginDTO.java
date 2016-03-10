@@ -13,10 +13,10 @@ public class LogLoginDTO implements Serializable {
 	private long id;
 
 	/** 管理员id */
-	private Integer adminid;
+	private long adminid;
 
 	/** ip地址 */
-	private Integer loginip;
+	private String loginip;
 
 	/** 登录时间 */
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
@@ -30,19 +30,19 @@ public class LogLoginDTO implements Serializable {
 		this.id = id;
 	}
 
-	public Integer getAdminid() {
+	public long getAdminid() {
 		return adminid;
 	}
 
-	public void setAdminid(Integer adminid) {
+	public void setAdminid(long adminid) {
 		this.adminid = adminid;
 	}
 
-	public Integer getLoginip() {
+	public String getLoginip() {
 		return loginip;
 	}
 
-	public void setLoginip(Integer loginip) {
+	public void setLoginip(String loginip) {
 		this.loginip = loginip;
 	}
 

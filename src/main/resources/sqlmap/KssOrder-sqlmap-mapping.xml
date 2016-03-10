@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KSS_ORDER">
+	<resultMap type="KssOrderDO" id="KssOrderResult">
+		<id property="id" column="ID" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="ordernum" column="ordernum" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="softid" column="softid" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="adminid" column="adminid" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="keysetid" column="keysetid" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="keycount" column="keycount" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="beginid" column="beginid" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="ip" column="ip" javaType="java.lang.Long" jdbcType="BIGINT" />
+		<result property="addtime" column="addtime" javaType="java.util.Date" jdbcType="DATE" />
+	</resultMap>
+
+	<insert id="insert" parameterType="KssOrderDO">
+		INSERT INTO KSS_ORDER (
+		ordernum,
+		softid,
+		adminid,
+		keysetid,
+		keycount,
+		beginid,
+		ip,
+		addtime)
+		VALUES (
+		#{ordernum},
+		#{softid},
+		#{adminid},
+		#{keysetid},
+		#{keycount},
+		#{beginid},
+		#{ip},
+		#{addtime})
+	</insert>
+	
+	<select id="selectById" parameterType="long" resultMap="KssLogLoginResult">
+		select * from KSS_ORDER WHERE id=#{id}
+	</select>
+
+	<delete id="deleteById" parameterType="long">
+		delete from KSS_ORDER
+		WHERE ID=#{id}
+	</delete>
+	
+	<delete id="deleteByIds" parameterType="java.util.List">
+		delete from KSS_ORDER
+		WHERE ID in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select COUNT(*) from KSS_ORDER
+		<include refid="QueryCondition" />
+	</select>
+
+	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="KssLogLoginResult">
+		SELECT * FROM KSS_ORDER
+		<include refid="QueryCondition" />
+		<include refid="Pagination" />
+	</select>
+
+	<!-- 查询条件 -->
+	<sql id="QueryCondition">
+		<trim prefix="where" prefixOverrides="and|or">
+
+			<if test="ordernum != null ">
+				ordernum = #{ordernum}
+			</if>
+			<if test="softid != null ">
+				and softid = #{softid}
+			</if>
+			<if test="adminid != null ">
+				and adminid = #{adminid}
+			</if>
+			<if test="keysetid != null ">
+				and keysetid = #{keysetid}
+			</if>
+		</trim>
+	</sql>
+
+	<!-- 分页 -->
+	<sql id="Pagination">
+		<if test="startIndex != null and pageSize != null">
+			LIMIT #{startIndex},#{pageSize}
+		</if>
+	</sql>
+</mapper>

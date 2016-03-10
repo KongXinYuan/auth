@@ -42,7 +42,7 @@ public class AdminFacadeImpl implements AdminFacade {
 	private LogLoginManager logLoginManager;
 
 	@Override
-	public void chagePassword(Long adminid, String oldPassword, String newPassword) {
+	public void chagePassword(long adminid, String oldPassword, String newPassword) {
 
 		KssAdminDO kssAdminDO = adminManager.queryById(adminid);
 
@@ -54,11 +54,11 @@ public class AdminFacadeImpl implements AdminFacade {
 	}
 
 	@Override
-	public Map<String, Object> querylogLoginByPage(Long adminid, int limit, int pageIndex) {
+	public Map<String, Object> querylogLoginByPage(long adminid, int limit, int pageIndex) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		List<KssLogLoginDO> list = logLoginManager.queryPage(adminid, limit, pageIndex);
+		List<KssLogLoginDO> list = logLoginManager.queryByPage(adminid, limit, pageIndex);
 
 		map.put("rows", LogLoginDTOConverter.converter(list));
 		map.put("results", logLoginManager.queryCount(adminid));
@@ -67,13 +67,7 @@ public class AdminFacadeImpl implements AdminFacade {
 	}
 
 	@Override
-	public void onLoginSucess(Long adminid, String ip) {
-		adminManager.updateLastLogin(adminid, ip);
-		logLoginManager.create(adminid, ip);
-	}
-
-	@Override
-	public void deleteById(Long id) {
+	public void deleteById(long id) {
 		adminManager.deleteById(id);
 	}
 
@@ -83,7 +77,7 @@ public class AdminFacadeImpl implements AdminFacade {
 	}
 
 	@Override
-	public AdminDTO create(Long parentid, Integer level, String username, String password) {
+	public AdminDTO create(long parentid, long level, String username, String password) {
 
 		adminManager.create(parentid, level, username, password);
 		KssAdminDO kssAdminDO = adminManager.queryByUsername(username);
@@ -91,23 +85,30 @@ public class AdminFacadeImpl implements AdminFacade {
 	}
 
 	@Override
-	public AdminDTO profile(Long adminId) {
+	public AdminDTO profile(long adminId) {
 
 		KssAdminDO kssAdminDO = adminManager.queryById(adminId);
 		return AdminDTOConverter.convert(kssAdminDO);
 	}
 
 	@Override
-	public void resetPassword(Long adminid, String password) {
+	public List<LogLoginDTO> queryLatestLogLogin(long adminid) {
+
+		List<KssLogLoginDO> list = logLoginManager.queryLatestLogLogin(adminid);
+		return LogLoginDTOConverter.converter(list);
+	}
+
+	@Override
+	public void resetPassword(long adminid, String password) {
 		adminManager.updatePassword(adminid, password);
 	}
 
 	@Override
-	public Map<String, Object> queryByPage(int limit, int pageIndex, Long parentid) {
+	public Map<String, Object> queryByPage(long parentid, int limit, int pageIndex) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		List<KssAdminDO> list = adminManager.queryByPage(limit, pageIndex, parentid);
+		List<KssAdminDO> list = adminManager.queryByPage(parentid, limit, pageIndex);
 
 		map.put("rows", AdminDTOConverter.converter(list));
 		map.put("results", adminManager.queryCount(parentid));
@@ -115,7 +116,7 @@ public class AdminFacadeImpl implements AdminFacade {
 	}
 
 	@Override
-	public void updateLock(Long adminId, boolean lock) {
+	public void updateLock(long adminId, boolean lock) {
 		adminManager.updateLock(adminId, lock);
 	}
 

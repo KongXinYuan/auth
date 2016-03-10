@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KSS_SOFT_KEY">
+	<resultMap type="KssSoftKeyDO" id="kssSoftKeyResult">
+		<id property="id" column="ID" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="adminid" column="ADMINID" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result property="prefix" column="PREFIX" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="cdkey" column="CDKEY" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="password" column="PASSWORD" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="addtime" column="ADDTIME" javaType="java.util.Date" jdbcType="DATE" />
+		<result property="ordernum" column="ORDERNUM" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="cday" column="CDAY" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+		<result property="tag" column="TAG" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="lock" column="ISLOCK" javaType="java.lang.Boolean" jdbcType="BOOLEAN" />
+		<result property="usedtime" column="USEDTIME" javaType="java.util.Date" jdbcType="DATE" />
+		<result property="useduser" column="USEDUSER" javaType="java.lang.String" jdbcType="VARCHAR" />
+	</resultMap>
+	
+
+	<insert id="insertWithSeg" parameterType="KssSoftKeyDO">
+		INSERT INTO KSS_SOFT_KEY (
+		adminid,
+		prefix,
+		cdkey,
+		password,
+		addtime,
+		ordernum,
+		cday,
+		tag)
+		VALUES (
+		#{adminid},
+		#{prefix},
+		#{cdkey},
+		#{password},
+		#{addtime},
+		#{ordernum},
+		#{cday},
+		#{tag})
+	</insert>
+	
+	
+	<update id="updateLockWithSeg" parameterType="java.util.Map">
+		UPDATE KSS_SOFT_KEY
+		<set>
+			islock = #{islock}
+		</set>
+		where id=#{id}
+	</update>
+	
+	<update id="updateRechargeWithSeg" parameterType="java.util.Map">
+		UPDATE KSS_SOFT_KEY
+		<set>
+			usedtime = #{usedtime},
+			useduser = #{useduser}
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+
+	<select id="selectByIdWithSeg" parameterType="java.lang.Long" resultMap="kssSoftKeyResult">
+		select * from KSS_SOFT_KEY WHERE id=#{id}
+	</select>
+
+	<delete id="deleteByIdWithSeg" parameterType="java.lang.Long">
+		delete from KSS_SOFT_KEY
+		WHERE
+		ID=#{id}
+	</delete>
+
+	<delete id="deleteByIdsWithSeg" parameterType="java.util.List">
+		delete from KSS_SOFT_KEY
+		WHERE ID in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="selectCountByQueryConditionWithSeg" parameterType="java.util.Map" resultType="java.lang.Long">
+		select COUNT(*) from KSS_SOFT_KEY
+		<include refid="QueryCondition" />
+	</select>
+
+	<select id="selectByQueryConditionWithSeg" parameterType="java.util.Map" resultMap="kssSoftKeyResult">
+		SELECT * FROM KSS_SOFT_KEY
+		<include refid="QueryCondition" />
+		<include refid="Pagination" />
+	</select>
+	
+	
+	<!-- 查询条件 -->
+	<sql id="QueryCondition">
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test="adminid != null">
+				adminid = #{adminid}
+			</if>
+			<if test="prefix != null">
+				and prefix = #{prefix}
+			</if>
+			<if test="cdkey != null">
+				and cdkey = #{cdkey}
+			</if>
+			<if test="password != null">
+				and password = #{password}
+			</if>
+			<if test="ordernum != null">
+				and ordernum = #{ordernum}
+			</if>
+			<if test="useduser != null">
+				and useduser = #{useduser}
+			</if>
+		</trim>
+	</sql>
+	
+	<!-- 分页 -->
+	<sql id="Pagination">
+		<if test="startIndex != null and pageSize != null">
+			LIMIT #{startIndex},#{pageSize}
+		</if>
+	</sql>
+
+</mapper>

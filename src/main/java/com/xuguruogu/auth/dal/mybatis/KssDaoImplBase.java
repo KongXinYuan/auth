@@ -25,39 +25,33 @@ public abstract class KssDaoImplBase<T extends Entity, C extends QueryCondition<
 	}
 
 	@Override
-	public int insert(T entity) {
+	public long insert(T entity) {
 
 		return sqlSessionTemplate.insert(getMybatisStatementName("insert"), entity);
 
 	}
 
-	public int update(T entity) {
-
-		return sqlSessionTemplate.update(getMybatisStatementName("update"), entity);
-
-	}
-
 	@Override
-	public T selectById(Long id) {
+	public T selectById(long id) {
 		return sqlSessionTemplate.selectOne(getMybatisStatementName("selectById"), id);
 	}
 
 	@Override
-	public int deleteById(Long id) {
+	public long deleteById(long id) {
 
 		return sqlSessionTemplate.delete(getMybatisStatementName("deleteById"), id);
 
 	}
 
 	@Override
-	public int deleteByIds(List<Long> ids) {
+	public long deleteByIds(List<Long> ids) {
 
 		return sqlSessionTemplate.delete(getMybatisStatementName("deleteByIds"), ids);
 
 	}
 
 	@Override
-	public int selectCountByQueryCondition(C queryCondition) {
+	public long selectCountByQueryCondition(C queryCondition) {
 
 		return sqlSessionTemplate.selectOne(getMybatisStatementName("selectCountByQueryCondition"),
 				queryCondition.asMap());

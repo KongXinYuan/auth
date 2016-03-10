@@ -8,7 +8,10 @@ package com.xuguruogu.auth.dal.dataobject;
  */
 public class KssSoftDO extends Entity {
 
-	private static final long serialVersionUID = -8464398454249392934L;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -4645237272295270232L;
 
 	/** 软件编号 */
 	private long softcode;
@@ -20,10 +23,10 @@ public class KssSoftDO extends Entity {
 	private String softname;
 
 	/** 锁定标记 */
-	private Boolean islock;
+	private boolean lock;
 
 	/** 校验在线最长间隔时间 */
-	private Integer intervaltime;
+	private long intervaltime;
 
 	/** 公匙 */
 	private String clientpubkey;
@@ -55,19 +58,19 @@ public class KssSoftDO extends Entity {
 		this.softname = softname;
 	}
 
-	public Boolean getIslock() {
-		return islock;
+	public boolean isLock() {
+		return lock;
 	}
 
-	public void setIslock(Boolean islock) {
-		this.islock = islock;
+	public void setLock(boolean lock) {
+		this.lock = lock;
 	}
 
-	public Integer getIntervaltime() {
+	public long getIntervaltime() {
 		return intervaltime;
 	}
 
-	public void setIntervaltime(Integer intervaltime) {
+	public void setIntervaltime(long intervaltime) {
 		this.intervaltime = intervaltime;
 	}
 

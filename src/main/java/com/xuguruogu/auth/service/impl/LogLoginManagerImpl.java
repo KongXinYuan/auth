@@ -27,16 +27,23 @@ public class LogLoginManagerImpl implements LogLoginManager {
 	}
 
 	@Override
-	public List<KssLogLoginDO> queryPage(Long adminid, int limit, int pageIndex) {
+	public List<KssLogLoginDO> queryByPage(Long adminid, int limit, int pageIndex) {
 		KssLogLoginQueryCondition query = new KssLogLoginQueryCondition();
 		query.putAdminid(adminid.intValue()).pagination(pageIndex, limit);
 		return kssLogLoginDao.selectListByQueryCondition(query);
 	}
 
 	@Override
-	public int queryCount(Long adminid) {
+	public long queryCount(Long adminid) {
 		KssLogLoginQueryCondition query = new KssLogLoginQueryCondition();
 		query.putAdminid(adminid.intValue());
 		return kssLogLoginDao.selectCountByQueryCondition(query);
+	}
+
+	@Override
+	public List<KssLogLoginDO> queryLatestLogLogin(long adminid) {
+		KssLogLoginQueryCondition query = new KssLogLoginQueryCondition();
+		query.putAdminid(adminid).pagination(0, 10).desc(true);
+		return kssLogLoginDao.selectListByQueryCondition(query);
 	}
 }

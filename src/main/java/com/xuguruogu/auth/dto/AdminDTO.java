@@ -22,17 +22,18 @@ public class AdminDTO implements Serializable {
 	private long id;
 
 	/** 上级id */
-	private Integer parentid;
+	private long parentid;
 
-	private Integer level;
+	private long level;
 
 	/** 用户名 */
 	private String username;
 
 	/** 锁定 */
-	private Boolean islock;
+	private boolean lock;
 
 	/** 添加时间 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
 	private Date addtime;
 
 	/** 上次登录时间 */
@@ -40,7 +41,7 @@ public class AdminDTO implements Serializable {
 	private Date lastlogintime;
 
 	/** 上次登录ip */
-	private Long lastloginip;
+	private String lastloginip;
 
 	/** 权限列表 */
 	private String powerlist;
@@ -59,19 +60,19 @@ public class AdminDTO implements Serializable {
 		this.id = id;
 	}
 
-	public Integer getParentid() {
+	public long getParentid() {
 		return parentid;
 	}
 
-	public void setParentid(Integer parentid) {
+	public void setParentid(long parentid) {
 		this.parentid = parentid;
 	}
 
-	public Integer getLevel() {
+	public long getLevel() {
 		return level;
 	}
 
-	public void setLevel(Integer level) {
+	public void setLevel(long level) {
 		this.level = level;
 	}
 
@@ -83,12 +84,12 @@ public class AdminDTO implements Serializable {
 		this.username = username;
 	}
 
-	public Boolean getIslock() {
-		return islock;
+	public boolean isLock() {
+		return lock;
 	}
 
-	public void setIslock(Boolean islock) {
-		this.islock = islock;
+	public void setLock(boolean lock) {
+		this.lock = lock;
 	}
 
 	public Date getAddtime() {
@@ -107,11 +108,11 @@ public class AdminDTO implements Serializable {
 		this.lastlogintime = lastlogintime;
 	}
 
-	public Long getLastloginip() {
+	public String getLastloginip() {
 		return lastloginip;
 	}
 
-	public void setLastloginip(Long lastloginip) {
+	public void setLastloginip(String lastloginip) {
 		this.lastloginip = lastloginip;
 	}
 

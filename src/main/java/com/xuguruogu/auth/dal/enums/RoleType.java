@@ -2,7 +2,7 @@ package com.xuguruogu.auth.dal.enums;
 
 public enum RoleType {
 
-	ADMINISTRATOR(0, "ROLE_ADMINISTRATOR", "作者"),
+	OWNER(0, "ROLE_OWNER", "作者"),
 
 	ADMIN(1, "ROLE_ADMIN", "一级代理"),
 

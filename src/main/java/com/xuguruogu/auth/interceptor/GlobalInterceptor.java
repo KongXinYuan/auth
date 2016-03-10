@@ -12,32 +12,32 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 public class GlobalInterceptor extends HandlerInterceptorAdapter {
 
-    private static Logger log = LoggerFactory.getLogger(GlobalInterceptor.class);
+	private static Logger log = LoggerFactory.getLogger(GlobalInterceptor.class);
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                             Object handler) throws Exception {
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception {
 
-        log.info(MessageFormat.format("input url:{0}", request.getRequestURL()));
+		log.info(MessageFormat.format("input url:{0}", request.getRequestURL()));
+		request.getParameterMap();
+		return true;
+	}
 
-        return true;
-    }
+	/**
+	 * This implementation is empty.
+	 */
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+			ModelAndView modelAndView) throws Exception {
 
-    /**
-     * This implementation is empty.
-     */
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response,
-                           Object handler, ModelAndView modelAndView) throws Exception {
+	}
 
-    }
-
-    /**
-     * This implementation is empty.
-     */
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-                                Object handler, Exception ex) throws Exception {
-    }
+	/**
+	 * This implementation is empty.
+	 */
+	@Override
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+			throws Exception {
+	}
 
 }

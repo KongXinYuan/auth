@@ -15,14 +15,17 @@ public interface SoftManager {
 
 	public KssSoftDO queryById(final long softid);
 
-	public void create(String softname, String clientpubkey, String serverprivkey);
+	public KssSoftDO create(String softname, String clientpubkey, String serverprivkey);
 
-	public KssSoftDO selectOne(long softcode);
+	public KssSoftDO selectBySoftcode(long softcode);
+
+	public KssSoftDO selectBySoftname(String softname);
 
 	public List<KssSoftDO> selectAll();
 
-	public int count();
+	public long count();
 
-	public void update(long softid, boolean islock, int intervaltime, String clientpubkey, String serverprivkey);
+	public void update(long softid, boolean islock, long intervaltime, String clientpubkey, String serverprivkey);
 
+	public void deleteById(final long softid);
 }

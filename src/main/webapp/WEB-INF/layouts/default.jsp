@@ -8,25 +8,28 @@
 <html>
 
 <head>
-<title>灵犀后台:<sitemesh:title /></title>
+<title><sitemesh:title /></title>
 
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<meta name="author" content="虚谷若谷,06libenli@163.com" />
+	<meta name="robots" content="none">
+	<meta name="description" content="授权认证系统 powered by kent">
+	<link rel="shortcut icon" href="/favicon.ico" />
+	
 	<link href="${ctx}/static/css/dpl-min.css" rel="stylesheet" type="text/css" />
 	<link href="${ctx}/static/css/bui-min.css" rel="stylesheet" type="text/css" />
-	<link href="${ctx}/static/css/page.css" rel="stylesheet" type="text/css" />
-	<link href="${ctx}/static/css/default.css" rel="stylesheet" type="text/css" />
-	<script src="${ctx}/static/js/jquery-1.8.1.min.js" type="text/javascript"></script>
+	<sitemesh:head />
+</head>
+
+<body>
+	<div class="container" style="padding: 15px 20px 0px 15px;">
+		<sitemesh:body />
+	</div>
+	<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
 	<script src="${ctx}/static/js/bui.js" type="text/javascript"></script>
 	<script src="${ctx}/static/js/config.js" type="text/javascript"></script>
 	<script type="text/javascript">
 		BUI.use('common/page');
 	</script>
-	<sitemesh:head />
-</head>
-
-<body>
-	<div class="container">
-		<sitemesh:body />
-	</div>
 </body>
 </html>

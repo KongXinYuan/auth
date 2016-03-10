@@ -14,27 +14,27 @@ public class KssLogLoginDO extends Entity {
 	private static final long serialVersionUID = 2500557805132606740L;
 
 	/** 管理员id */
-	private Integer adminid;
+	private long adminid;
 
 	/** ip地址 */
-	private Integer loginip;
+	private int loginip;
 
 	/** 登录时间 */
 	private Date logintime;
 
-	public Integer getAdminid() {
+	public long getAdminid() {
 		return adminid;
 	}
 
-	public void setAdminid(Integer adminid) {
+	public void setAdminid(long adminid) {
 		this.adminid = adminid;
 	}
 
-	public Integer getLoginip() {
+	public int getLoginip() {
 		return loginip;
 	}
 
-	public void setLoginip(Integer loginip) {
+	public void setLoginip(int loginip) {
 		this.loginip = loginip;
 	}
 

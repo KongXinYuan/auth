@@ -1,14 +1,12 @@
 package com.xuguruogu.auth.config;
 
-import com.alibaba.appengine.api.cache.CacheService;
-import com.alibaba.appengine.api.cache.CacheServiceFactory;
-
 /**
  * @author benli.lbl 配置
  */
 public class AuthConfigHolder {
 
 	private static final String SOFT_CACHEKEY_PREFIX = "soft";
+	private static final String USER_CACHEKEY_PREFIX = "user";
 	private static final String JOIN = "-";
 
 	/**
@@ -21,10 +19,23 @@ public class AuthConfigHolder {
 		return SOFT_CACHEKEY_PREFIX + JOIN + softCode;
 	}
 
-	public static SoftConfigDO getSoftConfig(long softCode) {
-
-		CacheService cache = CacheServiceFactory.getCacheService();
-		return (SoftConfigDO) cache.get(getSoftCacheKey(softCode));
+	/**
+	 * 获取用户的缓存key
+	 *
+	 * @param softCode
+	 * @return
+	 */
+	public static String getUserCacheKey(long softid, long userid) {
+		return USER_CACHEKEY_PREFIX + JOIN + softid + JOIN + userid;
 	}
 
+	/**
+	 * 获取公共用户的缓存key
+	 *
+	 * @param softCode
+	 * @return
+	 */
+	public static String getPublicUserCacheKey(long softid, long userid, String pccode) {
+		return USER_CACHEKEY_PREFIX + JOIN + softid + JOIN + userid + JOIN + pccode;
+	}
 }

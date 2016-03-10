@@ -1,6 +1,8 @@
 package com.xuguruogu.auth.web.controller;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.xuguruogu.auth.dto.AdminDTO;
+import com.xuguruogu.auth.dto.LogLoginDTO;
 import com.xuguruogu.auth.facade.AdminFacade;
 import com.xuguruogu.auth.security.AdminUserDetails;
 import com.xuguruogu.auth.web.result.SuccessResult;
@@ -24,6 +28,26 @@ public class AdminWebController {
 
 	@Autowired
 	private AdminFacade adminFacade;
+
+	@RequestMapping(value = { "/home" }, method = { RequestMethod.GET })
+	public String home(Model model) {
+
+		AdminUserDetails userDetails = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();// spring security获取上下文
+		long adminid = userDetails.getAdminid();
+
+		AdminDTO admin = adminFacade.profile(adminid);
+		List<LogLoginDTO> list = adminFacade.queryLatestLogLogin(adminid);
+		model.addAttribute("admin", admin);
+		model.addAttribute("loglogin", list);
+
+		if (logger.isInfoEnabled()) {
+			logger.info("visit to home");
+			logger.info(MessageFormat.format("loglogin's number is:{0}", list.size()));
+		}
+
+		return "/admin/home";
+	}
 
 	@RequestMapping(value = { "/detail" }, method = { RequestMethod.GET })
 	public String detail(Model model) {
@@ -59,7 +83,7 @@ public class AdminWebController {
 	@RequestMapping(value = { "/page.json" }, method = { RequestMethod.POST })
 	public void page(int limit, int pageIndex, Long parentid, Model model) {
 
-		model.addAllAttributes(adminFacade.queryByPage(limit, pageIndex, parentid));
+		model.addAllAttributes(adminFacade.queryByPage(parentid, limit, pageIndex));
 	}
 
 	@RequestMapping(value = { "/doEdit.json" }, method = { RequestMethod.POST })

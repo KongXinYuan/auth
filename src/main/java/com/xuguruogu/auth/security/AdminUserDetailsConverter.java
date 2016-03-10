@@ -3,14 +3,12 @@ package com.xuguruogu.auth.security;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.xuguruogu.auth.dal.dataobject.KssAdminDO;
 import com.xuguruogu.auth.dal.enums.RoleType;
-import com.xuguruogu.auth.service.AdminManager;
 import com.xuguruogu.auth.util.AbstractConverter;
 
 /**
@@ -23,13 +21,10 @@ import com.xuguruogu.auth.util.AbstractConverter;
 @Component("adminUserDetailsConverter")
 public class AdminUserDetailsConverter extends AbstractConverter<KssAdminDO, AdminUserDetails> {
 
-	@Autowired
-	private AdminManager adminManager;
-
 	@Override
 	protected AdminUserDetails doConvert(KssAdminDO kssAdminDO) {
 
-		boolean accountNonLocked = !kssAdminDO.getIslock();
+		boolean accountNonLocked = !kssAdminDO.isLock();
 
 		Collection<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
 		Long adminid = kssAdminDO.getId();

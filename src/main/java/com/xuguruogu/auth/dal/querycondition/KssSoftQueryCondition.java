@@ -7,8 +7,15 @@ public class KssSoftQueryCondition extends QueryCondition<KssSoftQueryCondition>
 
 	private static final String softcode = "softcode";
 
+	private static final String softname = "softname";
+
 	public KssSoftQueryCondition putSoftcode(long softcode) {
 		addIfExist(KssSoftQueryCondition.softcode, softcode);
+		return this;
+	}
+
+	public KssSoftQueryCondition putSoftname(String softname) {
+		addIfExist(KssSoftQueryCondition.softname, softname);
 		return this;
 	}
 

@@ -15,8 +15,10 @@ public interface LogLoginManager {
 
 	public void create(Long adminid, String ip);
 
-	public List<KssLogLoginDO> queryPage(Long adminid, int limit, int pageIndex);
+	public List<KssLogLoginDO> queryByPage(Long adminid, int limit, int pageIndex);
 
-	public int queryCount(Long adminid);
+	public long queryCount(Long adminid);
+
+	public List<KssLogLoginDO> queryLatestLogLogin(long adminid);
 
 }

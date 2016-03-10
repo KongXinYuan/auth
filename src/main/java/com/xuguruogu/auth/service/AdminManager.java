@@ -13,24 +13,24 @@ import com.xuguruogu.auth.dal.dataobject.KssAdminDO;
  */
 public interface AdminManager {
 
-	public void create(final Long parentid, Integer level, String username, String password);
+	public void onLoginSucess(long adminid, String ip);
 
-	public KssAdminDO queryById(final Long adminid);
+	public void create(final long parentid, long level, String username, String password);
+
+	public KssAdminDO queryById(final long adminid);
 
 	public KssAdminDO queryByUsername(final String username);
 
-	public void updatePassword(final Long adminid, final String password);
+	public void updatePassword(final long adminid, final String password);
 
-	public void updateLastLogin(final Long adminid, final String ip);
+	public List<KssAdminDO> queryByPage(final long parentid, final int limit, final int pageIndex);
 
-	public List<KssAdminDO> queryByPage(final int limit, final int pageIndex, final Long parentid);
+	public long queryCount(final long parentid);
 
-	public int queryCount(final Long parentid);
-
-	public void deleteById(final Long adminid);
+	public void deleteById(final long adminid);
 
 	public void deleteByIds(final List<Long> adminids);
 
-	public void updateLock(final Long adminid, boolean lock);
+	public void updateLock(final long adminid, boolean lock);
 
 }
