@@ -40,10 +40,4 @@ public class LogLoginManagerImpl implements LogLoginManager {
 		return kssLogLoginDao.selectCountByQueryCondition(query);
 	}
 
-	@Override
-	public List<KssLogLoginDO> queryLatestLogLogin(long adminid) {
-		KssLogLoginQueryCondition query = new KssLogLoginQueryCondition();
-		query.putAdminid(adminid).pagination(0, 10).desc(true);
-		return kssLogLoginDao.selectListByQueryCondition(query);
-	}
 }

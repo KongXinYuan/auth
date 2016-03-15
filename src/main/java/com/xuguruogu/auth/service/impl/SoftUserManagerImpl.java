@@ -74,12 +74,7 @@ public class SoftUserManagerImpl implements SoftUserManager {
 
 		// 查找卡密
 		KssSoftKeyQueryCondition query = new KssSoftKeyQueryCondition();
-		String prefix = cdkey.substring(0, 4);
-		String keystr = cdkey.substring(4, 10);
-		String keypwd = cdkey.substring(10, 32);
-		query.putPrefix(prefix);
-		query.putCdkey(keystr);
-		query.putPassword(keypwd);
+		query.putCdkey(cdkey);
 		KssSoftKeyDO softKey = kssSoftKeyDao.selectOneByQueryCondition(softid, query);
 		if (null == softKey) {
 			throw new KssException("卡密无效");

@@ -2,6 +2,7 @@ package com.xuguruogu.auth.dal.mybatis;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
@@ -38,6 +39,14 @@ public class KssSoftKeyDaoImpl extends KssDaoImplBaseWithSeg<KssSoftKeyDO, KssSo
 		param.put("id", id);
 		param.put("softid", softid);
 		return sqlSessionTemplate.update(this.getMybatisStatementName("updateRechargeWithSeg"), param);
+	}
+
+	@Override
+	public int insertList(long softid, List<KssSoftKeyDO> cdkeys) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("cdkeys", cdkeys);
+		param.put("softid", softid);
+		return sqlSessionTemplate.insert(this.getMybatisStatementName("insertListWithSeg"), param);
 	}
 
 }

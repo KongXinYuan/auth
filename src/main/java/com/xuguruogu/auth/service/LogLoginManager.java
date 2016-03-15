@@ -19,6 +19,4 @@ public interface LogLoginManager {
 
 	public long queryCount(Long adminid);
 
-	public List<KssLogLoginDO> queryLatestLogLogin(long adminid);
-
 }

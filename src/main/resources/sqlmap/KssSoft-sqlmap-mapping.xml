@@ -5,14 +5,14 @@
 
 <mapper namespace="KSS_SOFT">
 	<resultMap type="KssSoftDO" id="kssSoftResult">
-		<id property="id" column="ID" javaType="java.lang.Long" jdbcType="INTEGER" />
-		<result property="softcode" column="SOFTCODE" javaType="java.lang.Long" jdbcType="INTEGER" />
-		<result property="softkey" column="SOFTKEY" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="softname" column="SOFTNAME" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="lock" column="ISLOCK" javaType="java.lang.Boolean" jdbcType="BOOLEAN" />
-		<result property="intervaltime" column="INTERVALTIME" javaType="java.lang.Long" jdbcType="INTEGER" />
-		<result property="clientpubkey" column="CLIENTPUBKEY" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="serverprivkey" column="SERVERPRIVKEY" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<id property="id" column="ID" jdbcType="INTEGER" />
+		<result property="softcode" column="SOFTCODE" jdbcType="INTEGER" />
+		<result property="softkey" column="SOFTKEY" jdbcType="VARCHAR" />
+		<result property="softname" column="SOFTNAME" jdbcType="VARCHAR" />
+		<result property="lock" column="ISLOCK" jdbcType="BOOLEAN" />
+		<result property="intervaltime" column="INTERVALTIME" jdbcType="INTEGER" />
+		<result property="clientpubkey" column="CLIENTPUBKEY" jdbcType="VARCHAR" />
+		<result property="serverprivkey" column="SERVERPRIVKEY" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<insert id="insert" parameterType="KssSoftDO">
@@ -21,16 +21,87 @@
 		softkey,
 		softname,
 		islock,
+		intervaltime,
 		clientpubkey,
 		serverprivkey)
 		VALUES (
 		#{softcode},
 		#{softkey},
 		#{softname},
-		#{islock},
+		#{lock},
+		#{intervaltime},
 		#{clientpubkey},
 		#{serverprivkey})
 	</insert>
+	
+	<update id="dropTableWithSeg" parameterType="java.util.Map">
+		DROP TABLE IF EXISTS `kss_soft_key`,`kss_soft_recharge`,`kss_soft_user`
+	</update>
+	
+	<update id="creatKeyTableWithSeg" parameterType="java.util.Map">
+		CREATE TABLE IF NOT EXISTS `kss_soft_key` (
+			`id` int(10) UNSIGNED NOT NULL,
+			`adminid` smallint(5) UNSIGNED NOT NULL,
+			`keysetid` smallint(5) NOT NULL,
+			`cdkey` char(6) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+			`addtime` int(10) UNSIGNED NOT NULL,
+			`ordernum` char(24) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+			`cday` decimal(8,2) NOT NULL,
+			`tag` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+			`islock` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
+			`usedtime` int(10) UNSIGNED NOT NULL DEFAULT '0',
+			`useduser` varchar(32) NOT NULL DEFAULT ''
+			PRIMARY KEY (`id`),
+			UNIQUE KEY `cdkey` (`cdkey`),
+			KEY `ordernum` (`ordernum`(10)),
+			KEY `tag` (`tag`(10)),
+			KEY `czusername` (`useduser`(10)),
+			KEY `islock` (`islock`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+	</update>
+	
+	<update id="creatRechargeTableWithSeg" parameterType="java.util.Map">
+		CREATE TABLE IF NOT EXISTS `kss_soft_recharge` (
+		  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+		  `addtime` int(10) UNSIGNED NOT NULL,
+		  `username` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+		  `oldcday` decimal(9,2) UNSIGNED NOT NULL,
+		  `newcday` decimal(9,2) UNSIGNED NOT NULL,
+		  `cdkey` varchar(170) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+		  PRIMARY KEY (`id`),
+		  KEY `addtime` (`addtime`),
+		  KEY `username` (`username`(10))
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+	</update>
+	
+	<update id="creatUserTableWithSeg" parameterType="java.util.Map">
+		CREATE TABLE IF NOT EXISTS `kss_soft_user` (
+		  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+		  `adminid` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
+		  `username` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+		  `password` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+		  `cday` decimal(8,2) NOT NULL,
+		  `islock` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
+		  `ispub` tinyint(1) NOT NULL DEFAULT '0',
+		  `linecode` varchar(10) NOT NULL DEFAULT '-',
+		  `pccode` varchar(128) NOT NULL DEFAULT '-',
+		  `addtime` int(10) UNSIGNED NOT NULL DEFAULT '0',
+		  `starttime` int(10) UNSIGNED NOT NULL DEFAULT '0',
+		  `endtime` int(10) UNSIGNED NOT NULL DEFAULT '0',
+		  `lastlogintime` int(10) UNSIGNED NOT NULL DEFAULT '0',
+		  `lastloginip` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
+		  `activetimes` int(10) UNSIGNED NOT NULL DEFAULT '0',
+		  `locktimes` int(10) UNSIGNED NOT NULL DEFAULT '0',
+		  `lockendtime` int(10) UNSIGNED NOT NULL DEFAULT '0',
+		  `rechargetimes` int(10) UNSIGNED NOT NULL DEFAULT '0',
+		  PRIMARY KEY (`id`),
+		  KEY `username` (`username`(10)),
+		  KEY `managerid` (`adminid`),
+		  KEY `lasttime` (`lastlogintime`),
+		  KEY `islock` (`islock`),
+		  KEY `endtime` (`endtime`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+	</update>
 	
 	<update id="updateSoftcode" parameterType="java.util.Map">
 		UPDATE KSS_SOFT
@@ -44,7 +115,6 @@
 	<update id="update" parameterType="java.util.Map">
 		UPDATE KSS_SOFT
 		<set>
-			islock = #{islock},
 			intervaltime = #{intervaltime},
 			clientpubkey = #{clientpubkey},
 			serverprivkey = #{serverprivkey}
@@ -80,7 +150,7 @@
 		</foreach>
 	</delete>
 
-	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="java.lang.Integer">
+	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
 		select COUNT(*) from KSS_SOFT
 		<include refid="QueryCondition" />
 	</select>

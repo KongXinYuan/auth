@@ -24,29 +24,19 @@
 		INSERT INTO KSS_ADMIN (
 		parentid,
 		level,
-		isdel,
 		username,
 		password,
-		islock,
 		addtime,
 		lastlogintime,
-		lastloginip,
-		powerlist,
-		money,
-		exmoney)
+		money)
 		VALUES (
 		#{parentid},
 		#{level},
-		#{isdel},
 		#{username},
 		#{password},
-		#{islock},
 		#{addtime},
 		#{lastlogintime},
-		#{lastloginip},
-		#{powerlist},
-		#{money},
-		#{exmoney})
+		#{money})
 	</insert>
 
 	<update id="updatePassword" parameterType="java.util.Map">
@@ -95,24 +85,29 @@
 
 	<select id="selectById" parameterType="long" resultMap="kssAdminResult">
 		select
-		* from KSS_ADMIN WHERE id=#{id}
+		* from KSS_ADMIN WHERE id=#{id} and isdel=0
 	</select>
 
 	<delete id="deleteById" parameterType="long">
-		delete from KSS_ADMIN
-		WHERE
-		ID=#{id}
+		update KSS_ADMIN
+		<set>
+			isdel = 1
+		</set>
+		WHERE ID=#{id}
 	</delete>
 
-	<delete id="deleteByIds" parameterType="java.util.List">
-		delete from KSS_ADMIN
+	<update id="deleteByIds" parameterType="java.util.List">
+		update KSS_ADMIN
+		<set>
+			isdel = 1
+		</set>
 		WHERE ID in
 		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
-	</delete>
+	</update>
 
-	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="java.lang.Integer">
+	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
 		select COUNT(*) from KSS_ADMIN
 		<include refid="QueryCondition" />
 	</select>
@@ -128,11 +123,21 @@
 	<sql id="QueryCondition">
 		<trim prefix="where" prefixOverrides="and|or">
 			<if test="parentid != null">
-				PARENTID = #{parentid}
+				and PARENTID = #{parentid}
+			</if>
+			<if test="adminid != null">
+				and adminid = #{adminid}
 			</if>
 			<if test="username != null">
 				and USERNAME = #{username}
 			</if>
+			<if test="ids != null">
+				and ID in
+				<foreach collection="list" item="ids" index="index" open="(" close=")" separator=",">
+					#{ids}
+				</foreach>
+			</if>
+			 	and isdel=0
 		</trim>
 	</sql>
 

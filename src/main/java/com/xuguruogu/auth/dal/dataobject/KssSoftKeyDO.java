@@ -14,9 +14,8 @@ public class KssSoftKeyDO extends EntityWithSeg {
 	private static final long serialVersionUID = -8464398454249392934L;
 
 	private long adminid;
-	private String prefix;
+	private long keysetid;
 	private String cdkey;
-	private String password;
 	private Date addtime;
 	private String ordernum;
 	private BigDecimal cday;
@@ -33,12 +32,12 @@ public class KssSoftKeyDO extends EntityWithSeg {
 		this.adminid = adminid;
 	}
 
-	public String getPrefix() {
-		return prefix;
+	public long getKeysetid() {
+		return keysetid;
 	}
 
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
+	public void setKeysetid(long keysetid) {
+		this.keysetid = keysetid;
 	}
 
 	public String getCdkey() {
@@ -47,14 +46,6 @@ public class KssSoftKeyDO extends EntityWithSeg {
 
 	public void setCdkey(String cdkey) {
 		this.cdkey = cdkey;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public Date getAddtime() {

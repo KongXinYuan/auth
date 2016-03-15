@@ -7,60 +7,69 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 public abstract class QueryCondition<Q extends QueryCondition<?>> implements Serializable {
-    /**  */
-    private static final long     serialVersionUID = -8241459673022299671L;
+	/**  */
+	private static final long serialVersionUID = -8241459673022299671L;
 
-    private static final String   KEY_PAGINDEX     = "startIndex";
-    private static final String   KEY_PAGESIZE     = "pageSize";
+	private static final String KEY_PAGINDEX = "startIndex";
+	private static final String KEY_PAGESIZE = "pageSize";
 
-    protected Map<String, Object> params           = new HashMap<String, Object>();
+	protected Map<String, Object> params = new HashMap<String, Object>();
 
-    private int                   pageNo;
+	private int pageNo;
 
-    private int                   pageSize;
+	private int pageSize;
 
-    @SuppressWarnings("unchecked")
-    public final Q pagination(int pageNo, int pageSize) {
+	@SuppressWarnings("unchecked")
+	public final Q pagination(Integer pageNo, Integer pageSize) {
 
-        if (pageNo >= 0 && pageSize > 0) {
-            int startIndex = pageNo * pageSize;
+		if (null == pageNo || null == pageSize) {
+			pageNo = 1;
+			pageSize = 20;
+		}
 
-            addIfExist(KEY_PAGINDEX, startIndex);
-            addIfExist(KEY_PAGESIZE, pageSize);
+		if (pageSize > 200) {
+			pageSize = 200;
+		}
 
-            this.pageNo = pageNo;
-            this.pageSize = pageSize;
-        }
-        return (Q) this;
-    }
+		if (pageNo > 0 && pageSize > 0) {
+			int startIndex = (pageNo - 1) * pageSize;
 
-    public final Q nextPage() {
+			addIfExist(KEY_PAGINDEX, startIndex);
+			addIfExist(KEY_PAGESIZE, pageSize);
 
-        return pagination(pageNo + 1, pageSize);
-    }
+			this.pageNo = pageNo;
+			this.pageSize = pageSize;
+		}
+		return (Q) this;
+	}
 
-    protected void addIfNutBlank(String key, String value) {
+	public final Q nextPage() {
 
-        if (StringUtils.isNoneBlank(value)) {
-            params.put(key, value);
-        }
-    }
+		return pagination(pageNo + 1, pageSize);
+	}
 
-    protected <P extends Object> void addIfExist(String key, P value) {
+	protected void addIfNutBlank(String key, String value) {
 
-        if (null != value) {
-            params.put(key, value);
-        }
-    }
+		if (StringUtils.isNoneBlank(value)) {
+			params.put(key, value);
+		}
+	}
 
-    public Map<String, Object> asMap() {
-        return params;
-    }
+	protected <P extends Object> void addIfExist(String key, P value) {
 
-    @SuppressWarnings("unchecked")
-    public Q reset() {
-        params.clear();
-        return (Q) this;
-    }
+		if (null != value) {
+			params.put(key, value);
+		}
+	}
+
+	public Map<String, Object> asMap() {
+		return params;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Q reset() {
+		params.clear();
+		return (Q) this;
+	}
 
 }

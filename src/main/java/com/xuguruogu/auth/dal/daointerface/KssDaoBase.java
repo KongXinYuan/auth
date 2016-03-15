@@ -63,4 +63,12 @@ public interface KssDaoBase<T extends Entity, C extends QueryCondition<?>> {
 	 * @return
 	 */
 	public T selectOneByQueryCondition(C queryCondition);
+
+	/**
+	 * 删除
+	 * 
+	 * @param queryCondition
+	 * @return
+	 */
+	public long deleteByQueryCondition(C queryCondition);
 }

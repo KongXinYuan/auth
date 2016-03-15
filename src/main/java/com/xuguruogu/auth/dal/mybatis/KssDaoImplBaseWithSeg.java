@@ -74,9 +74,10 @@ public abstract class KssDaoImplBaseWithSeg<T extends EntityWithSeg, C extends Q
 
 	@Override
 	public List<T> selectListByQueryCondition(long softid, C queryCondition) {
+		Map<String, Object> param = queryCondition.asMap();
+		param.put("softid", softid);
 
-		List<T> tlist = sqlSessionTemplate.selectList(getMybatisStatementName("selectByQueryConditionWithSeg"),
-				queryCondition.asMap().put("softid", softid));
+		List<T> tlist = sqlSessionTemplate.selectList(getMybatisStatementName("selectByQueryConditionWithSeg"), param);
 		for (T t : tlist) {
 			t.setSoftid(softid);
 		}
@@ -90,6 +91,12 @@ public abstract class KssDaoImplBaseWithSeg<T extends EntityWithSeg, C extends Q
 				queryCondition.asMap().put("softid", softid));
 		t.setSoftid(softid);
 		return t;
+
+	}
+
+	public long deleteByQueryCondition(C queryCondition) {
+
+		return sqlSessionTemplate.delete(getMybatisStatementName("selectByQueryCondition"), queryCondition.asMap());
 
 	}
 

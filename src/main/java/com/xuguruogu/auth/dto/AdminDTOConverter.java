@@ -3,6 +3,7 @@ package com.xuguruogu.auth.dto;
 import org.springframework.stereotype.Component;
 
 import com.xuguruogu.auth.dal.dataobject.KssAdminDO;
+import com.xuguruogu.auth.dal.enums.RoleType;
 import com.xuguruogu.auth.util.AbstractConverter;
 import com.xuguruogu.auth.util.IPv4Util;
 
@@ -23,7 +24,16 @@ public class AdminDTOConverter extends AbstractConverter<KssAdminDO, AdminDTO> {
 
 		dto.setId(kssAdminDO.getId());
 		dto.setParentid(kssAdminDO.getParentid());
-		dto.setLevel(kssAdminDO.getLevel());
+		for (RoleType role : RoleType.values()) {
+			if (role.getLevel() == kssAdminDO.getLevel()) {
+				dto.setLevel(role.getDesc());
+				break;
+			}
+		}
+		if (null == dto.getLevel()) {
+			dto.setLevel("未知");
+		}
+
 		dto.setUsername(kssAdminDO.getUsername());
 		dto.setLock(kssAdminDO.isLock());
 		dto.setAddtime(kssAdminDO.getAddtime());

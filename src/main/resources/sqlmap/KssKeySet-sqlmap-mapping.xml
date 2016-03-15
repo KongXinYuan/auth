@@ -16,16 +16,14 @@
 	</resultMap>
 
 	<insert id="insert" parameterType="KssKeySetDO">
-		INSERT INTO KSS_KEY_SET (
+		INSERT INTO KSS_KEYSET (
 		softid,
-		islock,
 		keyname,
 		cday,
 		prefix,
 		retailprice)
 		VALUES (
 		#{softid},
-		#{islock},
 		#{keyname},
 		#{cday},
 		#{prefix},
@@ -33,48 +31,53 @@
 	</insert>
 	
 	<update id="update" parameterType="java.util.Map">
-		UPDATE KSS_SOFT
+		UPDATE KSS_KEYSET
 		<set>
-			keyname = #{keyname},
+			cday = #{cday},
 			retailprice = #{retailprice}
 		</set>
 		where id=#{id}
 	</update>
 	
 	<update id="updateLock" parameterType="java.util.Map">
-		UPDATE KSS_KEY_SET
+		UPDATE KSS_KEYSET
 		<set>
 			islock = #{islock}
 		</set>
 		where id=#{id}
 	</update>
 	
-	<select id="selectById" parameterType="int" resultMap="kssSoftResult">
+	<select id="selectById" parameterType="int" resultMap="KssKeySetResult">
 		select
-		* from KSS_KEY_SET WHERE id=#{id}
+		* from KSS_KEYSET WHERE id=#{id}
 	</select>
 
 	<delete id="deleteById" parameterType="int">
-		delete from KSS_KEY_SET
+		delete from KSS_KEYSET
 		WHERE
 		ID=#{id}
 	</delete>
 
 	<delete id="deleteByIds" parameterType="java.util.List">
-		delete from KSS_KEY_SET
+		delete from KSS_KEYSET
 		WHERE ID in
 		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
 	</delete>
+	
+	<delete id="deleteByQueryCondition" parameterType="java.util.Map">
+		delete from KSS_KEYSET
+		<include refid="QueryCondition" />
+	</delete>
 
-	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="java.lang.Integer">
-		select COUNT(*) from KSS_KEY_SET
+	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
+		select COUNT(*) from KSS_KEYSET
 		<include refid="QueryCondition" />
 	</select>
 
-	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="kssSoftResult">
-		SELECT * FROM KSS_KEY_SET
+	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="KssKeySetResult">
+		SELECT * FROM KSS_KEYSET
 		<include refid="QueryCondition" />
 		<include refid="Pagination" />
 	</select>
@@ -83,7 +86,7 @@
 	<!-- 查询条件 -->
 	<sql id="QueryCondition">
 		<trim prefix="where" prefixOverrides="and|or">
-			<if test="softcode != null">
+			<if test="softid != null">
 				softid = #{softid}
 			</if>
 			<if test="keyname != null">

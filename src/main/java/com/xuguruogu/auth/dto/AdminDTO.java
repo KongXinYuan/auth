@@ -24,7 +24,7 @@ public class AdminDTO implements Serializable {
 	/** 上级id */
 	private long parentid;
 
-	private long level;
+	private String level;
 
 	/** 用户名 */
 	private String username;
@@ -68,11 +68,11 @@ public class AdminDTO implements Serializable {
 		this.parentid = parentid;
 	}
 
-	public long getLevel() {
+	public String getLevel() {
 		return level;
 	}
 
-	public void setLevel(long level) {
+	public void setLevel(String level) {
 		this.level = level;
 	}
 

@@ -71,24 +71,23 @@ public class TableSegInterceptor implements Interceptor {
 		}
 
 		// 获取参数softid
-		String softid = (String) metaStatementHandler.getValue("delegate.boundSql.parameterObject.softid");
-		if (null == softid || softid.isEmpty()) {
+		Long softid = (Long) metaStatementHandler.getValue("delegate.boundSql.parameterObject.softid");
+		if (null == softid) {
 			throw new SQLException("分表操作未找到参数:softid");
 		}
 
 		// sql语句
 		String originalSql = (String) metaStatementHandler.getValue("delegate.boundSql.sql");
-		if (null == originalSql || !Pattern
-				.compile("(.*KSS_SOFT_KEY.*|.*KSS_SOFT_USER.*|.*KSS_SOFT_RECHARGE.*)", Pattern.CASE_INSENSITIVE)
-				.matcher(originalSql).matches()) {
-			throw new SQLException("分表操作未找到表名:softid");
 
+		if (null == originalSql || !Pattern.compile("(.*KSS_SOFT_KEY.*|.*KSS_SOFT_USER.*|.*KSS_SOFT_RECHARGE.*)",
+				Pattern.CASE_INSENSITIVE | Pattern.DOTALL).matcher(originalSql).matches()) {
+			throw new SQLException("分表操作错误:没有发现(.*KSS_SOFT_KEY.*|.*KSS_SOFT_USER.*|.*KSS_SOFT_RECHARGE.*)");
 		}
 
 		// 置换
-		String newSql = originalSql.replaceFirst("(?i)KSS_SOFT_KEY", "KSS_SOFT_KEY_" + softid)
-				.replaceFirst("(?i)KSS_SOFT_USER", "KSS_SOFT_USER_" + softid)
-				.replaceFirst("(?i)KSS_SOFT_RECHARGE", "KSS_SOFT_RECHARGE_" + softid);
+		String newSql = originalSql.replaceAll("(?i)kss_soft_key", "kss_soft_key_" + softid)
+				.replaceAll("(?i)kss_soft_user", "kss_soft_user_" + softid)
+				.replaceAll("(?i)kss_soft_recharge", "kss_soft_recharge_" + softid);
 
 		if (logger.isInfoEnabled()) {
 			logger.info("\noriginalSql:" + originalSql + "\nnewSql:" + newSql);

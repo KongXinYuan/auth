@@ -15,12 +15,12 @@ public class KssOrderDO extends Entity {
 	 */
 	private static final long serialVersionUID = -5979181482797869979L;
 	private String ordernum;
+	private boolean done;
 	private long softid;
 	private long adminid;
 	private long keysetid;
 	private long keycount;
 	private long beginid;
-	private long ip;
 	private Date addtime;
 
 	public String getOrdernum() {
@@ -29,6 +29,14 @@ public class KssOrderDO extends Entity {
 
 	public void setOrdernum(String ordernum) {
 		this.ordernum = ordernum;
+	}
+
+	public boolean isDone() {
+		return done;
+	}
+
+	public void setDone(boolean done) {
+		this.done = done;
 	}
 
 	public long getSoftid() {
@@ -69,14 +77,6 @@ public class KssOrderDO extends Entity {
 
 	public void setBeginid(long beginid) {
 		this.beginid = beginid;
-	}
-
-	public long getIp() {
-		return ip;
-	}
-
-	public void setIp(long ip) {
-		this.ip = ip;
 	}
 
 	public Date getAddtime() {

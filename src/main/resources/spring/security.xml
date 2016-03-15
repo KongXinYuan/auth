@@ -16,6 +16,7 @@
 			<frame-options disabled="true" />
 		</headers>
 		<!-- 关闭后缀为.json的CSRF防御 -->
+		<remember-me />
 		<csrf request-matcher-ref="apiCsrfSecurityRequestMatcher" />
 		<!-- 允许URL=login -->
 		<intercept-url pattern="/login" access="permitAll" />

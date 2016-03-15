@@ -188,7 +188,7 @@ public class RSAUtils {
 	 */
 	public static String getPrivateKey(Map<String, Object> keyMap) throws Exception {
 		Key key = (Key) keyMap.get(PRIVATE_KEY);
-		return Base64.encodeBase64URLSafeString(key.getEncoded());
+		return Base64.encodeBase64String(key.getEncoded());
 	}
 
 	/**
@@ -196,7 +196,7 @@ public class RSAUtils {
 	 */
 	public static String getPublicKey(Map<String, Object> keyMap) throws Exception {
 		Key key = (Key) keyMap.get(PUBLIC_KEY);
-		return Base64.encodeBase64URLSafeString(key.getEncoded());
+		return Base64.encodeBase64String(key.getEncoded());
 	}
 
 }

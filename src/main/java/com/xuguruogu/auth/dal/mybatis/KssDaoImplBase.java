@@ -72,4 +72,11 @@ public abstract class KssDaoImplBase<T extends Entity, C extends QueryCondition<
 
 	}
 
+	@Override
+	public long deleteByQueryCondition(C queryCondition) {
+
+		return sqlSessionTemplate.delete(getMybatisStatementName("selectByQueryCondition"), queryCondition.asMap());
+
+	}
+
 }

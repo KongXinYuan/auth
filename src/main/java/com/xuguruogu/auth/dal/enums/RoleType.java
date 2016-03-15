@@ -9,7 +9,7 @@ public enum RoleType {
 	SELLER(2, "ROLE_SELLER", "代理");
 
 	/** 级别 */
-	private final Integer level;
+	private final long level;
 
 	/** 码值 */
 	private final String code;
@@ -17,13 +17,13 @@ public enum RoleType {
 	/** 描述 */
 	private final String desc;
 
-	private RoleType(Integer level, String code, String desc) {
+	private RoleType(long level, String code, String desc) {
 		this.level = level;
 		this.code = code;
 		this.desc = desc;
 	}
 
-	public Integer getLevel() {
+	public long getLevel() {
 		return level;
 	}
 

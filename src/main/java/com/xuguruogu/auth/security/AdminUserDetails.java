@@ -18,19 +18,28 @@ public class AdminUserDetails extends User {
 	private static final long serialVersionUID = -7899476908216077110L;
 
 	/** id */
-	private Long adminid;
+	private long adminid;
+	private long level;
 
 	public AdminUserDetails(String username, String password, boolean accountNonLocked,
 			Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, true, true, true, accountNonLocked, authorities);
 	}
 
-	public Long getAdminid() {
+	public long getAdminid() {
 		return adminid;
 	}
 
-	public void setAdminid(Long adminid) {
+	public void setAdminid(long adminid) {
 		this.adminid = adminid;
+	}
+
+	public long getLevel() {
+		return level;
+	}
+
+	public void setLevel(long level) {
+		this.level = level;
 	}
 
 }

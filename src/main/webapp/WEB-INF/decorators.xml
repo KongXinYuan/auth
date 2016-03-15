@@ -2,15 +2,14 @@
 <decorators defaultdir="/WEB-INF/layouts/">
 	<excludes>
 		<pattern>*.json</pattern>
+		<pattern>*.form</pattern>
     	<pattern>/static/*</pattern>
 		<pattern>favicon.ico</pattern>
+		<pattern>/login*</pattern>
 	</excludes>
 	
 	<decorator name="default" page="default.jsp">
-		<pattern>/home/*</pattern>
-		<pattern>/admin/*</pattern>
-		<pattern>/user/*</pattern>
-		<pattern>/error/*</pattern>
+		<pattern>/*</pattern>
 	</decorator>
 	
 </decorators>

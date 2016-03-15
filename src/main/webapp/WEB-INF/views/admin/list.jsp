@@ -2,223 +2,200 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 
 <html>
 <head>
-<title>list</title>
+<style type="text/css">
+    #addform {
+        max-width: 300px;
+		margin: auto;
+    }
+    
+    .modal-dialog{
+        max-width: 420px;
+    }
+    .pagination{
+    	float: right;
+    }
+</style>
 </head>
 <body>
-	<div class="row">
-		<form:form id="searchForm" class="form-horizontal span24">
-			<div class="row">
-				<div class="control-group span8">
-					<label class="control-label">用户名：</label>
-					<div class="controls">
-						<input type="text" class="control-text" name="username">
-					</div>
-				</div>
-				<sec:authorize access="hasRole('OWNER')">
-					<div class="control-group span8">
-						<label class="control-label">总代理：</label>
-						<div class="controls">
-							<input type="text" class="control-text" name="parentusername">
-						</div>
-					</div>
-				</sec:authorize>
-				<div class="span3 offset2">
-					<button type="button" id="btnSearch" class="button button-primary">搜索</button>
-				</div>
-			</div>
-		</form:form>
+	<div class="form-inline">
+		<button class="btn btn-default" type="button" data-toggle="modal" data-target="#addModal"><span class="glyphicon glyphicon-plus"></span>添加</button>
+		<button class="btn btn-default" type="button" data-toggle="modal" data-target="#delselModal"><span class="glyphicon glyphicon-minus"></span>删除</button>
 	</div>
-	<div class="search-grid-container">
-		<div id="grid"></div>
+	<div class="table-responsive">
+		<table class="table table-striped table-hover" id="admintable">
+			<thead>
+				<tr>
+					<th><input type="checkbox" /></th>
+					<th>id</th>
+					<th>级别</th>
+					<th>用户名</th>
+					<th>上级账号</th>
+					<th>创建时间</th>
+					<th>上次登录时间</th>
+					<th>上次登录ip</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${results}" var="admin">
+					<tr>
+						<td><input type="checkbox" /></td>
+						<td>${admin.id}</td>
+						<td>${admin.level}</td>
+						<td>${admin.username}</td>
+						<td>${admin.parentid}</td>
+						<td><fmt:formatDate value="${admin.addtime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+						<td><fmt:formatDate value="${admin.lastlogintime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+						<td>${admin.lastloginip}</td>
+						<td>
+							 <c:choose>
+							 <c:when test="${admin.lock}">
+							 	<a data-action="lock" data-toggle="modal" href="#" title="解锁"><span class="glyphicon glyphicon-ok-circle" tabindex="0" role="button" data-trigger="focus"></span></a>
+							 </c:when>
+							 <c:otherwise>
+							 	<a data-action="lock" data-toggle="modal" href="#" title="锁定"><span class="glyphicon glyphicon-ban-circle" tabindex="0" role="button" data-trigger="focus"></span></a>
+							 </c:otherwise>
+							 </c:choose>
+							 <a data-action="del" data-toggle="modal" data-target="#delselModal" href="#" title="删除"><span class="glyphicon glyphicon-remove" tabindex="0" role="button" data-trigger="focus"></span></a>
+							 <a data-action="edit" data-toggle="modal" data-target="#editModal" href="#" title="编辑"><span class="glyphicon glyphicon-edit" tabindex="0" role="button" data-trigger="focus"></span></a>
+						</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+		<ul id="pagination" class="pagination"></ul>
 	</div>
 
-	<div id="contentAdd" class="hide">
-		<form id="J_Form" class="form-horizontal">
-			<div class="row">
-				<div class="control-group span8">
-					<label class="control-label">用户名</label>
-					<div class="controls">
-						<input name="username" type="text" data-rules="{required:true}"
-							class="input-normal control-text">
-					</div>
+	<div class="modal fade" id="delselModal" tabindex="-1" role="dialog" aria-labelledby="delselModalLabel">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="delselModalLabel">删除</h4>
 				</div>
-				<div class="control-group span8">
-					<label class="control-label">级别</label>
-					<div class="controls">
-						<select name="level" class="input-normal" data-rules="{required:true}">
-							<sec:authorize access="hasRole('OWNER')">
-									<option value="1" selected="selected">总代理</option>
-									<option value="2">代理</option>
-							</sec:authorize>
-							<sec:authorize access="hasRole('ADMIN')">
-									<option value="2" selected="selected">代理</option>
-							</sec:authorize>
-						</select>
-					</div>
+				<div class="modal-body">
+					<p id="delcontent">确认删除这一行么</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-primary" data-action="delsel">删除</button>
 				</div>
 			</div>
-			<div class="row">
-				<div class="control-group span8">
-					<label class="control-label">密码</label>
-					<div class="controls">
-						<input id="password" name="password" type="password" data-rules="{required:true}"
-							class="input-normal control-text">
-					</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="addModalLabel">添加</h4>
+				</div>
+				<div class="modal-body">
+					<form:form class="form-horizontal" id="addform">
+			        	<div class="form-group">
+							<label for="inputusername" class="form-label sr-only">用户名</label>
+							<input type="text" id="inputusername" name="username" class="form-control" placeholder="用户名">
+						</div>
+						<div class="form-group">
+							<label for="inputpassword" class="form-label sr-only">密码</label>
+							<input type="password" id="inputpassword" name="password" class="form-control" placeholder="密码">
+						</div>
+						<div class="form-group">
+							<label for="inputpasswordconfirm" class="form-label sr-only">确认密码</label>
+							<input type="password" id="inputpasswordconfirm" name="confirmpassword" class="form-control" placeholder="确认密码">
+						</div>
+			        	<div class="form-group">
+							<label for="inputlevel" class="form-label sr-only">级别</label>
+							<div>
+							    <select class="form-control" id="inputlevel" name="level">
+							        <option value="1">总代理</option>
+							        <option value="2">代理</option>
+							    </select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="inputmoney" class="form-label sr-only">余额</label>
+							<input type="text" id="inputmoney" name="money" class="form-control" placeholder="当前余额" value=0>
+						</div>
+					</form:form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" tabindex="0" role="button" data-trigger="focus">取消</button>
+					<button type="button" class="btn btn-primary" data-action="add" tabindex="0" role="button" data-trigger="focus">添加</button>
 				</div>
 			</div>
-			<div class="row">
-				<div class="control-group span8">
-					<label class="control-label">确认密码</label>
-					<div class="controls">
-						<input type="password" data-rules="{required:true,equalTo:'#password'}"
-							class="input-normal control-text">
-					</div>
-				</div>
-			</div>
-		</form>
+		</div>
 	</div>
 	
-	<div id="contentEdit" class="hide">
-		<form id="J_Form" class="form-horizontal">
-			<div class="row">
-				<div class="control-group span8">
-					<label class="control-label">用户名</label>
-					<div class="controls">
-						<input name="username" type="text" readonly="readonly"
-							class="input-normal control-text" >
-					</div>
+	
+	<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="editModalLabel">编辑</h4>
+				</div>
+				<div class="modal-body">
+					<form:form class="form-horizontal" id="editform">
+			        	<div class="form-group">
+							<label for="inputusername" class="form-label sr-only">用户名</label>
+							<input type="text" id="inputusername" name="username" class="form-control" placeholder="用户名">
+						</div>
+						<div class="form-group">
+							<label for="inputpassword" class="form-label sr-only">密码</label>
+							<input type="password" id="inputpassword" name="password" class="form-control" placeholder="密码">
+						</div>
+			        	<div class="form-group">
+							<label for="inputlevel" class="form-label sr-only">级别</label>
+							<div>
+							    <select class="form-control" id="inputlevel" name="level">
+							        <option value="1">总代理</option>
+							        <option value="2">代理</option>
+							    </select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="inputmoney" class="form-label sr-only">余额</label>
+							<input type="text" id="inputmoney" name="money" class="form-control" placeholder="当前余额" value=0>
+						</div>
+					</form:form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" tabindex="0" role="button" data-trigger="focus">取消</button>
+					<button type="button" class="btn btn-primary" data-action="add" tabindex="0" role="button" data-trigger="focus">确定</button>
 				</div>
 			</div>
-
-			<div class="control-group span8">
-				<label class="control-label">状态</label>
-				<div class="controls">
-					<select name="lock"
-						class="input-normal">
-						<option value="">请选择</option>
-						<option value="0">激活</option>
-						<option value="1">禁用</option>
-					</select>
-				</div>
-			</div>
-		</form>
+		</div>
 	</div>
 
-
-<script type="text/javascript">
-  BUI.use('common/search',function (Search) {
-    
-    var editing = new BUI.Grid.Plugins.DialogEditing({
-        contentId : 'contentEdit',
-        autoSave : true
-      }),
-      
-      adding = new BUI.Grid.Plugins.DialogEditing({
-          contentId : 'contentAdd',
-          autoSave : true
-        }),
-        
-      columns = [
-          {title:'id',dataIndex:'id',width:80,renderer:function(v){
-            return Search.createLink({
-              id : 'detail' + v,
-              title : '管理员详情',
-              text : v,
-              href : '${ctx}/admin/detail/'+v
-            });
-          }},
-          {title:'创建时间',dataIndex:'gmtCreated',width:100},
-          {title:'上次登录时间',dataIndex:'gmtLastLogin',width:100},
-          {title:'用户名',dataIndex:'username',width:100},
-          {title:'昵称',dataIndex:'nickname',width:100},
-          {title:'手机',dataIndex:'tel',width:100},
-          {title:'Email',dataIndex:'email',width:100},
-          {title:'角色',dataIndex:'role',width:100},
-          {title:'状态',dataIndex:'status',width:100},
-          {title:'操作',dataIndex:'',width:200,renderer : function(value,obj){
-            var editStr = '<span class="grid-command btn-edit" title="编辑管理员信息">编辑</span>',
-              delStr = '<span class="grid-command btn-del" title="删除学生信息">删除</span>';//页面操作不需要使用Search.createLink
-            return editStr + delStr;
-          }}
-        ],
-      store = Search.createStore('${ctx}/admin/page.json',{
-        proxy : {
-          save : { //也可以是一个字符串，那么增删改，都会往那么路径提交数据，同时附加参数saveType
-            addUrl : '${ctx}/admin/doAdd.json',
-            updateUrl : '${ctx}/admin/doEdit.json',
-            removeUrl : '${ctx}/admin/doDel.json'
-          },
-          method : 'POST'
-        },
-        autoSync : true //保存数据后，自动更新
-      }),
-      gridCfg = Search.createGridCfg(columns,{
-        tbar : {
-          items : [
-            {text : '<i class="icon-plus"></i>新建',btnCls : 'button button-small',handler:addFunction},
-            {text : '<i class="icon-remove"></i>删除',btnCls : 'button button-small',handler : delFunction}
-          ]
-        },
-        plugins : [editing,adding,BUI.Grid.Plugins.CheckSelection,BUI.Grid.Plugins.AutoFit] // 插件形式引入多选表格
-      });
-
-    var  search = new Search({
-        store : store,
-        gridCfg : gridCfg
-      }),
-      grid = search.get('grid');
-
-    //增加操作
-    function addFunction(){
-    	adding.add({});
-    }
-
-    //删除操作
-    function delFunction(){
-      var selections = grid.getSelection();
-      delItems(selections);
-    }
-
-    function delItems(items){
-      var ids = [];
-      BUI.each(items,function(item){
-        ids.push(item.id);
-      });
-
-      if(ids.length){
-        BUI.Message.Confirm('确认要删除选中的记录么？',function(){
-          store.save('remove',{ids : ids});
-        },'question');
-      }
-    }
-
-    //监听事件
-    grid.on('cellclick',function(ev){
-      var sender = $(ev.domTarget); //点击的Dom
-      if(sender.hasClass('btn-del')){
-        //删除一条记录
-        var record = ev.record;
-        delItems([record]);
-      }else if(sender.hasClass('btn-edit')){
-          //编辑一条记录
-          var record = ev.record;
-          
-          var tmp=new Object();
-          tmp.id=record.id;
-          tmp.username=record.username;
-          tmp.email=record.email;
-          tmp.nickname=record.nickname;
-          tmp.tel=record.tel;
-          
-          editing.edit(tmp);
-      }
-    });
-  });
-</script>
+	<script src="${ctx}/static/js/checkbox.js"></script>
+	<script src="${ctx}/static/js/adminlist.js"></script>
+	<script type="text/javascript">
+	$(function() {
+		/* 初始化页数 */
+		var results = '${count}';
+		$('#pagination').twbsPagination({
+			totalPages : Math.floor(results / 20 + 1),
+			visiblePages : 5,
+			href : '?pageNo={{pageNo}}&pageSize=20',
+			hrefVariable : '{{pageNo}}',
+			onPageClick : function(event, page) {
+			}
+		});
+	});
+	</script>
 </body>
+
 </html>

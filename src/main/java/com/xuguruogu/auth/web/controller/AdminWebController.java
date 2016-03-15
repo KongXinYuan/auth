@@ -2,23 +2,24 @@ package com.xuguruogu.auth.web.controller;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.List;
+
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.xuguruogu.auth.dto.AdminDTO;
-import com.xuguruogu.auth.dto.LogLoginDTO;
-import com.xuguruogu.auth.facade.AdminFacade;
 import com.xuguruogu.auth.security.AdminUserDetails;
+import com.xuguruogu.auth.service.AdminManager;
+import com.xuguruogu.auth.web.param.AdminAddParam;
 import com.xuguruogu.auth.web.result.SuccessResult;
 
 @Controller
@@ -27,87 +28,84 @@ public class AdminWebController {
 	private static Logger logger = LoggerFactory.getLogger(AdminWebController.class);
 
 	@Autowired
-	private AdminFacade adminFacade;
+	private AdminManager adminManager;
 
-	@RequestMapping(value = { "/home" }, method = { RequestMethod.GET })
-	public String home(Model model) {
+	@Secured({ "ROLE_OWNER", "ROLE_ADMIN" })
+	@RequestMapping(value = { "/list" }, method = { RequestMethod.GET })
+	public String list(Integer pageSize, Integer pageNo, Model model) {
 
 		AdminUserDetails userDetails = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication()
 				.getPrincipal();// spring security获取上下文
 		long adminid = userDetails.getAdminid();
 
-		AdminDTO admin = adminFacade.profile(adminid);
-		List<LogLoginDTO> list = adminFacade.queryLatestLogLogin(adminid);
-		model.addAttribute("admin", admin);
-		model.addAttribute("loglogin", list);
+		model.addAllAttributes(adminManager.list(adminid, pageNo, pageSize));
 
 		if (logger.isInfoEnabled()) {
-			logger.info("visit to home");
-			logger.info(MessageFormat.format("loglogin's number is:{0}", list.size()));
+			logger.info("visit to admin/list");
+			logger.info(MessageFormat.format("visit to admin/list:{0}", userDetails.getUsername()));
 		}
 
-		return "/admin/home";
-	}
-
-	@RequestMapping(value = { "/detail" }, method = { RequestMethod.GET })
-	public String detail(Model model) {
-
-		AdminUserDetails userDetails = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication()
-				.getPrincipal();// spring security获取上下文
-
-		model.addAttribute("admin", adminFacade.profile(userDetails.getAdminid()));
-
-		return "/admin/detail";
-	}
-
-	@RequestMapping(value = { "/detail/{adminId}" }, method = { RequestMethod.GET })
-	public String detailById(Model model, @PathVariable Long adminid) {
-
-		model.addAttribute("admin", adminFacade.profile(adminid));
-
-		return "/admin/detail";
-	}
-
-	@RequestMapping(value = { "/loglogin.json" }, method = { RequestMethod.GET })
-	public void loglogin(Model model, Long adminid, Long start, int limit, int pageIndex) {
-
-		model.addAllAttributes(adminFacade.querylogLoginByPage(adminid, limit, pageIndex));
-
-	}
-
-	@RequestMapping(value = { "/list" }, method = { RequestMethod.GET })
-	public String list() {
 		return "/admin/list";
 	}
 
-	@RequestMapping(value = { "/page.json" }, method = { RequestMethod.POST })
-	public void page(int limit, int pageIndex, Long parentid, Model model) {
-
-		model.addAllAttributes(adminFacade.queryByPage(parentid, limit, pageIndex));
-	}
-
-	@RequestMapping(value = { "/doEdit.json" }, method = { RequestMethod.POST })
-	public void doEdit(Long id, Boolean lock, Model model) {
+	// 添加
+	@Secured({ "ROLE_OWNER", "ROLE_ADMIN" })
+	@RequestMapping(value = { "/add.json" }, method = { RequestMethod.POST })
+	public void add(@Valid AdminAddParam admin, Model model) {
 
 		AdminUserDetails userDetails = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication()
 				.getPrincipal();// spring security获取上下文
 
-		adminFacade.updateLock(id, lock);
+		long adminid = userDetails.getAdminid();
+
+		AdminDTO dto = adminManager.register(adminid, admin.getLevel(), admin.getUsername(), admin.getPassword(),
+				admin.getMoney());
+		model.addAttribute("admin", dto);
+		model.addAllAttributes(new SuccessResult());
+	}
+
+	// 删除单个
+	@Secured({ "ROLE_OWNER", "ROLE_ADMIN" })
+	@RequestMapping(value = { "/del.json" }, method = { RequestMethod.POST })
+	public void del(@RequestParam(value = "delids[]", required = true) Long[] delids, Model model) {
+
+		AdminUserDetails userDetails = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();// spring security获取上下文
+
+		long adminid = userDetails.getAdminid();
+
+		adminManager.deleteByIds(adminid, Arrays.asList(delids));
 
 		model.addAllAttributes(new SuccessResult());
 	}
 
-	@RequestMapping(value = { "/doAdd.json" }, method = { RequestMethod.POST })
-	public void doAdd(Long parentid, Integer level, String username, String password, Model model) {
+	// 锁定
+	@Secured({ "ROLE_OWNER", "ROLE_ADMIN" })
+	@RequestMapping(value = { "/lock.json" }, method = { RequestMethod.POST })
+	public void lock(@RequestParam(required = true) Long lockid, Model model) {
 
-		adminFacade.create(parentid, level, username, password);
+		AdminUserDetails userDetails = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();// spring security获取上下文
+
+		long adminid = userDetails.getAdminid();
+
+		adminManager.updateLock(adminid, lockid, true);
 
 		model.addAllAttributes(new SuccessResult());
 	}
 
-	@RequestMapping(value = { "/doDel.json" }, method = { RequestMethod.POST })
-	public void doDel(@RequestParam(value = "ids[]") Long[] ids, Model model) {
-		adminFacade.deleteByIds(Arrays.asList(ids));
+	// 解锁
+	@Secured({ "ROLE_OWNER", "ROLE_ADMIN" })
+	@RequestMapping(value = { "/unlock.json" }, method = { RequestMethod.POST })
+	public void unlock(@RequestParam(required = true) Long unlockid, Model model) {
+
+		AdminUserDetails userDetails = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();// spring security获取上下文
+		long adminid = userDetails.getAdminid();
+
+		adminManager.updateLock(adminid, unlockid, false);
+
 		model.addAllAttributes(new SuccessResult());
+
 	}
 }

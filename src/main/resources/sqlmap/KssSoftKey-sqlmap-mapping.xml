@@ -5,40 +5,30 @@
 
 <mapper namespace="KSS_SOFT_KEY">
 	<resultMap type="KssSoftKeyDO" id="kssSoftKeyResult">
-		<id property="id" column="ID" javaType="java.lang.Long" jdbcType="INTEGER" />
-		<result property="adminid" column="ADMINID" javaType="java.lang.Long" jdbcType="INTEGER" />
-		<result property="prefix" column="PREFIX" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="cdkey" column="CDKEY" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="password" column="PASSWORD" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="addtime" column="ADDTIME" javaType="java.util.Date" jdbcType="DATE" />
-		<result property="ordernum" column="ORDERNUM" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="cday" column="CDAY" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
-		<result property="tag" column="TAG" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="lock" column="ISLOCK" javaType="java.lang.Boolean" jdbcType="BOOLEAN" />
-		<result property="usedtime" column="USEDTIME" javaType="java.util.Date" jdbcType="DATE" />
-		<result property="useduser" column="USEDUSER" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<id property="id" column="ID" jdbcType="INTEGER" />
+		<result property="adminid" column="ADMINID" jdbcType="INTEGER" />
+		<result property="keysetid" column="keysetid" jdbcType="INTEGER" />
+		<result property="cdkey" column="CDKEY" jdbcType="VARCHAR" />
+		<result property="addtime" column="ADDTIME" jdbcType="DATE" />
+		<result property="ordernum" column="ORDERNUM" jdbcType="VARCHAR" />
+		<result property="cday" column="CDAY" jdbcType="DECIMAL" />
+		<result property="tag" column="TAG" jdbcType="VARCHAR" />
+		<result property="lock" column="ISLOCK" jdbcType="BOOLEAN" />
+		<result property="usedtime" column="USEDTIME" jdbcType="DATE" />
+		<result property="useduser" column="USEDUSER" jdbcType="VARCHAR" />
 	</resultMap>
 	
+	<insert id="insertWithSeg" parameterType="java.util.List">
+		INSERT ignore INTO KSS_SOFT_KEY (adminid, cdkey, addtime, ordernum, cday, tag)
+		VALUES (#{item.adminid}, #{item.cdkey}, #{item.addtime}, #{item.ordernum}, #{item.cday},#{item.tag})
+	</insert>
 
-	<insert id="insertWithSeg" parameterType="KssSoftKeyDO">
-		INSERT INTO KSS_SOFT_KEY (
-		adminid,
-		prefix,
-		cdkey,
-		password,
-		addtime,
-		ordernum,
-		cday,
-		tag)
-		VALUES (
-		#{adminid},
-		#{prefix},
-		#{cdkey},
-		#{password},
-		#{addtime},
-		#{ordernum},
-		#{cday},
-		#{tag})
+	<insert id="insertListWithSeg" parameterType="java.util.List">
+		INSERT ignore INTO KSS_SOFT_KEY (adminid, cdkey, addtime, ordernum, cday, tag)
+		VALUES
+		<foreach collection="cdkeys" item="item" index="index" separator=",">
+			(#{item.adminid}, #{item.cdkey}, #{item.addtime}, #{item.ordernum}, #{item.cday},#{item.tag})
+		</foreach>
 	</insert>
 	
 	
@@ -87,6 +77,7 @@
 		SELECT * FROM KSS_SOFT_KEY
 		<include refid="QueryCondition" />
 		<include refid="Pagination" />
+		order by id
 	</select>
 	
 	
@@ -96,14 +87,8 @@
 			<if test="adminid != null">
 				adminid = #{adminid}
 			</if>
-			<if test="prefix != null">
-				and prefix = #{prefix}
-			</if>
 			<if test="cdkey != null">
 				and cdkey = #{cdkey}
-			</if>
-			<if test="password != null">
-				and password = #{password}
 			</if>
 			<if test="ordernum != null">
 				and ordernum = #{ordernum}

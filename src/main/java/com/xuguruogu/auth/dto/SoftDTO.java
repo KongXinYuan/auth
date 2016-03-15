@@ -6,7 +6,7 @@ public class SoftDTO implements Serializable {
 
 	/**  */
 	private static final long serialVersionUID = -5058138313226583283L;
-
+	long id;
 	/** 软件编号 */
 	private long softcode;
 
@@ -23,10 +23,18 @@ public class SoftDTO implements Serializable {
 	private long intervaltime;
 
 	/** 公匙 */
-	private String clientpublickey;
+	private String clientpubkey;
 
 	/** 私匙 */
-	private String serverprivatekey;
+	private String serverprivkey;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	public long getSoftcode() {
 		return softcode;
@@ -68,20 +76,20 @@ public class SoftDTO implements Serializable {
 		this.intervaltime = intervaltime;
 	}
 
-	public String getClientpublickey() {
-		return clientpublickey;
+	public String getClientpubkey() {
+		return clientpubkey;
 	}
 
-	public void setClientpublickey(String clientpublickey) {
-		this.clientpublickey = clientpublickey;
+	public void setClientpubkey(String clientpubkey) {
+		this.clientpubkey = clientpubkey;
 	}
 
-	public String getServerprivatekey() {
-		return serverprivatekey;
+	public String getServerprivkey() {
+		return serverprivkey;
 	}
 
-	public void setServerprivatekey(String serverprivatekey) {
-		this.serverprivatekey = serverprivatekey;
+	public void setServerprivkey(String serverprivkey) {
+		this.serverprivkey = serverprivkey;
 	}
 
 }

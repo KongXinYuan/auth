@@ -27,7 +27,7 @@ public class AdminUserDetailsConverter extends AbstractConverter<KssAdminDO, Adm
 		boolean accountNonLocked = !kssAdminDO.isLock();
 
 		Collection<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
-		Long adminid = kssAdminDO.getId();
+		long adminid = kssAdminDO.getId();
 
 		for (RoleType role : RoleType.values()) {
 			if (kssAdminDO.getLevel() == role.getLevel()) {
@@ -39,6 +39,7 @@ public class AdminUserDetailsConverter extends AbstractConverter<KssAdminDO, Adm
 				accountNonLocked, auths);
 
 		adminUserDetails.setAdminid(adminid);
+		adminUserDetails.setLevel(kssAdminDO.getLevel());
 
 		return adminUserDetails;
 	}

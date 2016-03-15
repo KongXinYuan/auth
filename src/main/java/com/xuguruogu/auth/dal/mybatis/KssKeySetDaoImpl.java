@@ -28,14 +28,20 @@ public class KssKeySetDaoImpl extends KssDaoImplBase<KssKeySetDO, KssKeySetQuery
 	}
 
 	@Override
-	public int update(long keySetId, String keyname, BigDecimal retailprice) {
+	public int update(long keySetId, BigDecimal cday, BigDecimal retailprice) {
 
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("keyname", keyname);
 		param.put("retailprice", retailprice);
+		param.put("cday", cday);
 		param.put("id", keySetId);
 
 		return sqlSessionTemplate.update(this.getMybatisStatementName("update"), param);
+	}
+
+	@Override
+	public long deleteBySoftid(long softif) {
+
+		return 0;
 	}
 
 }
