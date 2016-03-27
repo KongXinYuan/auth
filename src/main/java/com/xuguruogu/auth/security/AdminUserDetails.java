@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import com.xuguruogu.auth.dal.enums.RoleType;
+
 /**
  * 存储在session中的管理员对象
  *
@@ -18,28 +20,28 @@ public class AdminUserDetails extends User {
 	private static final long serialVersionUID = -7899476908216077110L;
 
 	/** id */
-	private long adminid;
-	private long level;
+	private long id;
+	private RoleType role;
 
-	public AdminUserDetails(String username, String password, boolean accountNonLocked,
+	public AdminUserDetails(String username, String password, boolean enabled,
 			Collection<? extends GrantedAuthority> authorities) {
-		super(username, password, true, true, true, accountNonLocked, authorities);
+		super(username, password, enabled, true, true, true, authorities);
 	}
 
-	public long getAdminid() {
-		return adminid;
+	public long getId() {
+		return id;
 	}
 
-	public void setAdminid(long adminid) {
-		this.adminid = adminid;
+	public void setId(long id) {
+		this.id = id;
 	}
 
-	public long getLevel() {
-		return level;
+	public RoleType getRole() {
+		return role;
 	}
 
-	public void setLevel(long level) {
-		this.level = level;
+	public void setRole(RoleType role) {
+		this.role = role;
 	}
 
 }

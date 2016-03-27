@@ -3,6 +3,8 @@ package com.xuguruogu.auth.dal.mybatis;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.xuguruogu.auth.dal.daointerface.KssOrderDao;
@@ -16,15 +18,20 @@ public class KssOrderDaoImpl extends KssDaoImplBase<KssOrderDO, KssOrderQueryCon
 		super("KSS_ORDER");
 	}
 
+	private static Logger logger = LoggerFactory.getLogger(KssOrderDaoImpl.class);
+
 	@Override
-	public int update(String ordernum, boolean done, long beginid) {
+	public long update(String ordernum, long beginid) {
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("beginid", beginid);
-		param.put("isdone", done);
 		param.put("ordernum", ordernum);
-
-		return sqlSessionTemplate.update(this.getMybatisStatementName("update"), param);
+		try {
+			return getSqlSession().update(this.getMybatisStatementName("update"), param);
+		} catch (Exception e) {
+			logger.error("update({},{})", ordernum, beginid, e);
+			throw new KssSqlException(e);
+		}
 	}
 
 }

@@ -6,13 +6,12 @@
 <mapper namespace="KSS_SOFT">
 	<resultMap type="KssSoftDO" id="kssSoftResult">
 		<id property="id" column="ID" jdbcType="INTEGER" />
-		<result property="softcode" column="SOFTCODE" jdbcType="INTEGER" />
-		<result property="softkey" column="SOFTKEY" jdbcType="VARCHAR" />
-		<result property="softname" column="SOFTNAME" jdbcType="VARCHAR" />
-		<result property="lock" column="ISLOCK" jdbcType="BOOLEAN" />
-		<result property="intervaltime" column="INTERVALTIME" jdbcType="INTEGER" />
-		<result property="clientpubkey" column="CLIENTPUBKEY" jdbcType="VARCHAR" />
-		<result property="serverprivkey" column="SERVERPRIVKEY" jdbcType="VARCHAR" />
+		<result property="softcode" column="softcode" jdbcType="INTEGER" />
+		<result property="softkey" column="softkey" jdbcType="VARCHAR" />
+		<result property="softname" column="softname" jdbcType="VARCHAR" />
+		<result property="intervaltime" column="intervaltime" jdbcType="INTEGER" />
+		<result property="privkey" column="privkey" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="INTEGER" />
 	</resultMap>
 
 	<insert id="insert" parameterType="KssSoftDO">
@@ -20,94 +19,70 @@
 		softcode,
 		softkey,
 		softname,
-		islock,
 		intervaltime,
-		clientpubkey,
-		serverprivkey)
+		privkey)
 		VALUES (
 		#{softcode},
 		#{softkey},
 		#{softname},
-		#{lock},
 		#{intervaltime},
-		#{clientpubkey},
-		#{serverprivkey})
+		#{privkey})
 	</insert>
 	
-	<update id="dropTableWithSeg" parameterType="java.util.Map">
-		DROP TABLE IF EXISTS `kss_soft_key`,`kss_soft_recharge`,`kss_soft_user`
-	</update>
-	
 	<update id="creatKeyTableWithSeg" parameterType="java.util.Map">
-		CREATE TABLE IF NOT EXISTS `kss_soft_key` (
-			`id` int(10) UNSIGNED NOT NULL,
-			`adminid` smallint(5) UNSIGNED NOT NULL,
-			`keysetid` smallint(5) NOT NULL,
-			`cdkey` char(6) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-			`addtime` int(10) UNSIGNED NOT NULL,
-			`ordernum` char(24) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-			`cday` decimal(8,2) NOT NULL,
-			`tag` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
-			`islock` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-			`usedtime` int(10) UNSIGNED NOT NULL DEFAULT '0',
-			`useduser` varchar(32) NOT NULL DEFAULT ''
-			PRIMARY KEY (`id`),
-			UNIQUE KEY `cdkey` (`cdkey`),
-			KEY `ordernum` (`ordernum`(10)),
-			KEY `tag` (`tag`(10)),
-			KEY `czusername` (`useduser`(10)),
-			KEY `islock` (`islock`)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-	</update>
-	
-	<update id="creatRechargeTableWithSeg" parameterType="java.util.Map">
-		CREATE TABLE IF NOT EXISTS `kss_soft_recharge` (
-		  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-		  `addtime` int(10) UNSIGNED NOT NULL,
-		  `username` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-		  `oldcday` decimal(9,2) UNSIGNED NOT NULL,
-		  `newcday` decimal(9,2) UNSIGNED NOT NULL,
-		  `cdkey` varchar(170) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
-		  PRIMARY KEY (`id`),
-		  KEY `addtime` (`addtime`),
-		  KEY `username` (`username`(10))
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+	CREATE TABLE `kss_soft_key` (
+		`id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+		`adminid` smallint(5) UNSIGNED NOT NULL,
+		`keysetid` smallint(5) NOT NULL,
+		`cdkey` char(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+		`ordernum` char(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+		`cday` decimal(8,2) NOT NULL,
+		`tag` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+		`addtime` datetime NOT NULL,
+		`usedtime` datetime DEFAULT NULL,
+		`userid` int(10) UNSIGNED DEFAULT NULL,
+		`oldcday` decimal(8,2) DEFAULT NULL,
+		`newcday` decimal(8,2) DEFAULT NULL,
+		`status` varchar(10) NOT NULL DEFAULT 'ACTIVE',
+		 PRIMARY KEY (`id`),
+		 UNIQUE KEY `cdkey` (`cdkey`),
+		 KEY `adminid` (`adminid`),
+		 KEY `keysetid` (`keysetid`),
+		 KEY `ordernum` (`ordernum`(10)),
+		 KEY `tag` (`tag`(10)),
+	 	 KEY `userid` (`userid`),
+		 KEY `status` (`status`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	</update>
 	
 	<update id="creatUserTableWithSeg" parameterType="java.util.Map">
-		CREATE TABLE IF NOT EXISTS `kss_soft_user` (
-		  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-		  `adminid` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
-		  `username` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-		  `password` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-		  `cday` decimal(8,2) NOT NULL,
-		  `islock` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-		  `ispub` tinyint(1) NOT NULL DEFAULT '0',
-		  `linecode` varchar(10) NOT NULL DEFAULT '-',
-		  `pccode` varchar(128) NOT NULL DEFAULT '-',
-		  `addtime` int(10) UNSIGNED NOT NULL DEFAULT '0',
-		  `starttime` int(10) UNSIGNED NOT NULL DEFAULT '0',
-		  `endtime` int(10) UNSIGNED NOT NULL DEFAULT '0',
-		  `lastlogintime` int(10) UNSIGNED NOT NULL DEFAULT '0',
-		  `lastloginip` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
-		  `activetimes` int(10) UNSIGNED NOT NULL DEFAULT '0',
-		  `locktimes` int(10) UNSIGNED NOT NULL DEFAULT '0',
-		  `lockendtime` int(10) UNSIGNED NOT NULL DEFAULT '0',
-		  `rechargetimes` int(10) UNSIGNED NOT NULL DEFAULT '0',
-		  PRIMARY KEY (`id`),
-		  KEY `username` (`username`(10)),
-		  KEY `managerid` (`adminid`),
-		  KEY `lasttime` (`lastlogintime`),
-		  KEY `islock` (`islock`),
-		  KEY `endtime` (`endtime`)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+	CREATE TABLE `kss_soft_user` (
+		`id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+		`adminid` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
+		`username` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+		`password` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+		`cday` decimal(8,2) NOT NULL DEFAULT '0.00',
+		`tag` varchar(30) NOT NULL,
+		`linecode` varchar(10) NOT NULL DEFAULT '',
+		`pccode` varchar(128) NOT NULL DEFAULT '',
+		`addtime` datetime NOT NULL,
+		`endtime` datetime NOT NULL,
+		`lastlogintime` datetime NOT NULL,
+		`lastloginip` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
+		`rechargetimes` int(5) UNSIGNED NOT NULL DEFAULT '0',
+		`status` varchar(10) NOT NULL DEFAULT 'ACTIVE',
+		 PRIMARY KEY (`id`),
+		 UNIQUE KEY `username` (`username`(10)),
+		 KEY `adminid` (`adminid`),
+		 KEY `tag` (`tag`),
+		 KEY `status` (`status`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	</update>
 	
 	<update id="updateSoftcode" parameterType="java.util.Map">
 		UPDATE KSS_SOFT
 		<set>
-			softcode = #{softcode},
-			islock = false
+			softcode = #{softcode}
 		</set>
 		where id=#{id}
 	</update>
@@ -116,35 +91,54 @@
 		UPDATE KSS_SOFT
 		<set>
 			intervaltime = #{intervaltime},
-			clientpubkey = #{clientpubkey},
-			serverprivkey = #{serverprivkey}
+			<if test="privkey != null">
+				privkey = #{privkey}
+			</if>
 		</set>
 		where id=#{id}
 	</update>
 	
-	<update id="updateLock" parameterType="java.util.Map">
-		UPDATE KSS_SOFT
+	<update id="updateStatusById" parameterType="java.util.Map">
+		update kss_soft
 		<set>
-			islock = #{islock}
+			status = #{status}
 		</set>
 		where id=#{id}
+	</update>
+	
+	<update id="updateStatusByIds" parameterType="java.util.Map">
+		update kss_soft
+		<set>
+			status = #{status}
+		</set>
+		where id in
+		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
 	</update>
 	
 
-	<select id="selectById" parameterType="int" resultMap="kssSoftResult">
-		select
-		* from KSS_SOFT WHERE id=#{id}
+	<select id="selectById" parameterType="long" resultMap="kssSoftResult">
+		select * from kss_soft 
+		where id=#{id}
+	</select>
+	
+	<select id="selectByIds" parameterType="java.util.List" resultMap="kssSoftResult">
+		select * from kss_soft 
+		where id in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
 	</select>
 
-	<delete id="deleteById" parameterType="int">
-		delete from KSS_SOFT
-		WHERE
-		ID=#{id}
+	<delete id="deleteById" parameterType="long">
+		delete from kss_soft
+		where id=#{id}
 	</delete>
 
 	<delete id="deleteByIds" parameterType="java.util.List">
-		delete from KSS_SOFT
-		WHERE ID in
+		delete from kss_soft
+		where id in
 		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
@@ -169,9 +163,24 @@
 				softcode = #{softcode}
 			</if>
 			<if test="softname != null">
-				softname = #{softname}
+				and softname = #{softname}
+			</if>
+			<if test="status != null">
+				and status in
+				<foreach collection="status" item="s" index="index" open="(" close=")" separator=",">
+					#{s}
+				</foreach>
+			</if>
+			<if test="adminid != null">
+				and id in
+				(
+				select distinct k.softid from kss_power p 
+				inner join kss_keyset k on p.keysetid=k.id
+				where p.adminid=#{adminid}
+				)
 			</if>
 		</trim>
+		order by id
 	</sql>
 	
 	<!-- 分页 -->

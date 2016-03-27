@@ -1,23 +1,34 @@
 package com.xuguruogu.auth.service.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.Assert;
 
 import com.xuguruogu.auth.dal.daointerface.KssSoftKeyDao;
-import com.xuguruogu.auth.dal.daointerface.KssSoftRechargeDao;
 import com.xuguruogu.auth.dal.daointerface.KssSoftUserDao;
 import com.xuguruogu.auth.dal.dataobject.KssSoftKeyDO;
-import com.xuguruogu.auth.dal.dataobject.KssSoftRechargeDO;
 import com.xuguruogu.auth.dal.dataobject.KssSoftUserDO;
+import com.xuguruogu.auth.dal.dto.KssConverter;
+import com.xuguruogu.auth.dal.enums.CDKeyStatusType;
+import com.xuguruogu.auth.dal.enums.UserStatusType;
 import com.xuguruogu.auth.dal.querycondition.KssSoftKeyQueryCondition;
 import com.xuguruogu.auth.dal.querycondition.KssSoftUserQueryCondition;
-import com.xuguruogu.auth.interceptor.KssException;
+import com.xuguruogu.auth.security.AdminUserDetails;
 import com.xuguruogu.auth.service.SoftUserManager;
+import com.xuguruogu.auth.web.param.UserSearchParam;
 
 @Component("softUserManager")
 public class SoftUserManagerImpl implements SoftUserManager {
@@ -29,254 +40,185 @@ public class SoftUserManagerImpl implements SoftUserManager {
 	private KssSoftKeyDao kssSoftKeyDao;
 
 	@Autowired
-	private KssSoftRechargeDao kssSoftRechargeDao;
+	private KssConverter kssConverter;
 
-	/**
-	 * 创建用户
-	 *
-	 * @param softid
-	 * @param adminid
-	 * @param username
-	 * @param password
-	 * @param cday
-	 * @return
-	 */
-	private KssSoftUserDO createUser(long softid, long adminid, String username, String password, BigDecimal cday) {
+	@Autowired
+	private PasswordEncoder bcryptEncoder;
 
-		// 创建
-		KssSoftUserDO kssSoftUserDO = new KssSoftUserDO();
-		kssSoftUserDO.setSoftid(softid);
-		kssSoftUserDO.setAdminid(adminid);
-		kssSoftUserDO.setUsername(username);
-		kssSoftUserDO.setPassword(password);
-		kssSoftUserDO.setAddtime(new Date());
-		kssSoftUserDO.setStarttime(new Date());
-		if (cday.equals(BigDecimal.ZERO)) {
-			kssSoftUserDO.setEndtime(new Date());
-			kssSoftUserDO.setRechargetimes(0);
-		} else {
-			kssSoftUserDO.setRechargetimes(1);
-			kssSoftUserDO.setEndtime(DateUtils.addMinutes(new Date(), (int) (cday.floatValue() * 60 * 24)));
-		}
-		kssSoftUserDao.insert(kssSoftUserDO);
+	@Autowired
+	private TransactionTemplate txTemplate;
 
-		return this.queryByUsername(softid, username);
-	}
-
-	/**
-	 * 校验cdkey是否有效
-	 *
-	 * @param softid
-	 * @param cdkey
-	 * @return
-	 */
+	// 校验cdkey是否有效
 	private KssSoftKeyDO validCdkey(long softid, String cdkey) {
-
-		// 查找卡密
-		KssSoftKeyQueryCondition query = new KssSoftKeyQueryCondition();
-		query.putCdkey(cdkey);
-		KssSoftKeyDO softKey = kssSoftKeyDao.selectOneByQueryCondition(softid, query);
-		if (null == softKey) {
-			throw new KssException("卡密无效");
-		}
-		if (softKey.isLock()) {
-			throw new KssException("卡密被锁定");
-		}
+		KssSoftKeyDO softKey = kssSoftKeyDao.selectOneByQueryCondition(softid,
+				new KssSoftKeyQueryCondition().putCdkey(cdkey));
+		Assert.notNull(cdkey, "卡密不存在");
+		Assert.isTrue(CDKeyStatusType.DELETED != softKey.getStatus(), "卡密已删除");
+		Assert.isTrue(softKey.getStatus() != CDKeyStatusType.USED && softKey.getUserid() == null, "卡密已使用");
+		Assert.isTrue(softKey.getStatus().isActive(), "卡密无效");
 		return softKey;
 	}
 
 	@Override
-	public KssSoftUserDO registerWithCdkey(long softid, String username, String password, String cdkey) {
-		// 校验卡密
-		KssSoftKeyDO softKey = this.validCdkey(softid, cdkey);
+	public KssSoftUserDO registerWithCdkey(final long softid, final String username, final String password,
+			final String cdkey) {
+		return txTemplate.execute(new TransactionCallback<KssSoftUserDO>() {
 
-		// 校验用户
-		if (null != queryByUsername(softid, username)) {
-			throw new KssException("用户已存在");
-		}
+			@Override
+			public KssSoftUserDO doInTransaction(TransactionStatus status) {
+				// 校验卡密
+				KssSoftKeyDO softKey = validCdkey(softid, cdkey);
+				Assert.isNull(kssSoftUserDao.selectOneByQueryCondition(softid,
+						new KssSoftUserQueryCondition().putUsername(username)), "用户已存在");
 
-		// 创建用户
-		KssSoftUserDO user = this.createUser(softid, softKey.getAdminid(), username, password, softKey.getCday());
+				// 创建
+				KssSoftUserDO kssSoftUserDO = new KssSoftUserDO();
+				kssSoftUserDO.setSoftid(softid);
+				kssSoftUserDO.setAdminid(softKey.getAdminid());
+				kssSoftUserDO.setUsername(username);
+				kssSoftUserDO.setPassword(bcryptEncoder.encode(password));
+				kssSoftUserDO.setAddtime(new Date());
+				kssSoftUserDO.setRechargetimes(1);
+				kssSoftUserDO
+						.setEndtime(DateUtils.addMinutes(new Date(), (int) (softKey.getCday().floatValue() * 60 * 24)));
+				kssSoftUserDao.insert(kssSoftUserDO);
 
-		if (null == user) {
-			throw new KssException("创建用户失败");
-		}
+				KssSoftUserDO user = kssSoftUserDao.selectOneByQueryCondition(softid,
+						new KssSoftUserQueryCondition().putUsername(username));
+				Assert.notNull(username, "用户注册失败");
 
-		// 更新softkey标记已用
-		kssSoftKeyDao.updateRecharge(softid, softKey.getId(), new Date(), user.getUsername());
+				// 更新softkey标记已用
+				kssSoftKeyDao.updateRecharge(softid, softKey.getId(), new Date(), user.getId(), BigDecimal.ZERO,
+						softKey.getCday(), CDKeyStatusType.USED);
 
-		BigDecimal oldcday = BigDecimal.ZERO;
-		BigDecimal newcday = user.getCday();
-
-		// 插入softrecharge表
-		this.logRecharge(softid, softKey.getAdminid(), cdkey, oldcday, newcday, username);
-
-		//
-		return user;
-	}
-
-	@Override
-	public KssSoftUserDO queryById(long softid, long userid) {
-		return kssSoftUserDao.selectById(softid, userid);
-	}
-
-	@Override
-	public KssSoftUserDO queryByUsername(long softid, String username) {
-		KssSoftUserQueryCondition query = new KssSoftUserQueryCondition();
-		query.putUsername(username);
-		return kssSoftUserDao.selectOneByQueryCondition(softid, query);
-	}
-
-	@Override
-	public void updatePassword(long softid, long userid, String password) {
-		kssSoftUserDao.updatePassword(softid, userid, password);
+				return user;
+			}
+		});
 	}
 
 	@Override
 	public KssSoftUserDO login(long softid, String username, String password, long ip, String pccode, String linecode) {
 
 		// 检查用户
-		KssSoftUserDO user = queryByUsername(softid, username);
-		if (null == user) {
-			throw new KssException("用户不存在");
-		}
+		KssSoftUserDO user = kssSoftUserDao.selectOneByQueryCondition(softid,
+				new KssSoftUserQueryCondition().putUsername(username));
+		Assert.notNull(user, "用户不存在");
 		// 校验密码
-		if (!user.getPassword().equals(password)) {
-			throw new KssException("密码错误");
-		}
+		Assert.isTrue(bcryptEncoder.matches(password, user.getPassword()), "密码错误");
 		// 校验锁定
-		if (user.isLock()) {
-			throw new KssException("用户被锁定");
-		}
+		Assert.isTrue(user.getStatus().isActive(), "用户未激活");
 		// 校验期限
-		if (user.getEndtime().before(new Date())) {
-			throw new KssException("用户已到期");
-		}
-
+		Assert.isTrue(user.getEndtime().after(new Date()), "用户已到期");
 		//
 		kssSoftUserDao.updateLastLogin(softid, user.getId(), new Date(), ip, pccode, linecode);
 
-		return queryByUsername(softid, username);
-
-	}
-
-	/**
-	 * 插入recharge表记录
-	 *
-	 * @param softid
-	 * @param adminid
-	 * @param cdkey
-	 * @param oldcday
-	 * @param newcday
-	 * @param username
-	 */
-	private void logRecharge(long softid, long adminid, String cdkey, BigDecimal oldcday, BigDecimal newcday,
-			String username) {
-
-		KssSoftRechargeDO rechargeDO = new KssSoftRechargeDO();
-		rechargeDO.setSoftid(softid);
-		rechargeDO.setAdminid(adminid);
-		rechargeDO.setCdkey(cdkey);
-		rechargeDO.setNewcday(newcday);
-		rechargeDO.setOldcday(oldcday);
-		rechargeDO.setUsername(username);
-		kssSoftRechargeDao.insert(rechargeDO);
+		return kssSoftUserDao.selectOneByQueryCondition(softid, new KssSoftUserQueryCondition().putUsername(username));
 	}
 
 	@Override
-	public KssSoftUserDO recharge(long softid, String username, String cdkey) {
-		// 检查cdkey
-		KssSoftKeyDO softKey = this.validCdkey(softid, cdkey);
+	public KssSoftUserDO recharge(final long softid, final String username, final String cdkey) {
+		return txTemplate.execute(new TransactionCallback<KssSoftUserDO>() {
 
-		// 检查用户
-		KssSoftUserDO user = queryByUsername(softid, username);
-		if (null == user) {
-			throw new KssException("用户不存在");
-		}
+			@Override
+			public KssSoftUserDO doInTransaction(TransactionStatus status) {
+				// 检查cdkey
+				KssSoftKeyDO softKey = validCdkey(softid, cdkey);
+				// 检查用户
+				KssSoftUserDO user = kssSoftUserDao.selectOneByQueryCondition(softid,
+						new KssSoftUserQueryCondition().putUsername(username));
+				Assert.notNull(user, "用户不存在");
 
-		BigDecimal oldcday = user.getCday();
-		BigDecimal newcday = user.getCday().add(softKey.getCday());
-		long userid = user.getId();
-		Date starttime = null, endtime = null;
+				BigDecimal oldcday = user.getCday();
+				BigDecimal newcday = user.getCday().add(softKey.getCday());
+				long userid = user.getId();
+				Date endtime = DateUtils.addMinutes(
+						user.getEndtime().after(new Date()) ? user.getEndtime() : new Date(),
+						(int) (softKey.getCday().floatValue() * 60 * 24));
+				// 更新softuser增加时间
+				kssSoftUserDao.updateRecharge(softid, userid, newcday, endtime);
+				// 更新softkey标记已用
+				kssSoftKeyDao.updateRecharge(softid, softKey.getId(), new Date(), user.getId(), oldcday, newcday,
+						CDKeyStatusType.USED);
 
-		if (user.getEndtime().after(new Date())) {
-			starttime = new Date();
-			endtime = DateUtils.addMinutes(new Date(), (int) (softKey.getCday().floatValue() * 60 * 24));
-		} else {
-			starttime = user.getStarttime();
-			endtime = DateUtils.addMinutes(user.getEndtime(), (int) (softKey.getCday().floatValue() * 60 * 24));
-		}
+				return kssSoftUserDao.selectOneByQueryCondition(softid,
+						new KssSoftUserQueryCondition().putUsername(username));
+			}
 
-		// 此处应有事务。。。应该有。。。
-		// 更新softkey标记已用
-		kssSoftKeyDao.updateRecharge(softid, softKey.getId(), new Date(), user.getUsername());
-
-		// 更新softuser增加时间
-		kssSoftUserDao.updateRecharge(softid, userid, newcday, starttime, endtime);
-
-		// 插入softrecharge表
-		this.logRecharge(softid, softKey.getAdminid(), cdkey, oldcday, newcday, username);
-
-		return this.queryByUsername(softid, username);
+		});
 	}
 
 	@Override
 	public KssSoftUserDO valid(long softid, String username, String linecode) {
 
 		// 检查用户
-		KssSoftUserDO user = queryByUsername(softid, username);
-		if (null == user) {
-			throw new KssException("用户不存在");
-		}
+		KssSoftUserDO user = kssSoftUserDao.selectOneByQueryCondition(softid,
+				new KssSoftUserQueryCondition().putUsername(username).putStatus(UserStatusType.getNonDelList()));
+		Assert.notNull(user, "用户不存在");
 		// 校验锁定
-		if (user.isLock()) {
-			throw new KssException("用户被锁定");
-		}
-		// 校验期限
-		if (user.getEndtime().before(new Date())) {
-			throw new KssException("用户已到期");
-		}
-		// 掉线
-		if (!user.getLinecode().equals(linecode)) {
-			throw new KssException("用户被挤掉线");
-		}
+		Assert.isTrue(UserStatusType.DELETED != user.getStatus(), "用户已删除");
+		Assert.isTrue(UserStatusType.LOCKED != user.getStatus(), "用户已锁定");
+		Assert.isTrue(UserStatusType.ACTIVE == user.getStatus(), "用户未激活");
+		Assert.isTrue(user.getEndtime().after(new Date()), "用户已到期");
+		Assert.isTrue(user.getLinecode().equals(linecode), "用户被挤掉线");
 		return user;
 	}
 
 	@Override
-	public void updateLock(long softid, long userid, boolean islock, BigDecimal cday) {
-		kssSoftUserDao.updateLock(softid, userid, islock,
-				DateUtils.addMinutes(new Date(), (int) (cday.floatValue() * 60 * 24)));
-	}
+	public KssSoftUserDO queryBygUserId(long softid, long userid) {
 
-	@Override
-	public void updatePublic(long softid, long userid, boolean ispublic) {
-		kssSoftUserDao.updatePublic(softid, userid, ispublic);
-	}
-
-	@Override
-	public List<KssSoftUserDO> queryByPage(long softid, long adminid, int limit, int pageIndex) {
-
-		KssSoftUserQueryCondition query = new KssSoftUserQueryCondition();
-		query.putAdminid(adminid).pagination(pageIndex, limit);
-		return kssSoftUserDao.selectListByQueryCondition(softid, query);
-	}
-
-	@Override
-	public long queryCount(long softid, long adminid) {
-		KssSoftUserQueryCondition query = new KssSoftUserQueryCondition();
-		query.putAdminid(adminid);
-		return kssSoftUserDao.selectCountByQueryCondition(softid, query);
-	}
-
-	@Override
-	public void deleteById(long softid, long userid) {
-		kssSoftUserDao.deleteById(softid, userid);
+		return kssSoftUserDao.selectById(softid, userid);
 	}
 
 	@Override
 	public void deleteByIds(long softid, List<Long> userids) {
-		kssSoftUserDao.deleteByIds(softid, userids);
+		AdminUserDetails currentAdmin = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
+
+		List<KssSoftUserDO> users = kssSoftUserDao.selectByIds(softid, userids);
+		Assert.notNull(users, "没有有效选择");
+		List<Long> todolist = new ArrayList<>();
+		for (KssSoftUserDO user : users) {
+			// 有效目标检测
+			if (user.getStatus().canLock() && user.isOwnedBy(currentAdmin.getId())) {
+				todolist.add(user.getId());
+			}
+		}
+		Assert.state(todolist.size() >= 1, "没有有效目标");
+
+		kssSoftUserDao.updateStatusByIds(softid, userids, UserStatusType.DELETED);
+	}
+
+	@Override
+	public void lockByIds(long softid, List<Long> userids, boolean lock) {
+		AdminUserDetails currentAdmin = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
+		List<KssSoftUserDO> users = kssSoftUserDao.selectByIds(softid, userids);
+		Assert.notNull(users, "没有有效选择");
+		List<Long> todolist = new ArrayList<>();
+		for (KssSoftUserDO user : users) {
+			// 有效目标检测
+			if (user.getStatus().canLock() && user.isOwnedBy(currentAdmin.getId())) {
+				todolist.add(user.getId());
+			}
+		}
+		Assert.isTrue(todolist.size() >= 1, "没有有效目标");
+		kssSoftUserDao.updateStatusByIds(softid, userids, UserStatusType.fromLock(lock));
+	}
+
+	@Override
+	public Map<String, Object> search(long softid, UserSearchParam param) {
+		AdminUserDetails currentAdmin = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
+
+		KssSoftUserQueryCondition query = new KssSoftUserQueryCondition().putParentid(currentAdmin.getId())
+				.putAdminid(param.getAdminid()).putTag(param.getTag()).putUsername(param.getUsername())
+				.putStatus(null == param.getStatus() ? UserStatusType.getNonDelList() : param.getStatus())
+				.pagination(param.getPageNo(), param.getPageSize());
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("users", kssConverter.convert(kssSoftUserDao.selectListByQueryCondition(softid, query)));
+		result.put("count", kssSoftUserDao.selectCountByQueryCondition(softid, query));
+		return result;
 	}
 
 }

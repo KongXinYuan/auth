@@ -12,23 +12,27 @@ public enum RoleType {
 	private final long level;
 
 	/** 码值 */
-	private final String code;
+	private final String role;
 
 	/** 描述 */
 	private final String desc;
 
-	private RoleType(long level, String code, String desc) {
+	private RoleType(long level, String role, String desc) {
 		this.level = level;
-		this.code = code;
+		this.role = role;
 		this.desc = desc;
+	}
+
+	public boolean hasFullPermission() {
+		return this == RoleType.OWNER;
 	}
 
 	public long getLevel() {
 		return level;
 	}
 
-	public String getCode() {
-		return code;
+	public String getRole() {
+		return role;
 	}
 
 	public String getDesc() {

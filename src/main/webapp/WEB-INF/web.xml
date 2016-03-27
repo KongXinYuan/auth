@@ -10,7 +10,10 @@
 	<!-- 通过上下文加载spring配置文件 -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:applicationContext.xml</param-value>
+		<param-value>
+			classpath:spring/context.xml,
+			classpath:spring/security.xml
+		</param-value>
 	</context-param>
 
 	<!-- 规定编码 -->
@@ -80,7 +83,7 @@
 
 	<!-- session -->
 	<session-config>
-		<session-timeout>40</session-timeout>
+		<session-timeout>120</session-timeout>
 	</session-config>
 
 	<error-page>

@@ -19,10 +19,12 @@
 			type="com.xuguruogu.auth.dal.dataobject.KssOrderDO" />
 		<typeAlias alias="KssSoftKeyDO"
 			type="com.xuguruogu.auth.dal.dataobject.KssSoftKeyDO" />
-		<typeAlias alias="KssSoftRechargeDO"
-			type="com.xuguruogu.auth.dal.dataobject.KssSoftRechargeDO" />
 		<typeAlias alias="KssSoftUserDO"
 			type="com.xuguruogu.auth.dal.dataobject.KssSoftUserDO" />
+		<typeAlias alias="KssFinanceDO"
+			type="com.xuguruogu.auth.dal.dataobject.KssFinanceDO" />
+		<typeAlias alias="KssPowerDO"
+			type="com.xuguruogu.auth.dal.dataobject.KssPowerDO" />
 	</typeAliases>
 
 	<plugins>
@@ -37,8 +39,10 @@
 		<mapper resource="sqlmap/KssKeySet-sqlmap-mapping.xml" />
 		<mapper resource="sqlmap/KssOrder-sqlmap-mapping.xml" />
 		<mapper resource="sqlmap/KssSoftKey-sqlmap-mapping.xml" />
-		<mapper resource="sqlmap/KssSoftRecharge-sqlmap-mapping.xml" />
 		<mapper resource="sqlmap/KssSoftUser-sqlmap-mapping.xml" />
+		<mapper resource="sqlmap/KssFinance-sqlmap-mapping.xml" />
+		<mapper resource="sqlmap/KssStatistics-sqlmap-mapping.xml" />
+		<mapper resource="sqlmap/KssPower-sqlmap-mapping.xml" />
 	</mappers>
 
 

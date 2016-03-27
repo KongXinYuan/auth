@@ -4,10 +4,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.xuguruogu.auth.dto.KeySetDTD;
-import com.xuguruogu.auth.interceptor.KssException;
+import com.xuguruogu.auth.dal.dto.KssConverter;
 import com.xuguruogu.auth.service.KeySetManager;
 import com.xuguruogu.auth.service.SoftManager;
 import com.xuguruogu.auth.web.param.KeySetAddParam;
@@ -33,36 +30,24 @@ public class KeySetWebController {
 	@Autowired
 	private SoftManager softManager;
 
-	@Secured({ "ROLE_OWNER" })
-	@RequestMapping(value = { "/softs.form" }, method = { RequestMethod.GET })
-	public String listform(Model model) {
-
-		model.addAttribute("softs", softManager.listAll());
-
-		return "/keyset/softs";
-
-	}
+	// dto转换
+	@Autowired
+	private KssConverter kssConverter;
 
 	// 列表
 	@RequestMapping(value = { "/list/{id}" }, method = { RequestMethod.GET })
 	public String listid(@PathVariable(value = "id") Long softid, Model model) {
-		if (null == softid) {
-			throw new KssException("id为空");
-		}
-		model.addAttribute("soft", softManager.detail(softid));
-		model.addAttribute("keysets", keySetManager.listid(softid));
 
+		model.addAttribute("soft", kssConverter.convert(softManager.detail(softid)));
+		model.addAttribute("keysets", kssConverter.convert(keySetManager.listAll(softid)));
 		return "/keyset/list";
 	}
 
 	// 更新下拉框
 	@RequestMapping(value = { "/option.json" }, method = { RequestMethod.POST })
-	public void option(@Valid @NotNull Long softid, Model model) {
-		if (null == softid) {
-			throw new KssException("id为空");
-		}
+	public void option(@RequestParam(required = true) Long softid, Model model) {
 
-		model.addAttribute("keysets", keySetManager.listid(softid));
+		model.addAttribute("keysets", kssConverter.convert(keySetManager.listAll(softid)));
 		model.addAllAttributes(new SuccessResult());
 
 	}
@@ -76,9 +61,8 @@ public class KeySetWebController {
 		String prefix = keyset.getPrefix();
 		BigDecimal retailprice = keyset.getRetailprice();
 
-		KeySetDTD dto = keySetManager.create(softid, keyname, cday, prefix, retailprice);
-
-		model.addAttribute("keyset", dto);
+		model.addAttribute("keyset",
+				kssConverter.convert(keySetManager.create(softid, keyname, cday, prefix, retailprice)));
 		model.addAllAttributes(new SuccessResult());
 	}
 
@@ -86,7 +70,7 @@ public class KeySetWebController {
 	@RequestMapping(value = { "/detail.json" }, method = { RequestMethod.POST })
 	public void detail(@RequestParam(required = true) Long keysetid, Model model) {
 
-		model.addAttribute("keyset", keySetManager.detail(keysetid));
+		model.addAttribute("keyset", kssConverter.convert(keySetManager.detail(keysetid)));
 		model.addAllAttributes(new SuccessResult());
 	}
 
@@ -97,7 +81,7 @@ public class KeySetWebController {
 		BigDecimal retailprice = keyset.getRetailprice();
 		BigDecimal cday = keyset.getCday();
 
-		model.addAttribute("keyset", keySetManager.update(keysetid, cday, retailprice));
+		model.addAttribute("keyset", kssConverter.convert(keySetManager.update(keysetid, cday, retailprice)));
 		model.addAllAttributes(new SuccessResult());
 	}
 
@@ -114,7 +98,7 @@ public class KeySetWebController {
 	@RequestMapping(value = { "/lock.json" }, method = { RequestMethod.POST })
 	public void lock(@RequestParam(required = true) Long keysetid, Model model) {
 
-		keySetManager.updateLock(keysetid, true);
+		keySetManager.lockByIds(keysetid, true);
 
 		model.addAllAttributes(new SuccessResult());
 	}
@@ -123,7 +107,7 @@ public class KeySetWebController {
 	@RequestMapping(value = { "/unlock.json" }, method = { RequestMethod.POST })
 	public void unlock(@RequestParam(required = true) Long keysetid, Model model) {
 
-		keySetManager.updateLock(keysetid, false);
+		keySetManager.lockByIds(keysetid, false);
 
 		model.addAllAttributes(new SuccessResult());
 

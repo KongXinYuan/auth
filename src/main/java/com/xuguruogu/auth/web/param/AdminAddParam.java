@@ -3,10 +3,11 @@ package com.xuguruogu.auth.web.param;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
+
+import com.xuguruogu.auth.dal.enums.RoleType;
 
 public class AdminAddParam implements Serializable {
 	/**
@@ -18,9 +19,8 @@ public class AdminAddParam implements Serializable {
 	private String username;
 	@NotBlank(message = "密码不能为空")
 	private String password;
-	@Min(1)
-	@Max(2)
-	private long level;
+	@NotNull
+	private RoleType role;
 
 	private BigDecimal money = BigDecimal.ZERO;
 
@@ -40,12 +40,18 @@ public class AdminAddParam implements Serializable {
 		this.password = password;
 	}
 
-	public long getLevel() {
-		return level;
+	public RoleType getRole() {
+		return role;
 	}
 
-	public void setLevel(long level) {
-		this.level = level;
+	public void setRole(long role) {
+		for (RoleType r : RoleType.values()) {
+			if (r.getLevel() == role) {
+				this.role = r;
+				return;
+			}
+		}
+		this.role = null;
 	}
 
 	public BigDecimal getMoney() {

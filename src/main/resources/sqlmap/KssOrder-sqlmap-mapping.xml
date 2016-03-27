@@ -7,10 +7,14 @@
 	<resultMap type="KssOrderDO" id="KssOrderResult">
 		<id property="id" column="ID" javaType="java.lang.Long" jdbcType="INTEGER" />
 		<result property="ordernum" column="ordernum" jdbcType="VARCHAR" />
-		<result property="done" column="isdone" jdbcType="BOOLEAN" />
 		<result property="softid" column="softid" jdbcType="INTEGER" />
+		<result property="softname" column="softname" jdbcType="VARCHAR" />
 		<result property="adminid" column="adminid" jdbcType="INTEGER" />
+		<result property="adminname" column="adminname" jdbcType="VARCHAR" />
+		<result property="parentid" column="parentid" jdbcType="INTEGER" />
+		<result property="parentname" column="parentname" jdbcType="VARCHAR" />
 		<result property="keysetid" column="keysetid" jdbcType="INTEGER" />
+		<result property="keyname" column="keyname" jdbcType="VARCHAR" />
 		<result property="keycount" column="keycount" jdbcType="INTEGER" />
 		<result property="beginid" column="beginid" jdbcType="INTEGER" />
 		<result property="addtime" column="addtime" jdbcType="TIMESTAMP" />
@@ -19,7 +23,6 @@
 	<insert id="insert" parameterType="KssOrderDO" >
 		INSERT INTO KSS_ORDER (
 		ordernum,
-		isdone,
 		softid,
 		adminid,
 		keysetid,
@@ -27,7 +30,6 @@
 		addtime)
 		VALUES (
 		#{ordernum},
-		#{done},
 		#{softid},
 		#{adminid},
 		#{keysetid},
@@ -38,14 +40,22 @@
 	<update id="update" parameterType="java.util.Map">
 		UPDATE KSS_ORDER
 		<set>
-			isdone = #{isdone},
 			beginid = #{beginid}
 		</set>
 		where ordernum=#{ordernum}
 	</update>
 	
 	<select id="selectById" parameterType="long" resultMap="KssOrderResult">
-		select * from KSS_ORDER WHERE id=#{id}
+		<include refid="selectList"/>
+		WHERE o.id=#{id}
+	</select>
+	
+	<select id="selectByIds" parameterType="list" resultMap="KssOrderResult">
+		<include refid="selectList"/>
+		WHERE o.id in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
 	</select>
 
 	<delete id="deleteById" parameterType="long">
@@ -62,34 +72,45 @@
 	</delete>
 
 	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
-		select COUNT(*) from KSS_ORDER
+		select COUNT(*) from kss_order o 
+		left join kss_admin a on a.id = o.adminid
+		left join kss_admin p on a.parentid = p.id
 		<include refid="QueryCondition" />
 	</select>
 
 	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="KssOrderResult">
-		SELECT * FROM KSS_ORDER
+		<include refid="selectList"/>
 		<include refid="QueryCondition" />
 		<include refid="Pagination" />
-		order by id
 	</select>
+	
+	<sql id="selectList">
+		select o.*, s.softname, a.username as adminname, a. parentid, p.username as parentname,  k.keyname
+		from kss_order o 
+		left join kss_admin a on a.id = o.adminid
+		left join kss_admin p on a.parentid = p.id
+		left join kss_soft s on o.softid=s.id
+		left join kss_keyset k on o.keysetid=k.id
+	</sql>
 
 	<!-- 查询条件 -->
 	<sql id="QueryCondition">
 		<trim prefix="where" prefixOverrides="and|or">
 
 			<if test="ordernum != null ">
-				ordernum = #{ordernum}
+				o.ordernum = #{ordernum}
 			</if>
 			<if test="softid != null ">
-				and softid = #{softid}
+				and o.softid = #{softid}
 			</if>
 			<if test="adminid != null ">
-				and adminid = #{adminid}
+				and (o.adminid = #{adminid} or p.id=#{adminid} or p.parentid=#{adminid})
 			</if>
 			<if test="keysetid != null ">
-				and keysetid = #{keysetid}
+				and o.keysetid = #{keysetid}
 			</if>
 		</trim>
+		order by o.id
 	</sql>
 
 	<!-- 分页 -->

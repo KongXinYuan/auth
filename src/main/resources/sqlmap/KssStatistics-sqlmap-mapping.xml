@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KSS_STATISTICS">
+	
+	<resultMap type="com.xuguruogu.auth.dal.dataobject.KssCDKeyStatisticsDO" id="KssCDKeyStatisticsResult">
+		<result property="adminid" column="ADMINID" jdbcType="INTEGER" />
+		<result property="adminname" column="adminname" jdbcType="VARCHAR" />
+		<result property="parentid" column="parentid" jdbcType="INTEGER" />
+		<result property="parentname" column="parentname" jdbcType="VARCHAR" />
+		<result property="keysetid" column="keysetid" jdbcType="INTEGER" />
+		<result property="keyname" column="keyname" jdbcType="VARCHAR" />
+		<result property="total" column="total" jdbcType="INTEGER" />
+		<result property="locked" column="locked" jdbcType="INTEGER" />
+		<result property="used" column="used" jdbcType="INTEGER" />
+		<result property="deleted" column="deleted" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="selectCDKeyStatisticsWithSeg" parameterType="java.util.Map" resultMap="KssCDKeyStatisticsResult">
+		SELECT k.adminid, a.username AS adminname, a.parentid, p.username as parentname, k.keysetid, s.keyname,
+		count(k.status) as 'total',
+		sum(case when k.status='LOCKED' then 1 else 0 end) as 'locked',
+		sum(case when k.status='USED' then 1 else 0 end) as 'used',
+		sum(case when k.status='DELETED' then 1 else 0 end) as 'deleted'
+		
+		FROM kss_soft_key k 
+		LEFT JOIN kss_admin a on a.id=k.adminid
+		LEFT JOIN kss_admin p on p.id=a.parentid
+		LEFT JOIN kss_keyset s on k.keysetid=s.id
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test="adminid != null">
+				(k.adminid = #{adminid} or a.parentid=#{adminid} or p.parentid=#{adminid} )
+			</if>
+		</trim>
+		GROUP BY k.adminid, a.username, a.parentid, p.username, k.keysetid, s.keyname
+		
+	</select>
+	
+
+</mapper>

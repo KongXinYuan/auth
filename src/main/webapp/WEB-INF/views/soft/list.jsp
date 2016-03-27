@@ -40,7 +40,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${results}" var="soft">
+				<c:forEach items="${softs}" var="soft">
 					<tr>
 						<td><input type="checkbox" /></td>
 						<td>${soft.id}</td>
@@ -49,16 +49,16 @@
 						<td>${soft.softname}</td>
 						<td>${soft.intervaltime}</td>
 						<td>
+							 <a data-action="edit" data-toggle="modal" data-target="#editModal" href="#" title="编辑"><span class="glyphicon glyphicon-edit" tabindex="0" role="button" data-trigger="focus"></span></a>
+							 <a data-action="del" data-toggle="modal" data-target="#delselModal" href="#" title="删除"><span class="glyphicon glyphicon-remove" tabindex="0" role="button" data-trigger="focus"></span></a>
 							 <c:choose>
-							 <c:when test="${soft.lock}">
+							 <c:when test="${soft.status eq '已锁定'}">
 							 	<a data-action="lock" data-toggle="modal" href="#" title="解锁"><span class="glyphicon glyphicon-ok-circle" tabindex="0" role="button" data-trigger="focus"></span></a>
 							 </c:when>
-							 <c:otherwise>
+							 <c:when test="${soft.status eq '激活'}">
 							 	<a data-action="lock" data-toggle="modal" href="#" title="锁定"><span class="glyphicon glyphicon-ban-circle" tabindex="0" role="button" data-trigger="focus"></span></a>
-							 </c:otherwise>
+							 </c:when>
 							 </c:choose>
-							 <a data-action="del" data-toggle="modal" data-target="#delselModal" href="#" title="删除"><span class="glyphicon glyphicon-remove" tabindex="0" role="button" data-trigger="focus"></span></a>
-							 <a data-action="edit" data-toggle="modal" data-target="#editModal" href="#" title="编辑"><span class="glyphicon glyphicon-edit" tabindex="0" role="button" data-trigger="focus"></span></a>
 						</td>
 					</tr>
 				</c:forEach>
@@ -107,12 +107,15 @@
 							<input type="text" id="inputintervaltime" name="intervaltime" class="form-control" placeholder="intervaltime" value=120>
 						</div>
 						<div class="form-group">
-							<label for="inputclientpubkey" class="form-label sr-only">clientpubkey</label>
-							<input type="text" id="inputclientpubkey" name="clientpubkey" class="form-control" placeholder="clientpubkey">
+							<button type="button" class="btn btn-default" data-action="genRsaKey">生成密匙</button>
 						</div>
 						<div class="form-group">
-							<label for="inputserverprivkey" class="form-label sr-only">serverprivkey</label>
-							<input type="text" id="inputserverprivkey" name="serverprivkey" class="form-control" placeholder="serverprivkey">
+							<label class="form-label sr-only">privkey</label>
+							<textarea name="privkey" class="form-control inputprivkey" placeholder="privkey"></textarea>
+						</div>
+						<div class="form-group">
+							<label class="form-label sr-only">pubkey</label>
+							<textarea class="form-control inputpubkey" placeholder="pubkey"></textarea>
 						</div>
 					</form:form>
 				</div>
@@ -141,28 +144,31 @@
 							<input id="inputsoftid" name="softid" hidden=true>
 						</div>
 			        	<div class="form-group">
-							<label for="inputsoftname" class="form-label col-xs-4">软件名</label>
+							<label class="form-label col-xs-3">软件名</label>
 							<input type="text" id="inputsoftname" class="form-control-static col-xs-8" disabled>
 						</div>
 						<div class="form-group">
-							<label for="inputsoftcode" class="form-label col-xs-4">softcode</label>
+							<label class="form-label col-xs-3">softcode</label>
 							<input type="text" id="inputsoftcode" class="form-control-static col-xs-8" disabled>
 						</div>
 						<div class="form-group">
-							<label for="inputsoftkey" class="form-label col-xs-4">softkey</label>
+							<label class="form-label col-xs-3">softkey</label>
 							<input type="text" id="inputsoftkey" class="form-control-static col-xs-8" disabled>
 						</div>
 						<div class="form-group">
-							<label for="inputintervaltime" class="form-label col-xs-4">intervaltime</label>
+							<label class="form-label col-xs-3">intervaltime</label>
 							<input type="text" id="inputintervaltime" name="intervaltime" class="form-control col-xs-8" placeholder="intervaltime">
 						</div>
 						<div class="form-group">
-							<label for="inputclientpubkey" class="form-label col-xs-4">clientpubkey</label>
-							<input type="text" id="inputclientpubkey" name="clientpubkey" class="form-control col-xs-8" placeholder="clientpubkey">
+							<button type="button" class="btn btn-default" data-action="genRsaKey">生成密匙</button>
 						</div>
 						<div class="form-group">
-							<label for="inputserverprivkey" class="form-label col-xs-4">serverprivkey</label>
-							<input type="text" id="inputserverprivkey" name="serverprivkey" class="form-control col-xs-8" placeholder="serverprivkey">
+							<label class="form-label sr-only">privkey</label>
+							<textarea name="privkey" class="form-control inputprivkey" placeholder="privkey"></textarea>
+						</div>
+						<div class="form-group">
+							<label class="form-label sr-only">pubkey</label>
+							<textarea class="form-control inputpubkey" placeholder="pubkey"></textarea>
 						</div>
 					</form:form>
 				</div>

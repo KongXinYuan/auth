@@ -15,10 +15,14 @@ public class KssOrderDO extends Entity {
 	 */
 	private static final long serialVersionUID = -5979181482797869979L;
 	private String ordernum;
-	private boolean done;
 	private long softid;
+	private String softname;
 	private long adminid;
+	private String adminname;
+	private long parentid;
+	private String parentname;
 	private long keysetid;
+	private String keyname;
 	private long keycount;
 	private long beginid;
 	private Date addtime;
@@ -31,20 +35,20 @@ public class KssOrderDO extends Entity {
 		this.ordernum = ordernum;
 	}
 
-	public boolean isDone() {
-		return done;
-	}
-
-	public void setDone(boolean done) {
-		this.done = done;
-	}
-
 	public long getSoftid() {
 		return softid;
 	}
 
 	public void setSoftid(long softid) {
 		this.softid = softid;
+	}
+
+	public String getSoftname() {
+		return softname;
+	}
+
+	public void setSoftname(String softname) {
+		this.softname = softname;
 	}
 
 	public long getAdminid() {
@@ -55,12 +59,44 @@ public class KssOrderDO extends Entity {
 		this.adminid = adminid;
 	}
 
+	public String getAdminname() {
+		return adminname;
+	}
+
+	public void setAdminname(String adminname) {
+		this.adminname = adminname;
+	}
+
+	public long getParentid() {
+		return parentid;
+	}
+
+	public void setParentid(long parentid) {
+		this.parentid = parentid;
+	}
+
+	public String getParentname() {
+		return parentname;
+	}
+
+	public void setParentname(String parentname) {
+		this.parentname = parentname;
+	}
+
 	public long getKeysetid() {
 		return keysetid;
 	}
 
 	public void setKeysetid(long keysetid) {
 		this.keysetid = keysetid;
+	}
+
+	public String getKeyname() {
+		return keyname;
+	}
+
+	public void setKeyname(String keyname) {
+		this.keyname = keyname;
 	}
 
 	public long getKeycount() {

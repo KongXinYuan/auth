@@ -1,19 +1,31 @@
 package com.xuguruogu.auth.dal.querycondition;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.xuguruogu.auth.dal.enums.CDKeyStatusType;
+
 public class KssSoftKeyQueryCondition extends QueryCondition<KssSoftKeyQueryCondition> {
 
 	private static final long serialVersionUID = 3534111102196083316L;
 	private static final String adminid = "adminid";
+	private static final String parentid = "parentid";
 	private static final String keysetid = "keysetid";
-	private static final String useduser = "useduser";
+	private static final String userid = "userid";
+	private static final String username = "username";
 	private static final String cdkey = "cdkey";
 	private static final String tag = "tag";
 	private static final String ordernum = "ordernum";
-	private static final String lock = "lock";
-	private static final String used = "used";
+	private static final String status = "status";
 
-	public KssSoftKeyQueryCondition putAdminid(long adminid) {
+	public KssSoftKeyQueryCondition putAdminid(Long adminid) {
 		addIfExist(KssSoftKeyQueryCondition.adminid, adminid);
+		return this;
+	}
+
+	public KssSoftKeyQueryCondition putParentid(Long parentid) {
+		addIfExist(KssSoftKeyQueryCondition.parentid, parentid);
 		return this;
 	}
 
@@ -22,33 +34,35 @@ public class KssSoftKeyQueryCondition extends QueryCondition<KssSoftKeyQueryCond
 		return this;
 	}
 
-	public KssSoftKeyQueryCondition putUseduser(String useduser) {
-		addIfExist(KssSoftKeyQueryCondition.useduser, useduser);
+	public KssSoftKeyQueryCondition putUserid(Long userid) {
+		addIfExist(KssSoftKeyQueryCondition.userid, userid);
+		return this;
+	}
+
+	public KssSoftKeyQueryCondition putUsername(String username) {
+		if (StringUtils.isNotBlank(username)) {
+			addIfNutBlank(KssSoftKeyQueryCondition.username, username + '%');
+		}
 		return this;
 	}
 
 	public KssSoftKeyQueryCondition putCdkey(String cdkey) {
-		addIfExist(KssSoftKeyQueryCondition.cdkey, cdkey);
+		addIfNutBlank(KssSoftKeyQueryCondition.cdkey, cdkey);
 		return this;
 	}
 
 	public KssSoftKeyQueryCondition putTag(String tag) {
-		addIfExist(KssSoftKeyQueryCondition.tag, tag);
+		addIfNutBlank(KssSoftKeyQueryCondition.tag, tag);
 		return this;
 	}
 
 	public KssSoftKeyQueryCondition putOrdernum(String ordernum) {
-		addIfExist(KssSoftKeyQueryCondition.ordernum, ordernum);
+		addIfNutBlank(KssSoftKeyQueryCondition.ordernum, ordernum);
 		return this;
 	}
 
-	public KssSoftKeyQueryCondition putLock(Boolean lock) {
-		addIfExist(KssSoftKeyQueryCondition.lock, lock);
-		return this;
-	}
-
-	public KssSoftKeyQueryCondition putUsed(Boolean used) {
-		addIfExist(KssSoftKeyQueryCondition.used, used);
+	public KssSoftKeyQueryCondition putStatus(List<CDKeyStatusType> status) {
+		addIfExist(KssSoftKeyQueryCondition.status, status);
 		return this;
 	}
 

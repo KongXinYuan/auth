@@ -1,5 +1,7 @@
 package com.xuguruogu.auth.dal.dataobject;
 
+import com.xuguruogu.auth.dal.enums.SoftStatusType;
+
 /**
  * 软件对象
  *
@@ -22,17 +24,13 @@ public class KssSoftDO extends Entity {
 	/** 软件名称 */
 	private String softname;
 
-	/** 锁定标记 */
-	private boolean lock;
-
 	/** 校验在线最长间隔时间 */
 	private long intervaltime;
 
-	/** 公匙 */
-	private String clientpubkey;
-
 	/** 私匙 */
-	private String serverprivkey;
+	private String privkey;
+
+	private SoftStatusType status;
 
 	public long getSoftcode() {
 		return softcode;
@@ -58,14 +56,6 @@ public class KssSoftDO extends Entity {
 		this.softname = softname;
 	}
 
-	public boolean isLock() {
-		return lock;
-	}
-
-	public void setLock(boolean lock) {
-		this.lock = lock;
-	}
-
 	public long getIntervaltime() {
 		return intervaltime;
 	}
@@ -74,20 +64,20 @@ public class KssSoftDO extends Entity {
 		this.intervaltime = intervaltime;
 	}
 
-	public String getClientpubkey() {
-		return clientpubkey;
+	public String getPrivkey() {
+		return privkey;
 	}
 
-	public void setClientpubkey(String clientpubkey) {
-		this.clientpubkey = clientpubkey;
+	public void setPrivkey(String privkey) {
+		this.privkey = privkey;
 	}
 
-	public String getServerprivkey() {
-		return serverprivkey;
+	public SoftStatusType getStatus() {
+		return status;
 	}
 
-	public void setServerprivkey(String serverprivkey) {
-		this.serverprivkey = serverprivkey;
+	public void setStatus(SoftStatusType status) {
+		this.status = status;
 	}
 
 }

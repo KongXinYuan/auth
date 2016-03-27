@@ -24,6 +24,8 @@ public interface KssDaoBaseWithSeg<T extends EntityWithSeg, C extends QueryCondi
 	 */
 	public T selectById(long softid, long id);
 
+	public List<T> selectByIds(long softid, List<Long> ids);
+
 	/**
 	 * 删除
 	 *

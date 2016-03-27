@@ -16,6 +16,11 @@ public class KssLogLoginDO extends Entity {
 	/** 管理员id */
 	private long adminid;
 
+	private String username;
+	private long parentid;
+
+	private String parentname;
+
 	/** ip地址 */
 	private int loginip;
 
@@ -28,6 +33,30 @@ public class KssLogLoginDO extends Entity {
 
 	public void setAdminid(long adminid) {
 		this.adminid = adminid;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public long getParentid() {
+		return parentid;
+	}
+
+	public void setParentid(long parentid) {
+		this.parentid = parentid;
+	}
+
+	public String getParentname() {
+		return parentname;
+	}
+
+	public void setParentname(String parentname) {
+		this.parentname = parentname;
 	}
 
 	public int getLoginip() {

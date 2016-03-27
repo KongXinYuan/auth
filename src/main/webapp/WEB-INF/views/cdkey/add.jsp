@@ -18,6 +18,7 @@
 			<label for="inputsoft" class="form-label col-xs-3 sr-only">软件</label>
 			<div class="col-xs-3">
 				<select id="inputsoft" class="form-control" name="softid" >
+					<option value=''>请选择</option>
 					<c:forEach items="${softs}" var="soft">
 					<option value="${soft.id}">${soft.softname}</option>
 					</c:forEach>
@@ -29,6 +30,7 @@
 	        <label for="inputkeyset" class="col-xs-3 form-label sr-only">卡类</label>
 	        <div class="col-xs-3">
 	            <select id="inputkeyset" class="form-control" name="keysetid">
+					<option value=''>请选择</option>
 	            </select>
 	        </div>
 	    </div>
@@ -64,7 +66,34 @@
 $(function(){
 
 	/* 表单校验 */
-    $('#addform').formValidation({
+    $('#addform').find('#inputsoft').multiselect({
+		nonSelectedText:"请选择",
+		onChange: function(option, checked){
+			if(checked){
+				var softid = option.val();
+				if(softid>0){
+					$.post("/keyset/option.json",{softid:softid},function(result){
+		                if(true == result["hasError"]){
+		                    //提示错误
+		                    alert("错误:"+result["error"]);
+		                }else if(true == result["success"]){
+		                	var keysets = null==result["keysets"]?[]:result["keysets"];
+		                	var options=[{label:'请选择',value:''}];
+		                	$.each(keysets,function(index,keyset) {
+		                		options.push({label: keyset.keyname+'--['+keyset.cday+'天]', value: keyset.id});
+		                	});
+		                	
+		                	$('#inputkeyset').multiselect('dataprovider',options).multiselect('refresh');
+		                }
+					},"json");
+				}else{
+					$('#inputkeyset').multiselect('dataprovider',[{label:'请选择',value:''}]).multiselect('refresh');
+				}
+			}
+		}
+	}).end()
+	.find('#inputkeyset').multiselect().end()
+    .formValidation({
         framework: 'bootstrap',
         icon: {
             valid: 'glyphicon glyphicon-ok',
@@ -73,23 +102,27 @@ $(function(){
         },
         fields: {
         	softid: {
+        		excluded:false,
                 validators: {
-                    notEmpty: {
-                        message: '请选择软件'
-                    },
-                    integer:{
-                    	message: '不是整数'
-                    }
+                	notEmpty:{
+            			message:"请选择软件"
+            		},
+            		regexp:{
+            			regexp:/^\d*$/,
+            			message:"请选择软件"
+            		}
                 }
             },
             keysetid: {
+            	excluded:false,
                 validators: {
-                    notEmpty: {
-                        message: '请选择卡类'
-                    },
-                    integer:{
-                    	message: '不是整数'
-                    }
+                	notEmpty:{
+            			message:"请选择卡类"
+            		},
+            		regexp:{
+            			regexp:/^\d*$/,
+            			message:"请选择卡类"
+            		}
                 }
             },
             num: {
@@ -146,45 +179,6 @@ $(function(){
 		
 	});
 	
-	
-	$('#inputsoft').multiselect({
-		nonSelectedText:"请选择",
-		onChange: function(option, checked){
-			if(checked){
-				updateOption(option.val());
-			}
-
-		}
-	});
-	
-	function updateOption(softid){
-        $.ajax({
-            type: 'POST',
-            url: "/keyset/option.json",
-            data: {softid:softid},
-            dataType:"json",
-            success: function(result){
-                if(true == result["hasError"]){
-                    //提示错误
-                    alert("错误:"+result["error"]);
-                }else if(true == result["success"]){
-                	var keysets = result["keysets"];
-                	//关闭
-                	var options=[];
-                	$.each(keysets,function(index,keyset) {
-                		options.push({label: keyset.keyname, title: keyset.keyname, value: keyset.id});
-                	});
-                	
-                	$('#inputkeyset').multiselect('dataprovider',options).multiselect('rebuild');
-                }
-            }
-        });
-	};
-	
-	updateOption($("#inputsoft option:selected").val());
-	$('#inputkeyset').multiselect({
-		nonSelectedText:"请选择"
-	});
 });
 </script>
 

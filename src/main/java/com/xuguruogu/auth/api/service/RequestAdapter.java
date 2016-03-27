@@ -59,7 +59,7 @@ public class RequestAdapter {
 		try {
 			// Base64->RSA->Json
 			param = objectMapper.readValue(
-					new String(RSAUtils.decryptByPrivateKey(Base64.decodeBase64(req), soft.getServerprivkey())),
+					new String(RSAUtils.decryptByPrivateKey(Base64.decodeBase64(req), soft.getPrivkey())),
 					param.getClass());
 		} catch (Exception e) {
 			logger.warn("err:" + e.getMessage());
@@ -104,7 +104,7 @@ public class RequestAdapter {
 			objectMapper.writeValue(strWriter, resultMap);
 			// Json->RSA->Base64
 			return Base64.encodeBase64URLSafeString(
-					RSAUtils.encryptByPublicKey(strWriter.toString().getBytes("UTF-8"), soft.getClientpubkey()));
+					RSAUtils.encryptByPrivateKey(strWriter.toString().getBytes("UTF-8"), soft.getPrivkey()));
 		} catch (Exception e) {
 			throw new KssException("请求结果生成错误");
 		}

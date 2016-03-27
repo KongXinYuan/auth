@@ -5,5 +5,5 @@ import com.xuguruogu.auth.dal.querycondition.KssOrderQueryCondition;
 
 public interface KssOrderDao extends KssDaoBase<KssOrderDO, KssOrderQueryCondition> {
 
-	public int update(String ordernum, boolean done, long beginid);
+	public long update(String ordernum, long beginid);
 }

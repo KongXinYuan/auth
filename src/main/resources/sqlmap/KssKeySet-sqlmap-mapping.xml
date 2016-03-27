@@ -6,13 +6,14 @@
 <mapper namespace="KSS_KEY_SET">
 
 	<resultMap type="KssKeySetDO" id="KssKeySetResult">
-		<id property="id" column="ID" javaType="java.lang.Long" jdbcType="INTEGER" />
-		<result property="softid" column="softid" javaType="java.lang.Long" jdbcType="INTEGER" />
-		<result property="lock" column="ISLOCK" javaType="java.lang.Boolean" jdbcType="BOOLEAN" />
-		<result property="keyname" column="keyname" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="cday" column="cday" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
-		<result property="prefix" column="prefix" javaType="java.lang.String" jdbcType="VARCHAR" />
-		<result property="retailprice" column="retailprice" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+		<id property="id" column="ID" jdbcType="INTEGER" />
+		<result property="softid" column="softid" jdbcType="INTEGER" />
+		<result property="softname" column="softname" jdbcType="VARCHAR" />
+		<result property="keyname" column="keyname" jdbcType="VARCHAR" />
+		<result property="cday" column="cday" jdbcType="DECIMAL" />
+		<result property="prefix" column="prefix" jdbcType="VARCHAR" />
+		<result property="retailprice" column="retailprice" jdbcType="DECIMAL" />
+		<result property="status" column="status" jdbcType="INTEGER" />
 	</resultMap>
 
 	<insert id="insert" parameterType="KssKeySetDO">
@@ -31,7 +32,7 @@
 	</insert>
 	
 	<update id="update" parameterType="java.util.Map">
-		UPDATE KSS_KEYSET
+		update kss_keyset
 		<set>
 			cday = #{cday},
 			retailprice = #{retailprice}
@@ -39,59 +40,113 @@
 		where id=#{id}
 	</update>
 	
-	<update id="updateLock" parameterType="java.util.Map">
-		UPDATE KSS_KEYSET
+	<update id="updateStatusById" parameterType="java.util.Map">
+		update kss_keyset
 		<set>
-			islock = #{islock}
+			status = #{status}
 		</set>
 		where id=#{id}
 	</update>
 	
-	<select id="selectById" parameterType="int" resultMap="KssKeySetResult">
-		select
-		* from KSS_KEYSET WHERE id=#{id}
+	<update id="updateStatusByIds" parameterType="java.util.Map">
+		update kss_keyset
+		<set>
+			status = #{status}
+		</set>
+		where id in
+		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</update>
+	
+	
+	<update id="updateStatusBySoftId" parameterType="java.util.Map">
+		update kss_keyset
+		<set>
+			status = #{status}
+		</set>
+		where softid = #{id}
+	</update>
+	
+	<update id="updateStatusBySoftIds" parameterType="java.util.Map">
+		update kss_keyset
+		<set>
+			status = #{status}
+		</set>
+		where softid in
+		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</update>
+	
+	<select id="selectById" parameterType="long" resultMap="KssKeySetResult">
+		<include refid="SelectList" />
+		where k.id=#{id}
 	</select>
+	
+	<select id="selectByIds" parameterType="java.util.List" resultMap="KssKeySetResult">
+		<include refid="SelectList" />
+		where k.id in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</select>
+	
 
-	<delete id="deleteById" parameterType="int">
-		delete from KSS_KEYSET
-		WHERE
-		ID=#{id}
+	<delete id="deleteById" parameterType="long">
+		delete from kss_keyset
+		where id=#{id}
 	</delete>
 
 	<delete id="deleteByIds" parameterType="java.util.List">
-		delete from KSS_KEYSET
-		WHERE ID in
+		delete from kss_keyset
+		where id in
 		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
 	</delete>
 	
-	<delete id="deleteByQueryCondition" parameterType="java.util.Map">
-		delete from KSS_KEYSET
-		<include refid="QueryCondition" />
-	</delete>
-
 	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
-		select COUNT(*) from KSS_KEYSET
+		select count(*) from kss_keyset k left join kss_power p on k.id= p.keysetid
 		<include refid="QueryCondition" />
 	</select>
 
 	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="KssKeySetResult">
-		SELECT * FROM KSS_KEYSET
+		<include refid="SelectList"></include>
 		<include refid="QueryCondition" />
 		<include refid="Pagination" />
 	</select>
 	
+	<sql id="SelectList">
+		select k.*, s.softname
+		from kss_keyset k 
+		left join kss_soft s on k.softid=s.id
+	</sql>
 	
 	<!-- 查询条件 -->
 	<sql id="QueryCondition">
 		<trim prefix="where" prefixOverrides="and|or">
 			<if test="softid != null">
-				softid = #{softid}
+				k.softid = #{softid}
 			</if>
 			<if test="keyname != null">
-				and keyname = #{keyname}
+				and k.keyname = #{keyname}
 			</if>
+			<if test="status != null">
+				and k.status in
+				<foreach collection="status" item="s" index="index" open="(" close=")" separator=",">
+					#{s}
+				</foreach>
+			</if>
+			<if test="adminid != null">
+				and k.id in
+				(
+				select distinct k.id from kss_power p 
+				inner join kss_keyset k on p.keysetid=k.id
+				where p.adminid=#{adminid}
+				)
+			</if>
+			order by k.id
 		</trim>
 	</sql>
 	

@@ -1,23 +1,25 @@
 package com.xuguruogu.auth.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
-import com.alibaba.appengine.api.cache.CacheService;
-import com.alibaba.appengine.api.cache.CacheServiceFactory;
-import com.xuguruogu.auth.config.AuthConfigHolder;
 import com.xuguruogu.auth.dal.daointerface.KssKeySetDao;
+import com.xuguruogu.auth.dal.daointerface.KssPowerDao;
 import com.xuguruogu.auth.dal.daointerface.KssSoftDao;
 import com.xuguruogu.auth.dal.dataobject.KssSoftDO;
-import com.xuguruogu.auth.dal.querycondition.KssKeySetQueryCondition;
+import com.xuguruogu.auth.dal.enums.KeySetStatusType;
+import com.xuguruogu.auth.dal.enums.SoftStatusType;
 import com.xuguruogu.auth.dal.querycondition.KssSoftQueryCondition;
-import com.xuguruogu.auth.dto.SoftDTO;
+import com.xuguruogu.auth.security.AdminUserDetails;
 import com.xuguruogu.auth.service.SoftManager;
-import com.xuguruogu.auth.util.Converter;
 import com.xuguruogu.auth.util.RandomUtil;
 
 @Component("softManager")
@@ -30,156 +32,104 @@ public class SoftManagerImpl implements SoftManager {
 	private KssKeySetDao kssKeySetDao;
 
 	@Autowired
-	private Converter<KssSoftDO, SoftDTO> softDTOConverter;
+	private KssPowerDao kssPowerDao;
+
+	@Autowired
+	private TransactionTemplate txTemplate;
 
 	@Override
-	public Map<String, Object> list(Integer pageNo, Integer pageSize) {
+	@Secured({ "ROLE_OWNER", "ROLE_ADMIN", "ROLE_SELLER" })
+	public List<KssSoftDO> listAll() {
 
-		Map<String, Object> result = new HashMap<String, Object>();
+		AdminUserDetails currentAdmin = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
 
-		// 默认值设置
-		if (null == pageSize || null == pageNo) {
-			pageSize = 20;
-			pageNo = 1;
-		}
-		KssSoftQueryCondition query = new KssSoftQueryCondition();
-
-		result.put("count", kssSoftDao.selectCountByQueryCondition(query));
-		query.pagination(pageNo, pageSize);
-		List<KssSoftDO> list = kssSoftDao.selectListByQueryCondition(query);
-		result.put("results", softDTOConverter.converter(list));
-
-		return result;
+		return kssSoftDao.selectListByQueryCondition(new KssSoftQueryCondition()
+				.putAdminid(currentAdmin.getRole().hasFullPermission() ? null : currentAdmin.getId())
+				.putStatus(SoftStatusType.getNonDelList()));
 	}
 
 	@Override
-	public List<SoftDTO> listAll() {
-		return softDTOConverter.converter(kssSoftDao.selectListByQueryCondition(new KssSoftQueryCondition()));
+	@Secured({ "ROLE_OWNER" })
+	public KssSoftDO create(final String softname, final long intervaltime, final String privkey) {
+
+		return txTemplate.execute(new TransactionCallback<KssSoftDO>() {
+			@Override
+			public KssSoftDO doInTransaction(TransactionStatus status) {
+				// 删除未完成的记录
+				KssSoftDO badSoftDO = kssSoftDao.selectOneByQueryCondition(new KssSoftQueryCondition().putSoftcode(0L));
+				if (null != badSoftDO) {
+					kssSoftDao.deleteById(badSoftDO.getId());
+				}
+
+				// 插入
+				KssSoftDO kssSoftDO = new KssSoftDO();
+				kssSoftDO.setPrivkey(privkey);
+				kssSoftDO.setSoftkey(RandomUtil.getRandomCharAndNumr(24));
+				kssSoftDO.setSoftname(softname);
+				kssSoftDO.setIntervaltime(intervaltime);
+				kssSoftDO.setSoftcode(0L);
+				kssSoftDao.insert(kssSoftDO);
+
+				// 获取id
+				KssSoftDO soft = kssSoftDao
+						.selectOneByQueryCondition(new KssSoftQueryCondition().putSoftname(softname));
+				long softid = soft.getId();
+
+				kssSoftDao.creatTableWithSeg(softid);
+				// 更新softcode
+				kssSoftDao.updateSoftcode(softid, softid + 1000000);
+				// 获取DO
+				return kssSoftDao.selectById(softid);
+			}
+		});
 	}
 
 	@Override
-	public SoftDTO create(String softname, long intervaltime, String clientpubkey, String serverprivkey) {
-
-		// 删除未完成的记录
-		KssSoftDO badSoftDO = kssSoftDao.selectOneByQueryCondition(new KssSoftQueryCondition().putSoftcode(0L));
-		if (null != badSoftDO) {
-			kssSoftDao.deleteById(badSoftDO.getId());
-		}
-
-		// 插入并锁定
-		KssSoftDO kssSoftDO = new KssSoftDO();
-		kssSoftDO.setServerprivkey(serverprivkey);
-		kssSoftDO.setClientpubkey(clientpubkey);
-		kssSoftDO.setSoftkey(RandomUtil.getRandomCharAndNumr(24));
-		kssSoftDO.setSoftname(softname);
-		kssSoftDO.setLock(true);
-		kssSoftDO.setIntervaltime(intervaltime);
-		kssSoftDO.setSoftcode(0L);
-		kssSoftDao.insert(kssSoftDO);
-
-		// 获取id
-		KssSoftDO soft = kssSoftDao.selectOneByQueryCondition(new KssSoftQueryCondition().putSoftname(softname));
-		long softid = soft.getId();
-
-		try {
-			// 清空可能存在的id
-			kssSoftDao.dropTableWithSeg(softid);
-			kssSoftDao.creatTableWithSeg(softid);
-			// 更新softcode,并解锁
-			kssSoftDao.updateSoftcode(softid, softid + 1000000);
-		} catch (Exception e) {
-			kssSoftDao.dropTableWithSeg(softid);
-			kssSoftDao.deleteById(softid);
-			throw e;
-		}
-
-		// 获取DO
-		return softDTOConverter.convert(kssSoftDao.selectById(softid));
+	@Secured({ "ROLE_OWNER" })
+	public KssSoftDO detail(long softid) {
+		return kssSoftDao.selectById(softid);
 	}
 
 	@Override
-	public SoftDTO detail(long softid) {
-		return softDTOConverter.convert(kssSoftDao.selectById(softid));
-	}
-
-	// 更新
-	// 去缓存
-	@Override
-	public SoftDTO update(long softid, long intervaltime, String clientpubkey, String serverprivkey) {
-		kssSoftDao.update(softid, intervaltime, clientpubkey, serverprivkey);
-
+	@Secured({ "ROLE_OWNER" })
+	public KssSoftDO update(long softid, long intervaltime, String privkey) {
+		kssSoftDao.update(softid, intervaltime, privkey);
 		KssSoftDO soft = kssSoftDao.selectById(softid);
-		emitSoftCache(soft.getSoftcode());
-		return softDTOConverter.convert(soft);
+		return soft;
 	}
 
-	// 锁定
-	// 去缓存
 	@Override
+	@Secured({ "ROLE_OWNER" })
 	public void updateLock(long softid, boolean lock) {
-		kssSoftDao.updateLock(softid, lock);
-		emitSoftCache(kssSoftDao.selectById(softid).getSoftcode());
+		kssSoftDao.updateStatusById(softid, SoftStatusType.fromLock(lock));
 	}
 
-	// 删除
-	// 去缓存
 	@Override
-	public void deleteByIds(List<Long> softids) {
-		for (long softid : softids) {
-			emitSoftCache(kssSoftDao.selectById(softid).getSoftcode());
-			kssSoftDao.dropTableWithSeg(softid);
-			kssSoftDao.deleteById(softid);
-			kssKeySetDao.deleteByQueryCondition(new KssKeySetQueryCondition().putSoftid(softid));
-		}
+	@Secured({ "ROLE_OWNER" })
+	public void deleteByIds(final List<Long> softids) {
+
+		txTemplate.execute(new TransactionCallbackWithoutResult() {
+			@Override
+			protected void doInTransactionWithoutResult(TransactionStatus status) {
+				kssSoftDao.updateStatusByIds(softids, SoftStatusType.DELETED);
+				kssKeySetDao.updateStatusBySoftIds(softids, KeySetStatusType.DELETED);
+				kssPowerDao.deleteBySoftIds(softids);
+			}
+		});
+
 	}
 
-	// 加缓存
 	@Override
 	public KssSoftDO selectBySoftcode(long softcode) {
-
-		KssSoftDO soft = getSoftCache(softcode);
-		if (null != soft) {
-			return soft;
-		}
-
 		KssSoftQueryCondition query = new KssSoftQueryCondition();
 		query.putSoftcode(softcode);
 
-		soft = kssSoftDao.selectOneByQueryCondition(query);
+		KssSoftDO soft = kssSoftDao.selectOneByQueryCondition(query);
 		if (null == soft) {
 			return null;
 		}
 
-		putSoftCache(soft);
 		return soft;
 	}
-
-	// 缓存操作
-	// 查缓存
-	private KssSoftDO getSoftCache(long softcode) {
-
-		CacheService cache = CacheServiceFactory.getCacheService();
-		String cacheKey = AuthConfigHolder.getSoftCacheKey(softcode);
-		return (KssSoftDO) cache.get(cacheKey);
-	}
-
-	// 缓存操作
-	// 加缓存
-	private void putSoftCache(KssSoftDO kssSoftDO) {
-		if (null == kssSoftDO) {
-			return;
-		}
-		CacheService cache = CacheServiceFactory.getCacheService();
-		String cacheKey = AuthConfigHolder.getSoftCacheKey(kssSoftDO.getSoftcode());
-		cache.put(cacheKey, kssSoftDO);
-	}
-
-	// 缓存操作
-	// 去缓存
-	private void emitSoftCache(long softcode) {
-		CacheService cache = CacheServiceFactory.getCacheService();
-		String cacheKey = AuthConfigHolder.getSoftCacheKey(softcode);
-		cache.delete(cacheKey);
-	}
-
 }

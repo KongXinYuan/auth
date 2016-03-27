@@ -17,12 +17,12 @@ public class KssSoftRechargeQueryCondition extends QueryCondition<KssSoftRecharg
 	}
 
 	public KssSoftRechargeQueryCondition putUsername(String username) {
-		addIfExist(KssSoftRechargeQueryCondition.username, username);
+		addIfNutBlank(KssSoftRechargeQueryCondition.username, username);
 		return this;
 	}
 
 	public KssSoftRechargeQueryCondition putCdkey(String cdkey) {
-		addIfExist(KssSoftRechargeQueryCondition.cdkey, cdkey);
+		addIfNutBlank(KssSoftRechargeQueryCondition.cdkey, cdkey);
 		return this;
 	}
 

@@ -23,17 +23,6 @@ $(function() {
                     }
                 }
             },
-            confirmpassword: {
-                validators: {
-                	identical: {
-                		field: 'password',
-                        message: '两次输入密码不一致'
-                    },
-                    notEmpty: {
-                        message: '请输入密码'
-                    }
-                }
-            },
             money:{
             	validators:{
                     notEmpty: {
@@ -69,15 +58,16 @@ $(function() {
                     	$("#admintable tbody").append(
                     			'<tr><td><input type="checkbox" /></td>'
                     			+'<td>'+amdin["id"]+'</td>'
-                    			+'<td>'+amdin["level"]+'</td>'
+                    			+'<td>'+amdin["role"]+'</td>'
                     			+'<td>'+amdin["username"]+'</td>'
-                    			+'<td>'+amdin["parentid"]+'</td>'
+                    			+'<td>'+amdin["parentname"]+'</td>'
                     			+'<td>'+amdin["addtime"]+'</td>'
                     			+'<td>'+amdin["lastlogintime"]+'</td>'
                     			+'<td>'+amdin["lastloginip"]+'</td>'
                     			+'<td>'
-                    			+'<a data-action="lock" data-toggle="modal" href="#" title="锁定"><span class="glyphicon glyphicon-ban-circle" tabindex="0" role="button" data-trigger="focus"></span></a>'
+                    			+'<a data-action="edit" data-toggle="modal" data-target="#editModal" href="#" title="编辑"><span class="glyphicon glyphicon-edit" tabindex="0" role="button" data-trigger="focus"></span></a>'
                     			+'<a data-action="del" data-toggle="modal" data-target="#delselModal" href="#" title="删除"><span class="glyphicon glyphicon-remove" tabindex="0" role="button" data-trigger="focus"></span></a>'
+                    			+'<a data-action="lock" data-toggle="modal" href="#" title="锁定"><span class="glyphicon glyphicon-ban-circle" tabindex="0" role="button" data-trigger="focus"></span></a>'
                     			+'</td></tr>');
                     	//关闭
                     	$('#addModal').modal('hide');
@@ -94,7 +84,9 @@ $(function() {
 		$('#addform').data('formValidation').resetForm();
 	});
 	
-
+	
+	
+	
 	/* 删除 标记当前删除的对象*/
 	var delitems;
 	$('#delselModal').on('show.bs.modal', function(event) {
@@ -166,22 +158,16 @@ $(function() {
                     	item.attr("title","解锁");
                     	span.removeClass("glyphicon-ban-circle").addClass("glyphicon-ok-circle");
                     	span.popover({content:"成功锁定"}).popover('show');
-                    }else{
-                    	span.popover({content:"未知数据格式:"+data}).popover('show');
                     }
-                },
-                error:function(data){
-                    //提示错误
-                    span.popover({content:"未知错误"}).popover('show');
                 }
             });
         }
 
-        function unlock(unlockid){
+        function unlock(lockid){
             $.ajax({
                 type: 'POST',
                 url: "http:/admin/unlock.json",
-                data: {unlockid:unlockid},
+                data: {lockid:lockid},
                 dataType:"json",
                 success: function(result){
                     if(true == result["hasError"]){
@@ -191,13 +177,7 @@ $(function() {
                     	item.attr("title","锁定");
                     	span.removeClass("glyphicon-ok-circle").addClass("glyphicon-ban-circle");
                     	span.popover({content:"成功解锁"}).popover('show');
-                    }else{
-                    	span.popover({content:"未知数据格式:"+data}).popover('show');
                     }
-                },
-                error:function(data){
-                    //提示错误
-                    span.popover({content:"未知错误"}).popover('show');
                 }
             });
         }

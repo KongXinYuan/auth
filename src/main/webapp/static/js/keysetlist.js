@@ -127,15 +127,13 @@ $(function() {
                     			+'<td>'+keyset["prefix"]+'</td>'
                     			+'<td>'+keyset["retailprice"]+'</td>'
                     			+'<td>'
-                    			+'<a data-action="lock" data-toggle="modal" href="#" title="锁定"><span class="glyphicon glyphicon-ban-circle" tabindex="0" role="button" data-trigger="focus"></span></a>'
-                    			+'<a data-action="del" data-toggle="modal" data-target="#delselModal" href="#" title="删除"><span class="glyphicon glyphicon-remove" tabindex="0" role="button" data-trigger="focus"></span></a>'
                     			+'<a data-action="edit" data-toggle="modal" data-target="#editModal" href="#" title="编辑"><span class="glyphicon glyphicon-edit" tabindex="0" role="button" data-trigger="focus"></span></a>'
+                    			+'<a data-action="del" data-toggle="modal" data-target="#delselModal" href="#" title="删除"><span class="glyphicon glyphicon-remove" tabindex="0" role="button" data-trigger="focus"></span></a>'
+                    			+'<a data-action="lock" data-toggle="modal" href="#" title="锁定"><span class="glyphicon glyphicon-ban-circle" tabindex="0" role="button" data-trigger="focus"></span></a>'
                     			+'</td></tr>');
                     	//关闭
                     	$('#addModal').modal('hide');
                     	
-                    }else{
-                    	button.popover({content:"未知数据格式:"+data}).popover('show');
                     }
                 }
             });
@@ -171,9 +169,6 @@ $(function() {
                 	$('#editform #inputcday').val(keyset["cday"]);
                 	$('#editform #inputkeysetid').val(keyset["id"]);
                 	$('#editform #inputretailprice').val(keyset["retailprice"]);
-                }else{
-                	$('#editModal').modal('hide');
-                	button.popover({content:"未知数据格式:"+data}).popover('show');
                 }
             }
         });
@@ -205,8 +200,6 @@ $(function() {
                     	$(edititem).children("td:eq(6)").html(keyset["retailprice"]);
                     	//关闭
                     	$('#editModal').modal('hide');
-                    }else{
-                    	button.popover({content:"未知数据格式:"+data}).popover('show');
                     }
                 }
             });
@@ -226,7 +219,7 @@ $(function() {
 			delitems = currentitem.closest("tr");
 			$("#delcontent").html("确定删除"+delitems.children("td:eq(3)").html()+"么?");
 		}else{
-			delitems = $("#softtable tbody :checked").closest("tr");
+			delitems = $("#keysettable tbody :checked").closest("tr");
 			$("#delcontent").html("确定删除全部所选么?");
 		}
 	});
@@ -255,8 +248,6 @@ $(function() {
                 	delitems.remove();
                 	//关闭
                 	$('#delselModal').modal('hide');
-                }else{
-                	button.popover({content:"未知数据格式:"+data}).popover('show');
                 }
             }
         });
@@ -290,8 +281,6 @@ $(function() {
                     	item.attr("title","解锁");
                     	span.removeClass("glyphicon-ban-circle").addClass("glyphicon-ok-circle");
                     	span.popover({content:"成功锁定"}).popover('show');
-                    }else{
-                    	span.popover({content:"未知数据格式:"+data}).popover('show');
                     }
                 }
             });
@@ -311,8 +300,6 @@ $(function() {
                     	item.attr("title","锁定");
                     	span.removeClass("glyphicon-ok-circle").addClass("glyphicon-ban-circle");
                     	span.popover({content:"成功解锁"}).popover('show');
-                    }else{
-                    	span.popover({content:"未知数据格式:"+data}).popover('show');
                     }
                 }
             });

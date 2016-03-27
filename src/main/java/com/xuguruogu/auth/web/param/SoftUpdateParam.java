@@ -2,6 +2,8 @@ package com.xuguruogu.auth.web.param;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotNull;
+
 public class SoftUpdateParam implements Serializable {
 
 	/**
@@ -9,10 +11,11 @@ public class SoftUpdateParam implements Serializable {
 	 */
 	private static final long serialVersionUID = 4421049386067961080L;
 
+	@NotNull(message = "intervaltime不能为空")
 	private long softid;
+	@NotNull(message = "intervaltime不能为空")
 	private long intervaltime;
-	private String clientpubkey;
-	private String serverprivkey;
+	private String privkey;
 
 	public long getSoftid() {
 		return softid;
@@ -30,20 +33,12 @@ public class SoftUpdateParam implements Serializable {
 		this.intervaltime = intervaltime;
 	}
 
-	public String getClientpubkey() {
-		return clientpubkey;
+	public String getPrivkey() {
+		return privkey;
 	}
 
-	public void setClientpubkey(String clientpubkey) {
-		this.clientpubkey = clientpubkey;
-	}
-
-	public String getServerprivkey() {
-		return serverprivkey;
-	}
-
-	public void setServerprivkey(String serverprivkey) {
-		this.serverprivkey = serverprivkey;
+	public void setPrivkey(String privkey) {
+		this.privkey = privkey;
 	}
 
 }

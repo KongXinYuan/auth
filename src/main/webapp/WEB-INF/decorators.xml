@@ -2,7 +2,7 @@
 <decorators defaultdir="/WEB-INF/layouts/">
 	<excludes>
 		<pattern>*.json</pattern>
-		<pattern>*.form</pattern>
+		<pattern>/soft/form*</pattern>
     	<pattern>/static/*</pattern>
 		<pattern>favicon.ico</pattern>
 		<pattern>/login*</pattern>

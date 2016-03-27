@@ -7,23 +7,23 @@
 	<resultMap type="KssAdminDO" id="kssAdminResult">
 		<id property="id" column="ID" jdbcType="INTEGER" />
 		<result property="parentid" column="PARENTID" jdbcType="INTEGER" />
-		<result property="level" column="LEVEL" jdbcType="INTEGER" />
-		<result property="del" column="ISDEL" jdbcType="BOOLEAN" />
+		<result property="parentname" column="parentname" jdbcType="VARCHAR" />
+		<result property="ownerid" column="ownerid" jdbcType="INTEGER" />
+		<result property="role" column="role" jdbcType="INTEGER" />
 		<result property="username" column="USERNAME" jdbcType="VARCHAR" />
 		<result property="password" column="PASSWORD" jdbcType="VARCHAR" />
-		<result property="lock" column="ISLOCK" jdbcType="BOOLEAN" />
 		<result property="addtime" column="ADDTIME" jdbcType="TIMESTAMP" />
 		<result property="lastlogintime" column="LASTLOGINTIME" jdbcType="TIMESTAMP" />
 		<result property="lastloginip" column="LASTLOGINIP" jdbcType="INTEGER" />
-		<result property="powerlist" column="POWERLIST" jdbcType="VARCHAR" />
 		<result property="money" column="money" jdbcType="DECIMAL" />
-		<result property="exmoney" column="EXMONEY" jdbcType="DECIMAL" />
+		<result property="status" column="status" jdbcType="VARCHAR" />
 	</resultMap>
+	
 	
 	<insert id="insert" parameterType="KssAdminDO">
 		INSERT INTO KSS_ADMIN (
 		parentid,
-		level,
+		role,
 		username,
 		password,
 		addtime,
@@ -31,7 +31,7 @@
 		money)
 		VALUES (
 		#{parentid},
-		#{level},
+		#{role},
 		#{username},
 		#{password},
 		#{addtime},
@@ -47,12 +47,23 @@
 		where id=#{id}
 	</update>
 
-	<update id="updateLock" parameterType="java.util.Map">
-		UPDATE KSS_ADMIN
+	<update id="updateStatusById" parameterType="java.util.Map">
+		update kss_admin
 		<set>
-			islock = #{islock}
+			status = #{status}
 		</set>
 		where id=#{id}
+	</update>
+	
+	<update id="updateStatusByIds" parameterType="java.util.Map">
+		update kss_admin
+		<set>
+			status = #{status}
+		</set>
+		where id in
+		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
 	</update>
 
 	<update id="updateLastLogin" parameterType="java.util.Map">
@@ -65,80 +76,77 @@
 		id=#{id}
 	</update>
 	
-	<update id="updatePowerlist" parameterType="java.util.Map">
-		UPDATE KSS_ADMIN
-		<set>
-			powerlist = #{powerlist}
-		</set>
-		where id=#{id}
-	</update>
-	
 	<update id="updateMoney" parameterType="java.util.Map">
 		UPDATE KSS_ADMIN
 		<set>
-			money = #{money},
-			exmoney = #{exmoney}
+			money = #{money}
 		</set>
 		where id=#{id}
 	</update>
 
 
 	<select id="selectById" parameterType="long" resultMap="kssAdminResult">
-		select
-		* from KSS_ADMIN WHERE id=#{id} and isdel=0
+		<include refid="SelectList" />
+		WHERE a.id=#{id}
 	</select>
 
-	<delete id="deleteById" parameterType="long">
-		update KSS_ADMIN
-		<set>
-			isdel = 1
-		</set>
-		WHERE ID=#{id}
-	</delete>
-
-	<update id="deleteByIds" parameterType="java.util.List">
-		update KSS_ADMIN
-		<set>
-			isdel = 1
-		</set>
-		WHERE ID in
+	<select id="selectByIds" parameterType="java.util.List" resultMap="kssAdminResult">
+		<include refid="SelectList" />
+		where a.id in
 		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
-	</update>
+	</select>
+
+	<delete id="deleteById" parameterType="long">
+		delete from kss_admin
+		where ID=#{id}
+	</delete>
+
+	<delete id="deleteByIds" parameterType="java.util.List">
+		delete from kss_admin
+		where ID in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
 
 	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
-		select COUNT(*) from KSS_ADMIN
+		select count(*) from kss_admin a
 		<include refid="QueryCondition" />
 	</select>
 
 	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="kssAdminResult">
-		SELECT * FROM KSS_ADMIN
+		<include refid="SelectList"/>
 		<include refid="QueryCondition" />
 		<include refid="Pagination" />
 	</select>
+	
+	<sql id="SelectList">
+		SELECT a.*, p.username as parentname, o.id as ownerid
+		from kss_admin a
+		left join kss_admin p on a.parentid=p.id
+		left join kss_admin o on p.parentid=o.id
+	</sql>
 
 
 	<!-- 查询条件 -->
 	<sql id="QueryCondition">
 		<trim prefix="where" prefixOverrides="and|or">
-			<if test="parentid != null">
-				and PARENTID = #{parentid}
+			<if test="username != null">
+				and a.username = #{username}
 			</if>
 			<if test="adminid != null">
-				and adminid = #{adminid}
+				and (a.id = #{adminid} or a.parentid = #{adminid} or p.parentid = #{adminid})
 			</if>
-			<if test="username != null">
-				and USERNAME = #{username}
-			</if>
-			<if test="ids != null">
-				and ID in
-				<foreach collection="list" item="ids" index="index" open="(" close=")" separator=",">
-					#{ids}
+			<if test="status != null">
+				and a.status in
+				<foreach collection="status" item="s" index="index" open="(" close=")" separator=",">
+					#{s}
 				</foreach>
 			</if>
-			 	and isdel=0
 		</trim>
+		order by a.id
 	</sql>
 
 	<!-- 分页 -->

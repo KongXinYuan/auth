@@ -27,8 +27,6 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 			Authentication authentication) throws ServletException, IOException {
 		super.onAuthenticationSuccess(request, response, authentication);
 
-		AdminUserDetails userDetails = (AdminUserDetails) authentication.getPrincipal();
-
 		String ipStr = request.getHeader("x-forwarded-for");
 		if (ipStr == null || ipStr.length() == 0 || "unknown".equalsIgnoreCase(ipStr)) {
 			ipStr = request.getHeader("PRoxy-Client-IP");
@@ -48,6 +46,6 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
 		}
 
-		adminManager.onLoginSucess(userDetails.getAdminid(), ip);
+		adminManager.onLoginSucess(ip);
 	}
 }

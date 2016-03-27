@@ -8,4 +8,12 @@ public class KssException extends RuntimeException {
 	public KssException(String message) {
 		super(message);
 	}
+
+	public KssException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public KssException(Throwable cause) {
+		super(cause);
+	}
 }

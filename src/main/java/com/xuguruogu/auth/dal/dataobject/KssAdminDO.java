@@ -3,6 +3,9 @@ package com.xuguruogu.auth.dal.dataobject;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.xuguruogu.auth.dal.enums.AdminStatusType;
+import com.xuguruogu.auth.dal.enums.RoleType;
+
 /**
  * 管理员对象
  *
@@ -17,20 +20,18 @@ public class KssAdminDO extends Entity {
 	/** 上级id */
 	private long parentid;
 
-	/** 层级 */
-	private long level;
+	private String parentname;
 
-	/** 删除标记 */
-	private boolean del;
+	private long ownerid;
+
+	/** 层级 */
+	private RoleType role;
 
 	/** 用户名 */
 	private String username;
 
 	/** 密码 */
 	private String password;
-
-	/** 锁定 */
-	private boolean lock;
 
 	/** 添加时间 */
 	private Date addtime;
@@ -41,14 +42,21 @@ public class KssAdminDO extends Entity {
 	/** 上次登录ip */
 	private int lastloginip;
 
-	/** 权限列表 */
-	private String powerlist;
-
 	/** 当前余额 */
 	private BigDecimal money;
 
 	/** 累计金额 */
 	private BigDecimal exmoney;
+
+	private AdminStatusType status;
+
+	public boolean isOwnedBy(long id) {
+		return this.getParentid() == id || this.getOwnerid() == id;
+	}
+
+	public boolean isOwnedByOrEqual(long id) {
+		return this.id == id || this.getParentid() == id || this.getOwnerid() == id;
+	}
 
 	public long getParentid() {
 		return parentid;
@@ -58,20 +66,28 @@ public class KssAdminDO extends Entity {
 		this.parentid = parentid;
 	}
 
-	public long getLevel() {
-		return level;
+	public String getParentname() {
+		return parentname;
 	}
 
-	public void setLevel(long level) {
-		this.level = level;
+	public void setParentname(String parentname) {
+		this.parentname = parentname;
 	}
 
-	public boolean isDel() {
-		return del;
+	public long getOwnerid() {
+		return ownerid;
 	}
 
-	public void setDel(boolean del) {
-		this.del = del;
+	public void setOwnerid(long ownerid) {
+		this.ownerid = ownerid;
+	}
+
+	public RoleType getRole() {
+		return role;
+	}
+
+	public void setRole(RoleType role) {
+		this.role = role;
 	}
 
 	public String getUsername() {
@@ -88,14 +104,6 @@ public class KssAdminDO extends Entity {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public boolean isLock() {
-		return lock;
-	}
-
-	public void setLock(boolean lock) {
-		this.lock = lock;
 	}
 
 	public Date getAddtime() {
@@ -122,14 +130,6 @@ public class KssAdminDO extends Entity {
 		this.lastloginip = lastloginip;
 	}
 
-	public String getPowerlist() {
-		return powerlist;
-	}
-
-	public void setPowerlist(String powerlist) {
-		this.powerlist = powerlist;
-	}
-
 	public BigDecimal getMoney() {
 		return money;
 	}
@@ -144,6 +144,14 @@ public class KssAdminDO extends Entity {
 
 	public void setExmoney(BigDecimal exmoney) {
 		this.exmoney = exmoney;
+	}
+
+	public AdminStatusType getStatus() {
+		return status;
+	}
+
+	public void setStatus(AdminStatusType status) {
+		this.status = status;
 	}
 
 }

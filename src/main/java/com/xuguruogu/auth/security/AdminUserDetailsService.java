@@ -9,8 +9,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import com.xuguruogu.auth.dal.daointerface.KssAdminDao;
 import com.xuguruogu.auth.dal.dataobject.KssAdminDO;
-import com.xuguruogu.auth.service.AdminManager;
+import com.xuguruogu.auth.dal.querycondition.KssAdminQueryCondition;
 
 @Component("adminUserDetailsService")
 public class AdminUserDetailsService implements UserDetailsService {
@@ -21,14 +22,15 @@ public class AdminUserDetailsService implements UserDetailsService {
 	private AdminUserDetailsConverter adminUserDetailsConverter;
 
 	@Autowired
-	private AdminManager adminManager;
+	private KssAdminDao kssAdminDao;
 
 	// 登陆验证时，通过username获取用户的所有权限信息，
 	// 并返回User放到spring的全局缓存SecurityContextHolder中，以供授权器使用
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
 
-		KssAdminDO kssAdminDO = adminManager.queryByUsername(username);
+		KssAdminDO kssAdminDO = kssAdminDao
+				.selectOneByQueryCondition(new KssAdminQueryCondition().putUsername(username));
 
 		if (null == kssAdminDO) {
 			if (logger.isWarnEnabled()) {

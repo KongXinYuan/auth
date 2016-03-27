@@ -17,10 +17,8 @@ public class SoftAddParam implements Serializable {
 	private String softname;
 	@NotNull(message = "intervaltime不能为空")
 	private Long intervaltime;
-	@NotBlank(message = "clientpubkey不能为空")
-	private String clientpubkey;
-	@NotBlank(message = "serverprivkey不能为空")
-	private String serverprivkey;
+	@NotBlank(message = "privkey不能为空")
+	private String privkey;
 
 	public String getSoftname() {
 		return softname;
@@ -38,20 +36,12 @@ public class SoftAddParam implements Serializable {
 		this.intervaltime = intervaltime;
 	}
 
-	public String getClientpubkey() {
-		return clientpubkey;
+	public String getPrivkey() {
+		return privkey;
 	}
 
-	public void setClientpubkey(String clientpubkey) {
-		this.clientpubkey = clientpubkey;
-	}
-
-	public String getServerprivkey() {
-		return serverprivkey;
-	}
-
-	public void setServerprivkey(String serverprivkey) {
-		this.serverprivkey = serverprivkey;
+	public void setPrivkey(String privkey) {
+		this.privkey = privkey;
 	}
 
 }

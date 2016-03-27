@@ -7,38 +7,58 @@
 	<resultMap type="KssSoftKeyDO" id="kssSoftKeyResult">
 		<id property="id" column="ID" jdbcType="INTEGER" />
 		<result property="adminid" column="ADMINID" jdbcType="INTEGER" />
+		<result property="adminname" column="adminname" jdbcType="VARCHAR" />
+		<result property="parentid" column="parentid" jdbcType="INTEGER" />
+		<result property="parentname" column="parentname" jdbcType="VARCHAR" />
+		<result property="ownerid" column="ownerid" jdbcType="INTEGER" />
 		<result property="keysetid" column="keysetid" jdbcType="INTEGER" />
+		<result property="keyname" column="keyname" jdbcType="VARCHAR" />
 		<result property="cdkey" column="CDKEY" jdbcType="VARCHAR" />
-		<result property="addtime" column="ADDTIME" jdbcType="DATE" />
+		<result property="addtime" column="ADDTIME" jdbcType="TIMESTAMP" />
 		<result property="ordernum" column="ORDERNUM" jdbcType="VARCHAR" />
 		<result property="cday" column="CDAY" jdbcType="DECIMAL" />
 		<result property="tag" column="TAG" jdbcType="VARCHAR" />
-		<result property="lock" column="ISLOCK" jdbcType="BOOLEAN" />
-		<result property="usedtime" column="USEDTIME" jdbcType="DATE" />
-		<result property="useduser" column="USEDUSER" jdbcType="VARCHAR" />
+		<result property="usedtime" column="USEDTIME" jdbcType="TIMESTAMP" />
+		<result property="userid" column="userid" jdbcType="INTEGER" />
+		<result property="username" column="username" jdbcType="VARCHAR" />
+		<result property="oldcday" column="oldcday" jdbcType="DECIMAL" />
+		<result property="newcday" column="newcday" jdbcType="DECIMAL" />
+		<result property="status" column="status" jdbcType="INTEGER" />
 	</resultMap>
 	
-	<insert id="insertWithSeg" parameterType="java.util.List">
-		INSERT ignore INTO KSS_SOFT_KEY (adminid, cdkey, addtime, ordernum, cday, tag)
-		VALUES (#{item.adminid}, #{item.cdkey}, #{item.addtime}, #{item.ordernum}, #{item.cday},#{item.tag})
+	<insert id="insertWithSeg" parameterType="KssSoftKeyDO">
+		INSERT ignore INTO KSS_SOFT_KEY (adminid, keysetid, cdkey, addtime, ordernum, cday, tag)
+		VALUES (#{item.adminid}, #{item.keysetid}, #{item.cdkey}, #{item.addtime}, #{item.ordernum}, #{item.cday}, #{item.tag})
 	</insert>
 
-	<insert id="insertListWithSeg" parameterType="java.util.List">
-		INSERT ignore INTO KSS_SOFT_KEY (adminid, cdkey, addtime, ordernum, cday, tag)
+	<insert id="insertListWithSeg" parameterType="java.util.Map">
+		INSERT INTO KSS_SOFT_KEY (adminid, keysetid, cdkey, addtime, ordernum, cday, tag)
 		VALUES
 		<foreach collection="cdkeys" item="item" index="index" separator=",">
-			(#{item.adminid}, #{item.cdkey}, #{item.addtime}, #{item.ordernum}, #{item.cday},#{item.tag})
+			(#{item.adminid}, #{item.keysetid}, #{item.cdkey}, #{item.addtime}, #{item.ordernum}, #{item.cday}, #{item.tag})
 		</foreach>
 	</insert>
 	
 	
-	<update id="updateLockWithSeg" parameterType="java.util.Map">
-		UPDATE KSS_SOFT_KEY
+	<update id="updateStatusByIdWithSeg" parameterType="java.util.Map">
+		update kss_soft_key
 		<set>
-			islock = #{islock}
+			status = #{status}
 		</set>
 		where id=#{id}
 	</update>
+	
+	<update id="updateStatusByIdsWithSeg" parameterType="java.util.Map">
+		update kss_soft_key
+		<set>
+			status = #{status}
+		</set>
+		where id in
+		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</update>
+	
 	
 	<update id="updateRechargeWithSeg" parameterType="java.util.Map">
 		UPDATE KSS_SOFT_KEY
@@ -49,53 +69,92 @@
 		WHERE
 		id=#{id}
 	</update>
-
-	<select id="selectByIdWithSeg" parameterType="java.lang.Long" resultMap="kssSoftKeyResult">
-		select * from KSS_SOFT_KEY WHERE id=#{id}
+	
+	<select id="selectByIdWithSeg" parameterType="java.util.Map" resultMap="kssSoftKeyResult">
+		<include refid="SelectList" />
+		where k.id=#{id}
+	</select>
+	
+	<select id="selectByIdsWithSeg" parameterType="java.util.Map" resultMap="kssSoftKeyResult">
+		<include refid="SelectList" />
+		where k.id in
+		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
 	</select>
 
-	<delete id="deleteByIdWithSeg" parameterType="java.lang.Long">
+	<delete id="deleteByIdWithSeg" parameterType="java.util.Map">
 		delete from KSS_SOFT_KEY
-		WHERE
-		ID=#{id}
+		WHERE ID=#{id}
 	</delete>
 
-	<delete id="deleteByIdsWithSeg" parameterType="java.util.List">
+	<delete id="deleteByIdsWithSeg" parameterType="java.util.Map">
 		delete from KSS_SOFT_KEY
 		WHERE ID in
-		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
 	</delete>
 
-	<select id="selectCountByQueryConditionWithSeg" parameterType="java.util.Map" resultType="java.lang.Long">
-		select COUNT(*) from KSS_SOFT_KEY
+	<select id="selectCountByQueryConditionWithSeg" parameterType="java.util.Map" resultType="long">
+		select count(*) from kss_soft_key k 
+		left join kss_admin a on k.adminid = a.id
+		left join kss_admin p on a.parentid = p.id
+		left join kss_keyset s on k.keysetid = s.id
+		left join kss_soft_user u on k.userid = u.id
 		<include refid="QueryCondition" />
 	</select>
 
 	<select id="selectByQueryConditionWithSeg" parameterType="java.util.Map" resultMap="kssSoftKeyResult">
-		SELECT * FROM KSS_SOFT_KEY
+		<include refid="SelectList" />
 		<include refid="QueryCondition" />
 		<include refid="Pagination" />
-		order by id
 	</select>
 	
+	<sql id="SelectList">
+		SELECT k.*, a.username as adminname, p.id as parentid, p.username as parentname, p.parentid as ownerid, s.keyname as keyname, u.username
+		
+		from kss_soft_key k
+		left join kss_admin a on k.adminid = a.id
+		left join kss_admin p on a.parentid = p.id
+		left join kss_keyset s on k.keysetid = s.id
+		left join kss_soft_user u on k.userid = u.id
+	</sql>
 	
 	<!-- 查询条件 -->
 	<sql id="QueryCondition">
 		<trim prefix="where" prefixOverrides="and|or">
-			<if test="adminid != null">
-				adminid = #{adminid}
+			<if test="keysetid != null">
+				and k.keysetid = #{keysetid}
+			</if>
+			<if test="userid != null">
+				and k.userid = #{userid}
+			</if>
+			<if test="username != null">
+				and u.username like #{username}
 			</if>
 			<if test="cdkey != null">
-				and cdkey = #{cdkey}
+				and k.cdkey = #{cdkey}
+			</if>
+			<if test="tag != null">
+				and k.tag = #{tag}
 			</if>
 			<if test="ordernum != null">
-				and ordernum = #{ordernum}
+				and k.ordernum = #{ordernum}
 			</if>
-			<if test="useduser != null">
-				and useduser = #{useduser}
+			<if test="adminid != null">
+				and k.adminid = #{adminid}
 			</if>
+			<if test="parentid != null">
+				and (k.adminid = #{parentid} or a.parentid=#{parentid} or p.parentid=#{parentid})
+			</if>
+			<if test="status != null">
+				and k.status in
+				<foreach collection="status" item="s" index="index" open="(" close=")" separator=",">
+					#{s}
+				</foreach>
+			</if>
+			order by k.id
 		</trim>
 	</sql>
 	

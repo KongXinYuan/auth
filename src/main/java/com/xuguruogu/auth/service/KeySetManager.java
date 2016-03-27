@@ -3,7 +3,7 @@ package com.xuguruogu.auth.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.xuguruogu.auth.dto.KeySetDTD;
+import com.xuguruogu.auth.dal.dataobject.KssKeySetDO;
 
 /**
  *
@@ -13,21 +13,19 @@ import com.xuguruogu.auth.dto.KeySetDTD;
  *          benli.lbl Exp $
  */
 public interface KeySetManager {
+	public List<KssKeySetDO> listAll();
 
-	public List<KeySetDTD> listid(long softid);
+	public List<KssKeySetDO> listAll(final long softid);
 
-	public KeySetDTD create(long softid, String keyname, BigDecimal cday, String prefix, BigDecimal retailprice);
+	public KssKeySetDO create(final long softid, final String keyname, final BigDecimal cday, final String prefix,
+			final BigDecimal retailprice);
 
-	public KeySetDTD detail(long keySetId);
+	public KssKeySetDO detail(final long keySetId);
 
-	public long countBySoftId(long softid);
+	public void deleteByIds(final List<Long> keySetIds);
 
-	public void deleteById(long keySetId);
+	public KssKeySetDO update(final long keySetId, final BigDecimal cday, final BigDecimal retailprice);
 
-	public void deleteByIds(List<Long> keySetIds);
-
-	public KeySetDTD update(long keySetId, BigDecimal cday, BigDecimal retailprice);
-
-	public void updateLock(long keySetId, boolean lock);
+	public void lockByIds(final long keySetId, final boolean lock);
 
 }

@@ -26,23 +26,13 @@ $(function() {
                     }
                 }
             },
-            clientpubkey: {
-                validators: {
-                	base64: {
-                        message: '不是base64格式'
-                    },
-                    notEmpty: {
-                        message: '请输入clientpubkey'
-                    }
-                }
-            },
-            serverprivkey:{
+            privkey:{
             	validators:{
             		base64: {
                         message: '不是base64格式'
                     },
                     notEmpty: {
-                        message: '请输入serverprivkey'
+                        message: '请输入privkey'
                     }
             	}
             }
@@ -74,23 +64,10 @@ $(function() {
                     }
                 }
             },
-            clientpubkey: {
-                validators: {
-                	base64: {
-                        message: '不是base64格式'
-                    },
-                    notEmpty: {
-                        message: '请输入clientpubkey'
-                    }
-                }
-            },
-            serverprivkey:{
+            privkey:{
             	validators:{
             		base64: {
                         message: '不是base64格式'
-                    },
-                    notEmpty: {
-                        message: '请输入serverprivkey'
                     }
             	}
             }
@@ -124,9 +101,9 @@ $(function() {
                     			+'<td>'+soft["softname"]+'</td>'
                     			+'<td>'+soft["intervaltime"]+'</td>'
                     			+'<td>'
-                    			+'<a data-action="lock" data-toggle="modal" href="#" title="锁定"><span class="glyphicon glyphicon-ban-circle" tabindex="0" role="button" data-trigger="focus"></span></a>'
-                    			+'<a data-action="del" data-toggle="modal" data-target="#delselModal" href="#" title="删除"><span class="glyphicon glyphicon-remove" tabindex="0" role="button" data-trigger="focus"></span></a>'
                     			+'<a data-action="edit" data-toggle="modal" data-target="#editModal" href="#" title="编辑"><span class="glyphicon glyphicon-edit" tabindex="0" role="button" data-trigger="focus"></span></a>'
+                    			+'<a data-action="del" data-toggle="modal" data-target="#delselModal" href="#" title="删除"><span class="glyphicon glyphicon-remove" tabindex="0" role="button" data-trigger="focus"></span></a>'
+                    			+'<a data-action="lock" data-toggle="modal" href="#" title="锁定"><span class="glyphicon glyphicon-ban-circle" tabindex="0" role="button" data-trigger="focus"></span></a>'
                     			+'</td></tr>');
                     	//关闭
                     	$('#addModal').modal('hide');
@@ -172,8 +149,6 @@ $(function() {
                 	$('#editform #inputsoftcode').val(soft["softcode"]);
                 	$('#editform #inputsoftkey').val(soft["softkey"]);
                 	$('#editform #inputintervaltime').val(soft["intervaltime"]);
-                	$('#editform #inputclientpubkey').val(soft["clientpubkey"]);
-                	$('#editform #inputserverprivkey').val(soft["serverprivkey"]);
                 }else{
                 	$('#editModal').modal('hide');
                 	button.popover({content:"未知数据格式:"+data}).popover('show');
@@ -188,6 +163,20 @@ $(function() {
 	}).on('hide.bs.modal', function(event) {
 		$('#editform').data('formValidation').resetForm();
 	});
+	
+	
+    $("[data-action='genRsaKey']").click(function () {
+    	var button = $(this);
+    	$.get("/soft/rsakey.json",function(result){
+            if(true == result["hasError"]){
+                button.popover({content:"错误:"+result["error"]}).popover('show');
+            }else if(true == result["success"]){
+            	button.closest("form").find(".inputprivkey").val(result.privKey);
+            	button.closest("form").find(".inputpubkey").val(result.pubKey);
+            }
+    	},"json");
+    	
+    });
 
 	/* 编辑 */
     $("[data-action='update']").click(function () {

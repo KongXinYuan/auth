@@ -2,19 +2,22 @@ package com.xuguruogu.auth.dal.daointerface;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import com.xuguruogu.auth.dal.dataobject.KssAdminDO;
+import com.xuguruogu.auth.dal.enums.AdminStatusType;
 import com.xuguruogu.auth.dal.querycondition.KssAdminQueryCondition;
 
 public interface KssAdminDao extends KssDaoBase<KssAdminDO, KssAdminQueryCondition> {
 
-	public int updatePassword(long id, String password);
+	public long updatePassword(long id, String password);
 
-	public int updateLock(long id, boolean lock);
+	public long updateMoney(long id, BigDecimal money);
 
-	public int updateLastLogin(long id, Date lastlogintime, long lastloginip);
+	public long updateStatusById(long id, AdminStatusType status);
 
-	public int updatePowerlist(long id, String powerlist);
+	public long updateStatusByIds(List<Long> ids, AdminStatusType status);
 
-	public int updateMoney(long id, BigDecimal money, BigDecimal exmoney);
+	public long updateLastLogin(long id, Date lastlogintime, long lastloginip);
+
 }

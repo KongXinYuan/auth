@@ -2,6 +2,8 @@ package com.xuguruogu.auth.dal.dataobject;
 
 import java.math.BigDecimal;
 
+import com.xuguruogu.auth.dal.enums.KeySetStatusType;
+
 /**
  *
  * @author kent
@@ -14,11 +16,12 @@ public class KssKeySetDO extends Entity {
 	 */
 	private static final long serialVersionUID = -4614683723211403502L;
 	private long softid;
-	private boolean lock;
+	private String softname;
 	private String keyname;
 	private BigDecimal cday;
 	private String prefix;
 	private BigDecimal retailprice;
+	private KeySetStatusType status;
 
 	public long getSoftid() {
 		return softid;
@@ -28,12 +31,12 @@ public class KssKeySetDO extends Entity {
 		this.softid = softid;
 	}
 
-	public boolean isLock() {
-		return lock;
+	public String getSoftname() {
+		return softname;
 	}
 
-	public void setLock(boolean lock) {
-		this.lock = lock;
+	public void setSoftname(String softname) {
+		this.softname = softname;
 	}
 
 	public String getKeyname() {
@@ -66,6 +69,14 @@ public class KssKeySetDO extends Entity {
 
 	public void setRetailprice(BigDecimal retailprice) {
 		this.retailprice = retailprice;
+	}
+
+	public KeySetStatusType getStatus() {
+		return status;
+	}
+
+	public void setStatus(KeySetStatusType status) {
+		this.status = status;
 	}
 
 }

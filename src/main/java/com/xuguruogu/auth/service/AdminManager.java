@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.xuguruogu.auth.dal.dataobject.KssAdminDO;
-import com.xuguruogu.auth.dto.AdminDTO;
+import com.xuguruogu.auth.dal.dataobject.KssPowerDO;
+import com.xuguruogu.auth.dal.enums.RoleType;
 
 /**
  * 管理员用户
@@ -16,22 +17,33 @@ import com.xuguruogu.auth.dto.AdminDTO;
  */
 public interface AdminManager {
 
-	public Map<String, Object> list(long parentid, Integer pageNo, Integer pageSize);
+	public List<KssAdminDO> listAll();
 
-	public Map<String, Object> profile(long adminid);
+	public KssPowerDO empower(long adminid, long keysetid, BigDecimal sellprice);
 
-	public void onLoginSucess(long adminid, String ip);
+	public KssPowerDO updatepower(long adminid, long keysetid, BigDecimal sellprice);
 
-	public AdminDTO register(long parentid, long level, String username, String password, BigDecimal money);
+	public void removepower(long adminid, long keysetid);
 
-	public KssAdminDO queryById(final long adminid);
+	public List<KssPowerDO> listpower(Long softid, Long adminid);
 
-	public KssAdminDO queryByUsername(final String username);
+	public KssAdminDO detail(long adminid);
 
-	public void updatePassword(final long adminid, final String password);
+	public KssAdminDO detail();
 
-	public void deleteByIds(long parentid, List<Long> adminids);
+	public Map<String, Object> listLogLogin(Integer pageNo, Integer pageSize);
 
-	public void updateLock(long adminid, long lockid, boolean lock);
+	public void onLoginSucess(String ip);
 
+	public KssAdminDO register(RoleType role, String username, String password, BigDecimal money);
+
+	public void deleteByIds(List<Long> adminids);
+
+	public void updateLock(long adminid, boolean lock);
+
+	public void updatePwd(long adminid, String pwd);
+
+	public void updateMoney(long adminid, BigDecimal money);
+
+	public Map<String, Object> listFinance(Integer pageNo, Integer pageSize);
 }

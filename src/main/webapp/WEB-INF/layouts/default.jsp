@@ -22,6 +22,11 @@
 <link href="//cdn.bootcss.com/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet">
 <link href="/static/css/default.css" rel="stylesheet">
 <sitemesh:head />
+<style type="text/css">
+	.container{
+		width:90%;
+	}
+</style>
 </head>
 
 <body>
@@ -44,7 +49,6 @@
 						<ul class="dropdown-menu">
 							<li><a href="/soft/list">软件列表</a></li>
 							<li><a href="#" data-toggle="modal" data-target="#keysetModal">卡类售价设置</a></li>
-							<li><a href="#">订单管理</a></li>
 						</ul>
 					</li>
 					</sec:authorize>
@@ -52,11 +56,8 @@
 					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
 						aria-haspopup="true" aria-expanded="false">用户管理<span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="#">用户列表</a></li>
-							<li><a href="#">添加用户</a></li>
-							<li><a href="#">批量操作</a></li>
-							<li><a href="#">用户登录日志</a></li>
-							<li><a href="#">用户充值日志</a></li>
+							<li><a href="#" data-toggle="modal" data-target="#userModal">用户列表</a></li>
+							<!-- <li><a href="#">批量操作</a></li> -->
 							<li><a href="#">公用账号日志</a></li>
 						</ul></li>
 					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
@@ -64,22 +65,21 @@
 						<ul class="dropdown-menu">
 							<li><a href="#" data-toggle="modal" data-target="#cdkeyModal">注册卡列表</a></li>
 							<li><a href="/cdkey/add">添加注册卡</a></li>
-							<li><a href="#">注册卡统计表</a></li>
-							<li><a href="#">批量操作</a></li>
+							<!-- <li><a href="/cdkey/batch">批量操作</a></li> -->
+							<li><a href="#" data-toggle="modal" data-target="#cdkeyStatisticsModal">注册卡统计表</a></li>
+							<li><a href="/cdkey/order">订单管理</a></li>
 						</ul>
 					</li>
-					<sec:authorize access="hasAnyRole('OWNER', 'ADMIN')">
 					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
 						aria-haspopup="true" aria-expanded="false">后台账号<span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="#">我的资料</a></li>
-							<li><a href="#">我的财务日志</a></li>
+							<sec:authorize access="hasAnyRole('OWNER', 'ADMIN')">
 							<li><a href="/admin/list">账号列表</a></li>
-							<li><a href="#">登录日志</a></li>
+							</sec:authorize>
+							<li><a href="/admin/finance">我的财务日志</a></li>
+							<li><a href="/admin/loglogin">登录日志</a></li>
 						</ul>
 					</li>
-					<li><a href="#">系统设置</a></li>
-					</sec:authorize>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a>你好,<sec:authentication property="principal.username"></sec:authentication></a></li>
@@ -129,6 +129,45 @@
 		</div>
 	</div>
 
+	
+	<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="userModalLabel">请选择软件</h4>
+				</div>
+				<div class="modal-body">
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="cdkeyStatisticsModal" tabindex="-1" role="dialog" aria-labelledby="cdkeyStatisticsModalLabel">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="cdkeyStatisticsModalLabel">请选择软件</h4>
+				</div>
+				<div class="modal-body">
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 
 <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -143,11 +182,19 @@
 <script type="text/javascript">
 
 $('#keysetModal').on('show.bs.modal', function(event) {
-	$("#keysetModal .modal-body").load("/keyset/softs.form")
+	$("#keysetModal .modal-body").load("/soft/form?path=keyset&second=list")
 });
 
 $('#cdkeyModal').on('show.bs.modal', function(event) {
-	$("#cdkeyModal .modal-body").load("/cdkey/softs.form")
+	$("#cdkeyModal .modal-body").load("/soft/form?path=cdkey&second=list")
+});
+
+$('#userModal').on('show.bs.modal', function(event) {
+	$("#userModal .modal-body").load("/soft/form?path=user&second=list")
+});
+
+$('#cdkeyStatisticsModal').on('show.bs.modal', function(event) {
+	$("#cdkeyStatisticsModal .modal-body").load("/soft/form?path=cdkey&second=statistics")
 });
 
 </script>

@@ -2,6 +2,8 @@ package com.xuguruogu.auth.web.param;
 
 import java.io.Serializable;
 
+import com.xuguruogu.auth.dal.enums.CDKeyStatusType;
+
 public class CDKeySearchParam implements Serializable {
 
 	/**
@@ -11,14 +13,14 @@ public class CDKeySearchParam implements Serializable {
 
 	private Integer pageNo;
 	private Integer pageSize;
-	private long keysetid;
-	private String useduser;
+	private Long adminid;
+	private Long keysetid;
+	private Long userid;
+	private String username;
 	private String cdkey;
 	private String tag;
 	private String ordernum;
-	private Boolean lock;
-	private Boolean used;
-	private Long adminid;
+	private CDKeyStatusType status;
 
 	public Integer getPageNo() {
 		return pageNo;
@@ -36,20 +38,36 @@ public class CDKeySearchParam implements Serializable {
 		this.pageSize = pageSize;
 	}
 
-	public long getKeysetid() {
+	public Long getAdminid() {
+		return adminid;
+	}
+
+	public void setAdminid(Long adminid) {
+		this.adminid = adminid;
+	}
+
+	public Long getKeysetid() {
 		return keysetid;
 	}
 
-	public void setKeysetid(long keysetid) {
+	public void setKeysetid(Long keysetid) {
 		this.keysetid = keysetid;
 	}
 
-	public String getUseduser() {
-		return useduser;
+	public Long getUserid() {
+		return userid;
 	}
 
-	public void setUseduser(String useduser) {
-		this.useduser = useduser;
+	public void setUserid(Long userid) {
+		this.userid = userid;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getCdkey() {
@@ -76,28 +94,22 @@ public class CDKeySearchParam implements Serializable {
 		this.ordernum = ordernum;
 	}
 
-	public Boolean getLock() {
-		return lock;
+	public CDKeyStatusType getStatus() {
+		return status;
 	}
 
-	public void setLock(Boolean lock) {
-		this.lock = lock;
-	}
-
-	public Boolean getUsed() {
-		return used;
-	}
-
-	public void setUsed(Boolean used) {
-		this.used = used;
-	}
-
-	public Long getAdminid() {
-		return adminid;
-	}
-
-	public void setAdminid(Long adminid) {
-		this.adminid = adminid;
+	public void setStatus(Long status) {
+		if (null == status) {
+			this.status = null;
+			return;
+		}
+		for (CDKeyStatusType sts : CDKeyStatusType.values()) {
+			if (sts.getCode() == status) {
+				this.status = sts;
+				return;
+			}
+		}
+		this.status = null;
 	}
 
 }

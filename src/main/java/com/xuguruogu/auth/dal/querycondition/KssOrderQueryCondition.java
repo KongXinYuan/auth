@@ -11,7 +11,7 @@ public class KssOrderQueryCondition extends QueryCondition<KssOrderQueryConditio
 	private static final String keysetid = "keysetid";
 
 	public KssOrderQueryCondition putOrdernum(String ordernum) {
-		addIfExist(KssOrderQueryCondition.ordernum, ordernum);
+		addIfNutBlank(KssOrderQueryCondition.ordernum, ordernum);
 		return this;
 	}
 

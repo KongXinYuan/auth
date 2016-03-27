@@ -6,7 +6,7 @@
 
 <html>
 <head>
-<title>${soft.softname}</title>
+<title>卡类列表-${soft.softname}</title>
 <style type="text/css">
     #addform, #editform{
         max-width: 300px;
@@ -48,16 +48,16 @@
 						<td>${keyset.prefix}</td>
 						<td>${keyset.retailprice}</td>
 						<td>
+							 <a data-action="edit" data-toggle="modal" data-target="#editModal" href="#" title="编辑"><span class="glyphicon glyphicon-edit" tabindex="0" role="button" data-trigger="focus"></span></a>
+							 <a data-action="del" data-toggle="modal" data-target="#delselModal" href="#" title="删除"><span class="glyphicon glyphicon-remove" tabindex="0" role="button" data-trigger="focus"></span></a>
 							 <c:choose>
-							 <c:when test="${keyset.lock}">
+							 <c:when test="${keyset.status eq '已锁定'}">
 							 	<a data-action="lock" data-toggle="modal" href="#" title="解锁"><span class="glyphicon glyphicon-ok-circle" tabindex="0" role="button" data-trigger="focus"></span></a>
 							 </c:when>
-							 <c:otherwise>
+							 <c:when test="${keyset.status eq '激活'}">
 							 	<a data-action="lock" data-toggle="modal" href="#" title="锁定"><span class="glyphicon glyphicon-ban-circle" tabindex="0" role="button" data-trigger="focus"></span></a>
-							 </c:otherwise>
+							 </c:when>
 							 </c:choose>
-							 <a data-action="del" data-toggle="modal" data-target="#delselModal" href="#" title="删除"><span class="glyphicon glyphicon-remove" tabindex="0" role="button" data-trigger="focus"></span></a>
-							 <a data-action="edit" data-toggle="modal" data-target="#editModal" href="#" title="编辑"><span class="glyphicon glyphicon-edit" tabindex="0" role="button" data-trigger="focus"></span></a>
 						</td>
 					</tr>
 				</c:forEach>

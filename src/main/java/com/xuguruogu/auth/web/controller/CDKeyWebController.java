@@ -1,22 +1,32 @@
 package com.xuguruogu.auth.web.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.xuguruogu.auth.dto.CDKeyDTD;
+import com.xuguruogu.auth.dal.dataobject.KssAdminDO;
+import com.xuguruogu.auth.dal.dataobject.KssKeySetDO;
+import com.xuguruogu.auth.dal.dataobject.KssSoftDO;
+import com.xuguruogu.auth.dal.dataobject.KssSoftKeyDO;
+import com.xuguruogu.auth.dal.dto.AdminDTO;
+import com.xuguruogu.auth.dal.dto.KeySetDTD;
+import com.xuguruogu.auth.dal.dto.KssConverter;
+import com.xuguruogu.auth.dal.dto.SoftDTO;
 import com.xuguruogu.auth.interceptor.KssException;
-import com.xuguruogu.auth.security.AdminUserDetails;
-import com.xuguruogu.auth.service.CDKeyManager;
+import com.xuguruogu.auth.service.AdminManager;
+import com.xuguruogu.auth.service.KeySetManager;
+import com.xuguruogu.auth.service.SoftKeyManager;
 import com.xuguruogu.auth.service.SoftManager;
+import com.xuguruogu.auth.util.Converter;
 import com.xuguruogu.auth.web.param.CDKeyAddParam;
 import com.xuguruogu.auth.web.param.CDKeySearchParam;
 import com.xuguruogu.auth.web.result.SuccessResult;
@@ -29,42 +39,47 @@ public class CDKeyWebController {
 	private SoftManager softManager;
 
 	@Autowired
-	private CDKeyManager cdkeyManager;
+	private KeySetManager keySetManager;
 
-	@RequestMapping(value = { "/softs.form" }, method = { RequestMethod.GET })
-	public String listform(Model model) {
+	@Autowired
+	private AdminManager adminManager;
 
-		model.addAttribute("softs", softManager.listAll());
+	@Autowired
+	private SoftKeyManager softKeyManager;
 
-		return "/cdkey/softs";
+	@Autowired
+	private Converter<KssSoftDO, SoftDTO> softDTOConverter;
 
-	}
+	@Autowired
+	private Converter<KssKeySetDO, KeySetDTD> keySetDTOConverter;
+
+	@Autowired
+	private Converter<KssAdminDO, AdminDTO> adminDTOConverter;
+
+	@Autowired
+	private KssConverter kssConverter;
 
 	@RequestMapping(value = { "/add" }, method = { RequestMethod.GET })
 	public String addlistform(Model model) {
 
-		model.addAttribute("softs", softManager.listAll());
+		model.addAttribute("softs", softDTOConverter.converter(softManager.listAll()));
 
 		return "/cdkey/add";
 
 	}
 
 	@RequestMapping(value = { "/add.json" }, method = { RequestMethod.POST })
-	public void addlistform(@Valid CDKeyAddParam param, Model model) {
-
-		AdminUserDetails userDetails = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication()
-				.getPrincipal();// spring security获取上下文
-		long adminid = userDetails.getAdminid();
+	public void add(@Valid CDKeyAddParam param, Model model) {
 
 		long softid = param.getSoftid();
 		long keysetid = param.getKeysetid();
 		String tag = param.getTag();
 		long num = param.getNum();
 
-		List<CDKeyDTD> cdkeys = cdkeyManager.create(softid, adminid, keysetid, tag, num);
+		List<KssSoftKeyDO> cdkeys = softKeyManager.create(softid, keysetid, tag, num);
 
 		StringBuilder str = new StringBuilder();
-		for (CDKeyDTD cdkey : cdkeys) {
+		for (KssSoftKeyDO cdkey : cdkeys) {
 			str.append(cdkey.getCdkey()).append("\n");
 		}
 
@@ -73,19 +88,63 @@ public class CDKeyWebController {
 	}
 
 	// 列表
-	@RequestMapping(value = { "/list/{id}" }, method = { RequestMethod.GET })
-	public String listid(@PathVariable(value = "id") Long softid, CDKeySearchParam param, Model model) {
+	@RequestMapping(value = { "/list/{softid}" }, method = { RequestMethod.GET })
+	public String listid(@PathVariable(value = "softid") Long softid, CDKeySearchParam param, Model model) {
 		if (null == softid) {
 			throw new KssException("id为空");
 		}
 
-		AdminUserDetails userDetails = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication()
-				.getPrincipal();// spring security获取上下文
-		long adminid = userDetails.getAdminid();
+		model.addAttribute("keysets", keySetDTOConverter.converter(keySetManager.listAll(softid)));
+		model.addAttribute("admins", adminDTOConverter.converter(adminManager.listAll()));
+		model.addAllAttributes(softKeyManager.search(softid, param));
+		model.addAttribute("softid", softid);
+		model.addAttribute("search", param);
 
-		model.addAttribute("soft", softManager.detail(softid));
-		model.addAttribute("cdkeys", cdkeyManager.search(softid, adminid, param));
-
-		return "/keyset/list";
+		return "/cdkey/list";
 	}
+
+	// 锁定
+	@RequestMapping(value = { "/lock.json" }, method = { RequestMethod.POST })
+	public void lock(@RequestParam(required = true) Long softid,
+			@RequestParam(value = "lockids[]", required = true) Long[] lockids, Model model) {
+		softKeyManager.lockByIds(softid, Arrays.asList(lockids), true);
+		model.addAllAttributes(new SuccessResult());
+	}
+
+	// 解锁
+	@RequestMapping(value = { "/unlock.json" }, method = { RequestMethod.POST })
+	public void unlock(@RequestParam(required = true) Long softid,
+			@RequestParam(value = "lockids[]", required = true) Long[] lockids, Model model) {
+
+		softKeyManager.lockByIds(softid, Arrays.asList(lockids), false);
+		model.addAllAttributes(new SuccessResult());
+	}
+
+	// 删除
+	@RequestMapping(value = { "/del.json" }, method = { RequestMethod.POST })
+	public void del(@RequestParam(required = true) Long softid,
+			@RequestParam(value = "delids[]", required = true) Long[] delids, Model model) {
+
+		softKeyManager.deleteByIds(softid, Arrays.asList(delids));
+
+		model.addAllAttributes(new SuccessResult());
+	}
+
+	@RequestMapping(value = { "/order" }, method = { RequestMethod.GET })
+	public String order(Integer pageNo, Integer pageSize, Model model) {
+		model.addAllAttributes(softKeyManager.order(pageNo, pageSize));
+		return "/cdkey/order";
+	}
+
+	@RequestMapping(value = { "/statistics/{softid}" }, method = { RequestMethod.GET })
+	public String statistics(@PathVariable(value = "softid") Long softid, Model model) {
+		model.addAttribute("statistics", kssConverter.convert(softKeyManager.statistics(softid)));
+		return "/cdkey/statistics";
+	}
+
+	@RequestMapping(value = { "/batch" }, method = { RequestMethod.GET })
+	public String batch(Model model) {
+		return "/cdkey/batch";
+	}
+
 }

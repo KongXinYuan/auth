@@ -2,17 +2,19 @@ package com.xuguruogu.auth.dal.daointerface;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import com.xuguruogu.auth.dal.dataobject.KssSoftUserDO;
+import com.xuguruogu.auth.dal.enums.UserStatusType;
 import com.xuguruogu.auth.dal.querycondition.KssSoftUserQueryCondition;
 
 public interface KssSoftUserDao extends KssDaoBaseWithSeg<KssSoftUserDO, KssSoftUserQueryCondition> {
 
-	public int updatePassword(long softid, long id, String password);
+	public long updatePassword(long softid, long id, String password);
 
-	public int updateLock(long softid, long id, boolean lock, Date lockendtime);
+	public long updateStatusById(long softid, long id, UserStatusType status);
 
-	public int updatePublic(long softid, long id, boolean pub);
+	public long updateStatusByIds(long softid, List<Long> ids, UserStatusType status);
 
 	/**
 	 * @param id
@@ -27,9 +29,9 @@ public interface KssSoftUserDao extends KssDaoBaseWithSeg<KssSoftUserDO, KssSoft
 	 *            rookie，每次运行产生一个随机字符串
 	 * @return
 	 */
-	public int updateLastLogin(long softid, long id, Date lastlogintime, long lastloginip, String pccode,
+	public long updateLastLogin(long softid, long id, Date lastlogintime, long lastloginip, String pccode,
 			String linecode);
 
-	public int updateRecharge(long softid, long id, BigDecimal cday, Date starttime, Date endtime);
+	public long updateRecharge(long softid, long id, BigDecimal cday, Date endtime);
 
 }

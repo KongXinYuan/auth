@@ -20,7 +20,7 @@
 			</div>
 			<div class="form-group">
 				<label class="col-sm-2 control-label">级别：</label>
-				<p class="col-sm-10 form-control-static">${admin.level}</p>
+				<p class="col-sm-10 form-control-static">${admin.role}</p>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-2 control-label">上次登录时间：</label>
@@ -49,7 +49,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach items="${loglogin}" var="log">
+					<c:forEach items="${loginlogs}" var="log">
 						<tr>
 							<td>${log.id}</td>
 							<td>${log.loginip}</td>

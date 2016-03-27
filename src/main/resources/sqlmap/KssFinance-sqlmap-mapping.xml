@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KSS_FINANCE">
+	<resultMap type="KssFinanceDO" id="KssFinanceResult">
+		<id property="id" column="id" jdbcType="INTEGER" />
+		<result property="adminid" column="adminid" jdbcType="INTEGER" />
+		<result property="username" column="username" jdbcType="VARCHAR"/>
+		<result property="in" column="isin" jdbcType="BOOLEAN"/>
+		<result property="relatedid" column="relatedid" jdbcType="INTEGER" />
+		<result property="relatedname" column="relatedname" jdbcType="VARCHAR"/>
+		<result property="moneynow" column="moneynow" jdbcType="DECIMAL" />
+		<result property="moneybefore" column="moneybefore" jdbcType="DECIMAL" />
+		<result property="moneychange" column="moneychange" jdbcType="DECIMAL" />
+		<result property="addtime" column="addtime" jdbcType="TIMESTAMP" />
+		<result property="disc" column="disc" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	
+	<insert id="insert" parameterType="KssFinanceDO">
+		INSERT INTO KSS_FINANCE (
+		adminid,
+		isin,
+		relatedid,
+		moneynow,
+		moneybefore,
+		moneychange,
+		addtime,
+		disc
+		)
+		VALUES (
+		#{adminid},
+		#{in},
+		#{relatedid},
+		#{moneynow},
+		#{moneybefore},
+		#{moneychange},
+		#{addtime},
+		#{disc})
+	</insert>
+	
+	<select id="selectById" parameterType="long" resultMap="KssFinanceResult">
+		select * from KSS_FINANCE WHERE id=#{id}
+	</select>
+
+	<delete id="deleteById" parameterType="long">
+		delete from KSS_FINANCE
+		WHERE ID=#{id}
+	</delete>
+	
+	<delete id="deleteByIds" parameterType="java.util.List">
+		delete from KSS_FINANCE
+		WHERE ID in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
+		select COUNT(*) from KSS_FINANCE f 
+		<include refid="QueryCondition" />
+	</select>
+
+	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="KssFinanceResult">
+		SELECT f.*, a.username, r.username as relatedname
+		from KSS_FINANCE f
+		LEFT JOIN kss_admin a ON f.adminid=a.id 
+		LEFT JOIN kss_admin r ON f.relatedid=r.id
+		<include refid="QueryCondition" />
+		<include refid="Pagination" />
+	</select>
+
+	<!-- 查询条件 -->
+	<sql id="QueryCondition">
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test="adminid != null">
+				f.adminid = #{adminid}
+			</if>
+		</trim>
+	</sql>
+
+	<!-- 分页 -->
+	<sql id="Pagination">
+		ORDER BY ID DESC
+		<if test="startIndex != null and pageSize != null">
+			LIMIT #{startIndex},#{pageSize}
+		</if>
+	</sql>
+</mapper>

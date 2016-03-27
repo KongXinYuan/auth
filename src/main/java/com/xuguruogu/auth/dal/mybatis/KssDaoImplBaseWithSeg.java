@@ -4,45 +4,68 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.xuguruogu.auth.dal.daointerface.KssDaoBaseWithSeg;
 import com.xuguruogu.auth.dal.dataobject.EntityWithSeg;
 import com.xuguruogu.auth.dal.querycondition.QueryCondition;
 
-public abstract class KssDaoImplBaseWithSeg<T extends EntityWithSeg, C extends QueryCondition<?>>
+public abstract class KssDaoImplBaseWithSeg<T extends EntityWithSeg, C extends QueryCondition<?>> extends KssDaoSupport
 		implements KssDaoBaseWithSeg<T, C> {
 
-	private String DBNamespace;
-
-	@Autowired
-	protected SqlSessionTemplate sqlSessionTemplate;
-
 	protected KssDaoImplBaseWithSeg(String DBNamespace) {
-		this.DBNamespace = DBNamespace;
+		super(DBNamespace);
 	}
 
-	protected final String getMybatisStatementName(String statementName) {
-		return DBNamespace + "." + statementName;
-	}
+	private static Logger logger = LoggerFactory.getLogger(KssDaoImplBaseWithSeg.class);
 
 	@Override
 	public long insert(T entity) {
 
-		return sqlSessionTemplate.insert(getMybatisStatementName("insertWithSeg"), entity);
+		try {
+			return getSqlSession().insert(getMybatisStatementName("insertWithSeg"), entity);
+		} catch (Exception e) {
+			logger.error("insert({})", entity, e);
+			throw new KssSqlException(e);
+		}
 
 	}
 
 	@Override
 	public T selectById(long softid, long id) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("id", id);
-		map.put("softid", softid);
+		try {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("id", id);
+			map.put("softid", softid);
 
-		T t = sqlSessionTemplate.selectOne(getMybatisStatementName("selectByIdWithSeg"), map);
-		t.setSoftid(softid);
-		return t;
+			T t = getSqlSession().selectOne(getMybatisStatementName("selectByIdWithSeg"), map);
+			if (null != t) {
+				t.setSoftid(softid);
+			}
+			return t;
+		} catch (Exception e) {
+			logger.error("selectById({},{})", softid, id, e);
+			throw new KssSqlException(e);
+		}
+	}
+
+	@Override
+	public List<T> selectByIds(long softid, List<Long> ids) {
+		try {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("ids", ids);
+			map.put("softid", softid);
+
+			List<T> list = getSqlSession().selectList(getMybatisStatementName("selectByIdsWithSeg"), map);
+			for (T t : list) {
+				t.setSoftid(softid);
+			}
+			return list;
+		} catch (Exception e) {
+			logger.error("selectByIds({},{})", softid, ids, e);
+			throw new KssSqlException(e);
+		}
 	}
 
 	@Override
@@ -51,7 +74,12 @@ public abstract class KssDaoImplBaseWithSeg<T extends EntityWithSeg, C extends Q
 		map.put("id", id);
 		map.put("softid", softid);
 
-		return sqlSessionTemplate.delete(getMybatisStatementName("deleteByIdWithSeg"), map);
+		try {
+			return getSqlSession().delete(getMybatisStatementName("deleteByIdWithSeg"), map);
+		} catch (Exception e) {
+			logger.error("deleteById({},{})", softid, id, e);
+			throw new KssSqlException(e);
+		}
 
 	}
 
@@ -60,15 +88,25 @@ public abstract class KssDaoImplBaseWithSeg<T extends EntityWithSeg, C extends Q
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("ids", ids);
 		map.put("softid", softid);
-		return sqlSessionTemplate.delete(getMybatisStatementName("deleteByIdsWithSeg"), map);
+		try {
+			return getSqlSession().delete(getMybatisStatementName("deleteByIdsWithSeg"), map);
+		} catch (Exception e) {
+			logger.error("deleteByIds({},{})", softid, ids, e);
+			throw new KssSqlException(e);
+		}
 
 	}
 
 	@Override
 	public long selectCountByQueryCondition(long softid, C queryCondition) {
-
-		return sqlSessionTemplate.selectOne(getMybatisStatementName("selectCountByQueryConditionWithSeg"),
-				queryCondition.asMap().put("softid", softid));
+		Map<String, Object> param = queryCondition.asMap();
+		param.put("softid", softid);
+		try {
+			return getSqlSession().selectOne(getMybatisStatementName("selectCountByQueryConditionWithSeg"), param);
+		} catch (Exception e) {
+			logger.error("selectCountByQueryCondition({},{})", softid, queryCondition, e);
+			throw new KssSqlException(e);
+		}
 
 	}
 
@@ -76,28 +114,34 @@ public abstract class KssDaoImplBaseWithSeg<T extends EntityWithSeg, C extends Q
 	public List<T> selectListByQueryCondition(long softid, C queryCondition) {
 		Map<String, Object> param = queryCondition.asMap();
 		param.put("softid", softid);
-
-		List<T> tlist = sqlSessionTemplate.selectList(getMybatisStatementName("selectByQueryConditionWithSeg"), param);
-		for (T t : tlist) {
-			t.setSoftid(softid);
+		try {
+			List<T> list = getSqlSession().selectList(getMybatisStatementName("selectByQueryConditionWithSeg"), param);
+			for (T t : list) {
+				t.setSoftid(softid);
+			}
+			return list;
+		} catch (Exception e) {
+			logger.error("selectListByQueryCondition({},{})", softid, queryCondition, e);
+			throw new KssSqlException(e);
 		}
-		return tlist;
 	}
 
 	@Override
 	public T selectOneByQueryCondition(long softid, C queryCondition) {
+		Map<String, Object> param = queryCondition.asMap();
+		param.put("softid", softid);
 
-		T t = sqlSessionTemplate.selectOne(getMybatisStatementName("selectByQueryConditionWithSeg"),
-				queryCondition.asMap().put("softid", softid));
-		t.setSoftid(softid);
-		return t;
+		try {
+			T t = getSqlSession().selectOne(getMybatisStatementName("selectByQueryConditionWithSeg"), param);
+			if (null != t) {
+				t.setSoftid(softid);
+			}
+			return t;
 
-	}
-
-	public long deleteByQueryCondition(C queryCondition) {
-
-		return sqlSessionTemplate.delete(getMybatisStatementName("selectByQueryCondition"), queryCondition.asMap());
-
+		} catch (Exception e) {
+			logger.error("selectOneByQueryCondition({},{})", softid, queryCondition, e);
+			throw new KssSqlException(e);
+		}
 	}
 
 }

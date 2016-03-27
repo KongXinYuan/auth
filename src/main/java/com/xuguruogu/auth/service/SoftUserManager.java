@@ -1,20 +1,18 @@
 package com.xuguruogu.auth.service;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import com.xuguruogu.auth.dal.dataobject.KssSoftUserDO;
+import com.xuguruogu.auth.web.param.UserSearchParam;
 
 public interface SoftUserManager {
 
 	// 注册
 	public KssSoftUserDO registerWithCdkey(long softid, String username, String password, String cdkey);
 
-	public KssSoftUserDO queryById(long softid, long userid);
-
-	public KssSoftUserDO queryByUsername(long softid, String username);
-
-	public void updatePassword(long softid, long userid, String password);
+	// 获取信息
+	public KssSoftUserDO queryBygUserId(long softid, long userid);
 
 	// 登录
 	public KssSoftUserDO login(long softid, String username, String password, long ip, String pccode, String linecode);
@@ -25,15 +23,12 @@ public interface SoftUserManager {
 	// 校验
 	public KssSoftUserDO valid(long softid, String username, String linecode);
 
-	public void updateLock(long softid, long userid, boolean islock, BigDecimal cday);
+	// 锁定
+	public void lockByIds(long softid, List<Long> userids, boolean lock);
 
-	public void updatePublic(long softid, long userid, boolean ispublic);
-
-	public List<KssSoftUserDO> queryByPage(long softid, long adminid, int limit, final int pageIndex);
-
-	public long queryCount(long softid, long adminid);
-
-	public void deleteById(long softid, long userid);
-
+	// 删除
 	public void deleteByIds(long softid, List<Long> userids);
+
+	// 搜索
+	public Map<String, Object> search(long softid, UserSearchParam param);
 }

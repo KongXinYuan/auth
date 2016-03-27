@@ -7,6 +7,9 @@
 	<resultMap type="KssLogLoginDO" id="KssLogLoginResult">
 		<id property="id" column="ID" jdbcType="INTEGER" />
 		<result property="adminid" column="adminid" jdbcType="INTEGER" />
+		<result property="username" column="username" jdbcType="VARCHAR"/>
+		<result property="parentid" column="parentid" jdbcType="INTEGER" />
+		<result property="parentname" column="parentname" jdbcType="VARCHAR"/>
 		<result property="loginip" column="LOGINIP" jdbcType="INTEGER" />
 		<result property="logintime" column="LOGINTIME" jdbcType="TIMESTAMP" />
 	</resultMap>
@@ -24,15 +27,24 @@
 	</insert>
 	
 	<select id="selectById" parameterType="long" resultMap="KssLogLoginResult">
-		select * from KSS_LOG_LOGIN WHERE id=#{id}
+		<include refid="selectList"/>
+		WHERE g.id=#{id}
 	</select>
-
+	
+	<select id="selectByIds" parameterType="list" resultMap="KssLogLoginResult">
+		<include refid="selectList"/>
+		where g.id in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</select>
+	
 	<delete id="deleteById" parameterType="long">
 		delete from KSS_LOG_LOGIN
 		WHERE ID=#{id}
 	</delete>
 	
-	<delete id="deleteByIds" parameterType="java.util.List">
+	<delete id="deleteByIds" parameterType="list">
 		delete from KSS_LOG_LOGIN
 		WHERE ID in
 		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
@@ -41,30 +53,37 @@
 	</delete>
 
 	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
-		select COUNT(*) from KSS_LOG_LOGIN
+		select COUNT(*) from KSS_LOG_LOGIN g
+		LEFT JOIN kss_admin a ON g.adminid=a.id
+		LEFT JOIN kss_admin p ON a.parentid=p.id
 		<include refid="QueryCondition" />
 	</select>
 
 	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="KssLogLoginResult">
-		SELECT * FROM KSS_LOG_LOGIN
+		<include refid="selectList"/>
 		<include refid="QueryCondition" />
 		<include refid="Pagination" />
 	</select>
+	
+	<sql id="selectList">
+		SELECT g.*, a.username, a.parentid, p.username AS parentname
+		FROM KSS_LOG_LOGIN g
+		LEFT JOIN kss_admin a ON g.adminid=a.id 
+		LEFT JOIN kss_admin p ON a.parentid=p.id
+	</sql>
 
 	<!-- 查询条件 -->
 	<sql id="QueryCondition">
 		<trim prefix="where" prefixOverrides="and|or">
 			<if test="adminid != null">
-				adminid = #{adminid}
+				(a.id = #{adminid} or p.id = #{adminid} or p.parentid=#{adminid})
 			</if>
 		</trim>
 	</sql>
 
 	<!-- 分页 -->
 	<sql id="Pagination">
-		<if test="desc != null">
-			ORDER BY ID DESC
-		</if>
+		ORDER BY ID DESC
 		<if test="startIndex != null and pageSize != null">
 			LIMIT #{startIndex},#{pageSize}
 		</if>

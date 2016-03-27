@@ -1,10 +1,8 @@
 package com.xuguruogu.auth.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.xuguruogu.auth.dal.dataobject.KssSoftDO;
-import com.xuguruogu.auth.dto.SoftDTO;
 
 /**
  * 软件管理
@@ -14,20 +12,18 @@ import com.xuguruogu.auth.dto.SoftDTO;
  *          benli.lbl Exp $
  */
 public interface SoftManager {
-	public Map<String, Object> list(Integer pageNo, Integer pageSize);
+	public List<KssSoftDO> listAll();
 
-	public List<SoftDTO> listAll();
+	public KssSoftDO detail(long softid);
 
-	public SoftDTO create(String softname, long intervaltime, String clientpubkey, String serverprivkey);
-
-	public SoftDTO detail(long softid);
-
-	public SoftDTO update(long softid, long intervaltime, String clientpubkey, String serverprivkey);
+	public KssSoftDO update(long softid, long intervaltime, String privkey);
 
 	public KssSoftDO selectBySoftcode(long softcode);
 
 	public void updateLock(long softid, boolean lock);
 
 	public void deleteByIds(List<Long> softids);
+
+	public KssSoftDO create(String softname, long intervaltime, String privkey);
 
 }

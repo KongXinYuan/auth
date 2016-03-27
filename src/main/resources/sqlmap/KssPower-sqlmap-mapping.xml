@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KSS_POWER">
+
+	<resultMap type="KssPowerDO" id="KssPowerResult">
+		<id property="id" column="ID" jdbcType="INTEGER" />
+		<result property="keysetid" column="keysetid" jdbcType="INTEGER" />
+		<result property="keyname" column="keyname" jdbcType="VARCHAR"/>
+		<result property="softid" column="softid" jdbcType="INTEGER" />
+		<result property="softname" column="softname" jdbcType="VARCHAR"/>
+		<result property="adminid" column="adminid" jdbcType="INTEGER" />
+		<result property="retailprice" column="retailprice" jdbcType="DECIMAL" />
+		<result property="sellprice" column="sellprice" jdbcType="DECIMAL" />
+	</resultMap>
+
+	<insert id="insert" parameterType="KssKeySetDO">
+		INSERT INTO KSS_POWER (
+		adminid,
+		keysetid,
+		sellprice)
+		VALUES (
+		#{adminid},
+		#{keysetid},
+		#{sellprice})
+	</insert>
+	
+	<insert id="insertList" parameterType="java.util.List">
+		INSERT ignore INTO KSS_POWER (adminid, keysetid, sellprice)
+		VALUES
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.adminid}, #{item.keysetid}, #{item.sellprice})
+		</foreach>
+	</insert>
+	
+	
+	<update id="update" parameterType="java.util.Map">
+		UPDATE kss_power
+		<set>
+			sellprice = #{sellprice}
+		</set>
+		where id=#{id}
+	</update>
+	
+	<select id="selectById" parameterType="int" resultMap="KssPowerResult">
+		<include refid="SelectList" />
+		where p.id=#{id}
+	</select>
+	
+	<select id="selectByIds" parameterType="java.util.List" resultMap="KssPowerResult">
+		<include refid="SelectList" />
+		where p.id in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</select>
+
+	<delete id="deleteByKeySetId" parameterType="long">
+		delete from kss_power
+		where
+		keysetid=#{id}
+	</delete>
+	
+	<delete id="deleteByKeySetIds" parameterType="java.util.List">
+		delete from kss_power
+		where keysetid in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<delete id="deleteBySoftId" parameterType="long">
+		delete from kss_power
+		where
+		softid=#{id}
+	</delete>
+	
+	<delete id="deleteBySoftIds" parameterType="java.util.List">
+		delete from kss_power
+		where softid in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<delete id="deleteByAdminId" parameterType="long">
+		delete from kss_power
+		where
+		adminid=#{id}
+	</delete>
+	
+	<delete id="deleteByAdminIds" parameterType="java.util.List">
+		delete from kss_power
+		where adminid in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<delete id="deleteByKeysetIdAndAdminid" parameterType="java.util.Map">
+		delete from kss_power
+		where
+		adminid=#{adminid} and keysetid=#{keysetid}
+	</delete>
+
+	<delete id="deleteById" parameterType="long">
+		delete from kss_power
+		where
+		id=#{id}
+	</delete>
+
+	<delete id="deleteByIds" parameterType="java.util.List">
+		delete from kss_power
+		where id in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
+		select count(*) from kss_power p inner join kss_keyset k on p.keysetid=k.id
+		<include refid="QueryCondition" />
+	</select>
+
+	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="KssPowerResult">
+		<include refid="SelectList"></include>
+		<include refid="QueryCondition" />
+		<include refid="Pagination" />
+	</select>
+	
+	<sql id="SelectList">
+		select p.*, k.keyname,k.softid,s.softname, k.retailprice
+		from kss_power p
+		inner join kss_keyset k on p.keysetid=k.id
+		inner join kss_soft s on s.id=k.softid
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="QueryCondition">
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test="keysetid != null">
+				and p.keysetid = #{keysetid}
+			</if>
+			<if test="softid != null">
+				k.softid = #{softid}
+			</if>
+			<if test="adminid != null">
+				and p.adminid = #{adminid}
+			</if>
+			order by k.id
+		</trim>
+	</sql>
+	
+	<!-- 分页 -->
+	<sql id="Pagination">
+		<if test="startIndex != null and pageSize != null">
+			LIMIT #{startIndex},#{pageSize}
+		</if>
+	</sql>
+
+</mapper>

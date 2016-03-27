@@ -2,197 +2,186 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<c:set var="ctx" value="${pageContext.request.contextPath}" />
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <html>
 <head>
-<title>list</title>
+<title>用户列表</title>
+<style type="text/css">
+    .modal-dialog{
+        max-width: 420px;
+    }
+    .pagination{
+    	float: right;
+    }
+    #searchForm{
+    	margin: 0px 5px 5px 5px;
+    }
+    #searchForm .form-group{
+    	margin: 5px;
+    }
+</style>
 </head>
 <body>
-	<div class="row">
-		<form:form id="searchForm" class="form-horizontal span24">
-			<div class="row">
-				<div class="control-group span8">
-					<label class="control-label">用户id：</label>
-					<div class="controls">
-						<input type="text" class="control-text" name="userId">
-					</div>
-				</div>
-				<div class="control-group span8">
-					<label class="control-label">用户名：</label>
-					<div class="controls">
-						<input type="text" class="control-text" name="username">
-					</div>
-				</div>
-				<div class="control-group span8">
-					<label class="control-label">昵称：</label>
-					<div class="controls">
-						<input type="text" class="control-text" name="nickname">
-					</div>
-				</div>
+	<form class="form-inline" action="" method="get" id="searchForm">
+		<div class="form-inline">
+			<div class="form-group">
+				<label for="inputadminid">管理员</label>
+				<select class="form-control" name="adminid" id="inputadminid">
+					<option value=''>全部</option>
+					<c:forEach items="${admins}" var="admin">
+					<option value="${admin.id}">${admin.username}</option>
+					</c:forEach>
+				</select>
 			</div>
-			<div class="row">
-				<div class="control-group span9">
-					<label class="control-label">创建时间：</label>
-					<div class="controls">
-						<input type="text" class=" calendar" name="gmtCreatedBegin">
-						<span>-</span>
-						<input type="text" class=" calendar" name="gmtCreatedEnd">
-					</div>
-				</div>
-				<div class="span3 offset2">
-					<button type="button" id="btnSearch" class="button button-primary">搜索</button>
-				</div>
+			<div class="form-group">
+				<label for="inputpub">是否公用</label>
+				<select class="form-control" name="pub" id="inputpub">
+					<option value=''>全部</option>
+					<option value=true>公用账号</option>
+					<option value=false>普通账号</option>
+				</select>
 			</div>
-		</form:form>
+			<div class="form-group">
+				<label for="inputlock">是否锁定</label>
+				<select class="form-control" name="lock" id="inputlock">
+					<option value=''>全部</option>
+					<option value=true>锁定</option>
+					<option value=false>未锁定</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="inputusername">用户名</label>
+				<input type="text" class="form-control" id="inputusername" name="username" placeholder="用户名">
+			</div>
+			<div class="form-group">
+				<label for="inputcdkey">注册卡</label>
+				<input type="text" class="form-control" id="inputcdkey" name="cdkey" placeholder="注册卡">
+			</div>
+			<div class="form-group">
+				<label for="inputtag">标签</label>
+				<input type="text" class="form-control" id="inputtag" name="tag" placeholder="标签">
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary">搜索</button>
+			</div>
+		</div>
+	</form>
+	
+	<div class="table-responsive">
+		<div class="form-inline">
+			<button class="btn btn-default" type="button" data-toggle="modal" data-target="#delselModal"><span class="glyphicon glyphicon-minus"></span>删除</button>
+			<button class="btn btn-default" type="button" data-action="locksel" title="锁定"><span class="glyphicon glyphicon glyphicon-ban-circle" tabindex="0" role="button"></span>锁定</button>
+			<button class="btn btn-default" type="button" data-action="unlocksel" title="解锁"><span class="glyphicon glyphicon glyphicon-ok-circle" tabindex="0" role="button"></span>解锁</button>
+		</div>
+		<table class="table table-striped table-hover" id="cdkeytable">
+			<thead>
+				<tr>
+					<th><input type="checkbox" /></th>
+					<th>id</th>
+					<th>所属</th>
+					<th>用户名</th>
+					<th>天数</th>
+					<th>公用</th>
+					<th>注册时间</th>
+					<th>开始时间</th>
+					<th>结束时间</th>
+					<th>上次登录时间</th>
+					<th>上次登录ip</th>
+					<th>充值次数</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${users}" var="user">
+					<tr>
+						<td><input type="checkbox" /></td>
+						<td>${user.id}</td>
+						<td>${user.adminname}</td>
+						<td>${user.username}</td>
+						<td>${user.cday}</td>
+						<td>${user.pub}</td>
+						<td><fmt:formatDate value="${user.addtime}" pattern="YYYY-MM-dd HH:mm" /></td>
+						<td><fmt:formatDate value="${user.starttime}" pattern="YYYY-MM-dd HH:mm" /></td>
+						<td><fmt:formatDate value="${user.endtime}" pattern="YYYY-MM-dd HH:mm" /></td>
+						<td><fmt:formatDate value="${user.lastlogintime}" pattern="YYYY-MM-dd HH:mm" /></td>
+						<td>${user.lastloginip}</td>
+						<td>${user.rechargetimes}</td>
+						<td>
+							 <c:choose>
+							 <c:when test="${user.lock}">
+							 	<a data-action="lock" data-toggle="modal" href="#" title="解锁"><span class="glyphicon glyphicon-ok-circle" tabindex="0" role="button" data-trigger="focus"></span></a>
+							 </c:when>
+							 <c:otherwise>
+							 	<a data-action="lock" data-toggle="modal" href="#" title="锁定"><span class="glyphicon glyphicon-ban-circle" tabindex="0" role="button" data-trigger="focus"></span></a>
+							 </c:otherwise>
+							 </c:choose>
+							 <a data-action="del" data-toggle="modal" data-target="#delselModal" href="#" title="删除"><span class="glyphicon glyphicon-remove" tabindex="0" role="button" data-trigger="focus"></span></a>
+						</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+		<ul id="pagination" class="pagination"></ul>
 	</div>
-	<div class="search-grid-container">
-		<div id="grid"></div>
+
+	<div class="modal fade" id="delselModal" tabindex="-1" role="dialog" aria-labelledby="delselModalLabel">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="delselModalLabel">删除</h4>
+				</div>
+				<div class="modal-body">
+					<p id="delcontent">确认删除这一行么</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-primary" data-action="delsel">删除</button>
+				</div>
+			</div>
+		</div>
 	</div>
+	
+	
+	<script src="/static/js/checkbox.js"></script>
+	<script src="/static/js/userlist.js"></script>
+	<script type="text/javascript">
+	softid= ${softid};
+	$(function() {
+		param={
+				adminid:"${search.adminid}",
+				pub:"${search.pub}",
+				lock:"${search.lock}",
+				username:"${search.username}",
+				cdkey:"${search.cdkey}",
+				tag:"${search.tag}"
+		};
 
-	<div id="contentAdd" class="hide">
-		<form id="J_Form" class="form-horizontal">
-			<div class="row">
-				<div class="control-group span8">
-					<label class="control-label">用户名</label>
-					<div class="controls">
-						<input name="username" type="text" data-rules="{required:true}"
-							class="input-normal control-text">
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="control-group span8">
-					<label class="control-label">邮箱</label>
-					<div class="controls">
-						<input name="email" type="text" data-rules="{required:true,name:email}"
-							class="input-normal control-text">
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="control-group span8">
-					<label class="control-label">昵称</label>
-					<div class="controls">
-						<input name="nickname" type="text" data-rules="{required:true}"
-							class="input-normal control-text">
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="control-group span8">
-					<label class="control-label">密码</label>
-					<div class="controls">
-						<input id="password" name="password" type="password" data-rules="{required:true}"
-							class="input-normal control-text">
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="control-group span8">
-					<label class="control-label">确认密码</label>
-					<div class="controls">
-						<input type="password" data-rules="{required:true,equalTo:'#password'}"
-							class="input-normal control-text">
-					</div>
-				</div>
-			</div>
-		</form>
-	</div>
+		$('#inputadminid').multiselect({nonSelectedText:"请选择",disableIfEmpty: true}).multiselect('select', [param["adminid"]]).multiselect('refresh');
+		$('#inputpub').multiselect().multiselect('select', [param["pub"]]).multiselect('refresh');
+		$('#inputlock').multiselect().multiselect('select', [param["lock"]]).multiselect('refresh');
+		$('#inputusername').val(param["username"]);
+		$('#inputcdkey').val(param["cdkey"]);
+		$('#inputtag').val(param["tag"]);
 
-<script type="text/javascript">
-  BUI.use('common/search',function (Search) {
-    
-    var adding = new BUI.Grid.Plugins.DialogEditing({
-          contentId : 'contentAdd',
-          autoSave : true
-        }),
+		var searchstr = $("#searchForm").serialize();
 
-      columns = [
-          {title:'id',dataIndex:'id',width:80,renderer:function(v){
-            return Search.createLink({
-              id : 'detail' + v,
-              title : '用户详情',
-              text : v,
-              href : '${ctx}/user/detail/'+v
-            });
-          }},
-          {title:'用户名',dataIndex:'username',width:100},
-          {title:'昵称',dataIndex:'nickname',width:100},
-          {title:'姓名',dataIndex:'realname',width:100},
-          {title:'手机',dataIndex:'tel',width:100},
-          {title:'Email',dataIndex:'email',width:100},
-          {title:'性别',dataIndex:'sex',width:100},
-          {title:'生日',dataIndex:'birthday',width:100},
-          {title:'签名',dataIndex:'description',width:100},
-          {title:'头像',dataIndex:'portraitPath',width:100},
-          {title:'头像缩略图',dataIndex:'portraitSmallPath',width:100},
-          {title:'操作',dataIndex:'',width:200,renderer : function(value,obj){
-            var delStr = '<span class="grid-command btn-del" title="删除">删除</span>';//页面操作不需要使用Search.createLink
-            return delStr;
-          }}
-        ],
-      store = Search.createStore('${ctx}/user/page.json',{
-        proxy : {
-          save : { //也可以是一个字符串，那么增删改，都会往那么路径提交数据，同时附加参数saveType
-            addUrl : '${ctx}/user/doAdd.json',
-            updateUrl : '${ctx}/user/doEdit.json',
-            removeUrl : '${ctx}/user/doDel.json'
-          },
-          method : 'POST'
-        },
-        autoSync : true //保存数据后，自动更新
-      }),
-      gridCfg = Search.createGridCfg(columns,{
-        tbar : {
-          items : [
-            {text : '<i class="icon-plus"></i>新建',btnCls : 'button button-small',handler:addFunction},
-            {text : '<i class="icon-remove"></i>删除',btnCls : 'button button-small',handler : delFunction}
-          ]
-        },
-        plugins : [adding,BUI.Grid.Plugins.CheckSelection,BUI.Grid.Plugins.AutoFit] // 插件形式引入多选表格
-      });
+		/* 初始化页数 */
+		var results = '${count}';
+		$('#pagination').twbsPagination({
+			totalPages : Math.floor(results / 20 + 1),
+			visiblePages : 5,
+			href : '?pageNo={{pageNo}}&pageSize=20&'+$("#searchForm").serialize(),
+			hrefVariable : '{{pageNo}}',
+			onPageClick : function(event, page) {
+			}
+		});
 
-    var  search = new Search({
-        store : store,
-        gridCfg : gridCfg
-      }),
-      grid = search.get('grid');
-
-    //增加操作
-    function addFunction(){
-    	adding.add({});
-    }
-
-    //删除操作
-    function delFunction(){
-      var selections = grid.getSelection();
-      delItems(selections);
-    }
-
-    function delItems(items){
-      var ids = [];
-      BUI.each(items,function(item){
-        ids.push(item.id);
-      });
-
-      if(ids.length){
-        BUI.Message.Confirm('确认要删除选中的记录么？',function(){
-          store.save('remove',{ids : ids});
-        },'question');
-      }
-    }
-
-    //监听事件
-    grid.on('cellclick',function(ev){
-      var sender = $(ev.domTarget); //点击的Dom
-      if(sender.hasClass('btn-del')){
-        //删除一条记录
-        var record = ev.record;
-        delItems([record]);
-      }
-    });
-  });
-</script>
+	});
+	</script>
 </body>
+
 </html>

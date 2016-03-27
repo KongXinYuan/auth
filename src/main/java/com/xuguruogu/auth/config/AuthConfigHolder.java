@@ -7,6 +7,8 @@ public class AuthConfigHolder {
 
 	private static final String SOFT_CACHEKEY_PREFIX = "soft";
 	private static final String USER_CACHEKEY_PREFIX = "user";
+	private static final String ADMIN_CACHEKEY_PREFIX = "admin";
+	private static final String KEYSET_CACHEKEY_PREFIX = "keyset";
 	private static final String JOIN = "-";
 
 	/**
@@ -37,5 +39,33 @@ public class AuthConfigHolder {
 	 */
 	public static String getPublicUserCacheKey(long softid, long userid, String pccode) {
 		return USER_CACHEKEY_PREFIX + JOIN + softid + JOIN + userid + JOIN + pccode;
+	}
+
+	/**
+	 * subAdminList
+	 */
+	public static String getSubAdminCacheKey(long adminid) {
+		return ADMIN_CACHEKEY_PREFIX + JOIN + adminid + JOIN + "sub";
+	}
+
+	/**
+	 * Admin
+	 */
+	public static String getAdminCacheKey(long adminid) {
+		return ADMIN_CACHEKEY_PREFIX + JOIN + adminid;
+	}
+
+	/**
+	 * keyset
+	 */
+	public static String getKeySetCacheKey(long keysetid) {
+		return KEYSET_CACHEKEY_PREFIX + JOIN + keysetid;
+	}
+
+	/**
+	 * adminKeysetList
+	 */
+	public static String getAdminKeysetCacheKey(long adminid) {
+		return KEYSET_CACHEKEY_PREFIX + JOIN + adminid + JOIN + "admin";
 	}
 }

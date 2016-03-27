@@ -45,7 +45,7 @@ public class KssExceptionHandler {
 			jsonGenerator.writeObject(new ErrorResult(ex));
 			return null;
 		} else {
-			return new ModelAndView("error/500", new ErrorResult(ex));
+			return new ModelAndView("error/500");
 		}
 	}
 }

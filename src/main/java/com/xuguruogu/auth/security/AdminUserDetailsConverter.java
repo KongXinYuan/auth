@@ -8,7 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.xuguruogu.auth.dal.dataobject.KssAdminDO;
-import com.xuguruogu.auth.dal.enums.RoleType;
+import com.xuguruogu.auth.dal.enums.AdminStatusType;
 import com.xuguruogu.auth.util.AbstractConverter;
 
 /**
@@ -24,22 +24,18 @@ public class AdminUserDetailsConverter extends AbstractConverter<KssAdminDO, Adm
 	@Override
 	protected AdminUserDetails doConvert(KssAdminDO kssAdminDO) {
 
-		boolean accountNonLocked = !kssAdminDO.isLock();
+		boolean enabled = AdminStatusType.ACTIVE == kssAdminDO.getStatus();
 
 		Collection<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
 		long adminid = kssAdminDO.getId();
 
-		for (RoleType role : RoleType.values()) {
-			if (kssAdminDO.getLevel() == role.getLevel()) {
-				auths.add(new SimpleGrantedAuthority(role.getCode()));
-			}
-		}
+		auths.add(new SimpleGrantedAuthority(kssAdminDO.getRole().getRole()));
 
 		AdminUserDetails adminUserDetails = new AdminUserDetails(kssAdminDO.getUsername(), kssAdminDO.getPassword(),
-				accountNonLocked, auths);
+				enabled, auths);
 
-		adminUserDetails.setAdminid(adminid);
-		adminUserDetails.setLevel(kssAdminDO.getLevel());
+		adminUserDetails.setId(adminid);
+		adminUserDetails.setRole(kssAdminDO.getRole());
 
 		return adminUserDetails;
 	}
