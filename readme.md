@@ -11,16 +11,19 @@ java web用spring mvc, spring security, mybatis
 - 软件中加入随机条件下的认证
 - 认证相关代码避免使用dll，如果必须，最好校验散列值
 
-功能：通信流程
+通信流程
+	
+- 客户端每次生成AES密匙key和iv，并随机生成verify字符串，使用RSA送给服务器。
+- 服务器采用key和iv作为参数进行AES加密返回。
+- 客户端采用AES的密匙key和iv解密,并校验verify字符串是否正确。
 
-```
+即
 
-	客户端每次生成AES密匙对，并随机生成verify字符串，使用RSA送给服务器。服务器采用AES加密返回。客户端需要校验verify字符串是否正确。
+- msg + AES key -> RSA public key encode -> Base64 encode -> server
+- server -> Base64 decode -> RSA private key decode -> AES key encode -> Base64 encode -> client
+- client -> Base64 decode -> EAS decode
 
-	msg + AES key -> RSA public key encode -> Base64 encode -> server -> Base64 decode -> RSA private key decode -> AES key encode -> Base64 encode -> client -> Base64 decode -> EAS decode
 
-
-```
 
 #authlib
 
