@@ -15,9 +15,6 @@ public class KssSoftDO extends Entity {
 	 */
 	private static final long serialVersionUID = -4645237272295270232L;
 
-	/** 软件编号 */
-	private long softcode;
-
 	/** 软件校验码 */
 	private String softkey;
 
@@ -31,14 +28,6 @@ public class KssSoftDO extends Entity {
 	private String privkey;
 
 	private SoftStatusType status;
-
-	public long getSoftcode() {
-		return softcode;
-	}
-
-	public void setSoftcode(long softcode) {
-		this.softcode = softcode;
-	}
 
 	public String getSoftkey() {
 		return softkey;

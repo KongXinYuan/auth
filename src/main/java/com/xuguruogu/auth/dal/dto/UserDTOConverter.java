@@ -18,6 +18,7 @@ public class UserDTOConverter extends AbstractConverter<KssSoftUserDO, UserDTO> 
 	@Override
 	protected UserDTO doConvert(KssSoftUserDO kssSoftUserDO) {
 		UserDTO dto = new UserDTO();
+		dto.setId(kssSoftUserDO.getId());
 		dto.setStatus(kssSoftUserDO.getStatus().getDesc());
 		dto.setAddtime(kssSoftUserDO.getAddtime());
 		dto.setAdminname(kssSoftUserDO.getAdminname());

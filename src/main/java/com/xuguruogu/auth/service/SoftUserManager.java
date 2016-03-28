@@ -23,6 +23,9 @@ public interface SoftUserManager {
 	// 校验
 	public KssSoftUserDO valid(long softid, String username, String linecode);
 
+	// 校验
+	public void changePassword(long softid, String username, String password, String newPassword);
+
 	// 锁定
 	public void lockByIds(long softid, List<Long> userids, boolean lock);
 

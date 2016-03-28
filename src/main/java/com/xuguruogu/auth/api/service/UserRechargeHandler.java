@@ -1,18 +1,21 @@
 package com.xuguruogu.auth.api.service;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import com.xuguruogu.auth.dal.dataobject.KssSoftDO;
 import com.xuguruogu.auth.dal.dataobject.KssSoftUserDO;
-import com.xuguruogu.auth.interceptor.KssException;
 import com.xuguruogu.auth.service.SoftUserManager;
 import com.xuguruogu.auth.web.result.SuccessResult;
 
 /**
  * @author benli.lbl 充值
  */
+@Component("userRechargeHandler")
 public class UserRechargeHandler implements RequestHandler {
 	private static String name = "recharge";
 
@@ -20,30 +23,24 @@ public class UserRechargeHandler implements RequestHandler {
 	private SoftUserManager softUserManager;
 
 	@Override
-	public Map<String, Object> doRequest(Map<String, Object> param, KssSoftDO soft) {
+	public Map<String, Object> doRequest(Map<String, String> param, KssSoftDO soft) {
 
 		// 参数校验
-		String username = (String) param.get("username");
-		if (null == username || username.isEmpty()) {
-			throw new KssException("用户名为空");
-		}
+		String username = param.get("username");
+		Assert.hasText(username, "用户名为空");
 
 		// cdkey
-		String cdkey = (String) param.get("cdkey");
-		if (null == cdkey || cdkey.isEmpty() || cdkey.length() != 32) {
-			throw new KssException("卡密长度32位");
-		}
+		String cdkey = param.get("cdkey");
+		Assert.hasText(cdkey, "卡密为空");
+		Assert.isTrue(cdkey.length() == 32, "卡密长度为32位");
 
 		// 充值
 		KssSoftUserDO user = softUserManager.recharge(soft.getId(), username, cdkey);
-
-		if (null == user) {
-			throw new KssException("recharge返回用户为空");
-		}
+		Assert.notNull(user, "充值失败");
 
 		// 返回数据
 		Map<String, Object> result = new SuccessResult();
-		result.put("endtime", user.getEndtime());
+		result.put("remain", user.getEndtime().getTime() - new Date().getTime());
 		return result;
 	}
 

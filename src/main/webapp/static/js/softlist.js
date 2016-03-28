@@ -4,7 +4,6 @@ $(function() {
     $('#addform').formValidation({
         framework: 'bootstrap',
         icon: {
-            valid: 'glyphicon glyphicon-ok',
             invalid: 'glyphicon glyphicon-remove',
             validating: 'glyphicon glyphicon-refresh'
         },
@@ -42,12 +41,12 @@ $(function() {
     $('#editform').formValidation({
         framework: 'bootstrap',
         icon: {
-            valid: 'glyphicon glyphicon-ok',
             invalid: 'glyphicon glyphicon-remove',
             validating: 'glyphicon glyphicon-refresh'
         },
         fields: {
         	softid: {
+        		excluded:false,
                 validators: {
                     notEmpty: {
                         message: '没有发现id'
@@ -96,7 +95,6 @@ $(function() {
                     	$("#softtable tbody").append(
                     			'<tr><td><input type="checkbox" /></td>'
                     			+'<td>'+soft["id"]+'</td>'
-                    			+'<td>'+soft["softcode"]+'</td>'
                     			+'<td>'+soft["softkey"]+'</td>'
                     			+'<td>'+soft["softname"]+'</td>'
                     			+'<td>'+soft["intervaltime"]+'</td>'
@@ -146,7 +144,6 @@ $(function() {
                 	var soft = result["soft"];
                 	$('#editform #inputsoftid').val(soft["id"]);
                 	$('#editform #inputsoftname').val(soft["softname"]);
-                	$('#editform #inputsoftcode').val(soft["softcode"]);
                 	$('#editform #inputsoftkey').val(soft["softkey"]);
                 	$('#editform #inputintervaltime').val(soft["intervaltime"]);
                 }else{
@@ -197,10 +194,9 @@ $(function() {
                     }else if(true == result["success"]){
                     	var soft = result["soft"];
                     	$(edititem).children("td:eq(1)").html(soft["id"]);
-                    	$(edititem).children("td:eq(2)").html(soft["softcode"]);
-                    	$(edititem).children("td:eq(3)").html(soft["softkey"]);
-                    	$(edititem).children("td:eq(4)").html(soft["softname"]);
-                    	$(edititem).children("td:eq(5)").html(soft["intervaltime"]);
+                    	$(edititem).children("td:eq(2)").html(soft["softkey"]);
+                    	$(edititem).children("td:eq(3)").html(soft["softname"]);
+                    	$(edititem).children("td:eq(4)").html(soft["intervaltime"]);
                     	//关闭
                     	$('#editModal').modal('hide');
                     	
@@ -227,7 +223,7 @@ $(function() {
 		if(currentitem.data("action")=="del"){
 			//当前行
 			delitems = currentitem.closest("tr");
-			$("#delcontent").html("确定删除"+delitems.children("td:eq(4)").html()+"么?");
+			$("#delcontent").html("确定删除"+delitems.children("td:eq(3)").html()+"么?");
 		}else{
 			delitems = $("#softtable tbody :checked").closest("tr");
 			$("#delcontent").html("确定删除全部所选么?");

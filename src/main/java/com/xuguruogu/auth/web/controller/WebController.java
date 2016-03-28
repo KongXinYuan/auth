@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.xuguruogu.auth.dal.dataobject.KssAdminDO;
 import com.xuguruogu.auth.dal.dto.AdminDTO;
 import com.xuguruogu.auth.service.AdminManager;
+import com.xuguruogu.auth.service.OptionManager;
 import com.xuguruogu.auth.util.Converter;
 
 @Controller
@@ -24,6 +25,9 @@ public class WebController {
 
 	@Autowired
 	private Converter<KssAdminDO, AdminDTO> adminDTOConverter;
+
+	@Autowired
+	private OptionManager optionManager;
 
 	@RequestMapping
 	public String index(Model model) {
@@ -45,9 +49,8 @@ public class WebController {
 			model.addAttribute("error", true);
 		}
 
-		if (logger.isInfoEnabled()) {
-			logger.info("visit to login");
-		}
+		model.addAttribute("ICP", optionManager.get("ICP"));
+		model.addAttribute("title", optionManager.get("title"));
 
 		return "login";
 	}

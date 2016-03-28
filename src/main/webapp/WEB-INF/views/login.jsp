@@ -16,7 +16,7 @@
     <meta name="robots" content="none">
     <meta name="description" content="授权认证系统 powered by kent">
     <link rel="icon" href="./favicon.ico">
-    <title>登录</title>
+    <title>${title}</title>
     <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
 	    #loginform{
@@ -68,6 +68,7 @@
 		<div class="form-group">
 			<button class="btn btn-primary" type="submit">登录</button>
 		</div>
+		<p style="text-align: center;">${ICP}</p>
     </form:form>
 </div>
 <!-- js文件 -->

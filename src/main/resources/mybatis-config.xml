@@ -43,6 +43,7 @@
 		<mapper resource="sqlmap/KssFinance-sqlmap-mapping.xml" />
 		<mapper resource="sqlmap/KssStatistics-sqlmap-mapping.xml" />
 		<mapper resource="sqlmap/KssPower-sqlmap-mapping.xml" />
+		<mapper resource="sqlmap/KssOptions-sqlmap-mapping.xml" />
 	</mappers>
 
 

@@ -10,8 +10,6 @@ public interface KssSoftDao extends KssDaoBase<KssSoftDO, KssSoftQueryCondition>
 
 	public int update(long id, long intervaltime, String privkey);
 
-	public long updateSoftcode(long id, long softcode);
-
 	public long updateStatusById(long id, SoftStatusType status);
 
 	public long updateStatusByIds(List<Long> ids, SoftStatusType status);

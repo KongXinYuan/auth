@@ -11,6 +11,7 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
+			classpath:applicationContext.xml,
 			classpath:spring/context.xml,
 			classpath:spring/security.xml
 		</param-value>
@@ -70,6 +71,7 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>/WEB-INF/spring-servlet.xml</param-value>
 		</init-param>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>spring</servlet-name>
@@ -80,11 +82,6 @@
 		<servlet-name>default</servlet-name>
 		<url-pattern>*.ico</url-pattern>
 	</servlet-mapping>
-
-	<!-- session -->
-	<session-config>
-		<session-timeout>120</session-timeout>
-	</session-config>
 
 	<error-page>
 	    <exception-type>java.lang.Throwable</exception-type>  

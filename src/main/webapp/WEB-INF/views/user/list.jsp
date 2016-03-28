@@ -35,21 +35,16 @@
 				</select>
 			</div>
 			<div class="form-group">
-				<label for="inputpub">是否公用</label>
-				<select class="form-control" name="pub" id="inputpub">
+				<label for="inputstatus">状态</label>
+				<select class="form-control" name="status" id="inputstatus">
 					<option value=''>全部</option>
-					<option value=true>公用账号</option>
-					<option value=false>普通账号</option>
+					<option value=0>激活</option>
+					<option value=1>已锁定</option>
+					<option value=3>公用</option>
 				</select>
 			</div>
-			<div class="form-group">
-				<label for="inputlock">是否锁定</label>
-				<select class="form-control" name="lock" id="inputlock">
-					<option value=''>全部</option>
-					<option value=true>锁定</option>
-					<option value=false>未锁定</option>
-				</select>
-			</div>
+		</div>
+		<div class="form-inline">
 			<div class="form-group">
 				<label for="inputusername">用户名</label>
 				<input type="text" class="form-control" id="inputusername" name="username" placeholder="用户名">
@@ -82,9 +77,7 @@
 					<th>所属</th>
 					<th>用户名</th>
 					<th>天数</th>
-					<th>公用</th>
 					<th>注册时间</th>
-					<th>开始时间</th>
 					<th>结束时间</th>
 					<th>上次登录时间</th>
 					<th>上次登录ip</th>
@@ -100,23 +93,21 @@
 						<td>${user.adminname}</td>
 						<td>${user.username}</td>
 						<td>${user.cday}</td>
-						<td>${user.pub}</td>
 						<td><fmt:formatDate value="${user.addtime}" pattern="YYYY-MM-dd HH:mm" /></td>
-						<td><fmt:formatDate value="${user.starttime}" pattern="YYYY-MM-dd HH:mm" /></td>
 						<td><fmt:formatDate value="${user.endtime}" pattern="YYYY-MM-dd HH:mm" /></td>
 						<td><fmt:formatDate value="${user.lastlogintime}" pattern="YYYY-MM-dd HH:mm" /></td>
 						<td>${user.lastloginip}</td>
 						<td>${user.rechargetimes}</td>
 						<td>
+							 <a data-action="del" data-toggle="modal" data-target="#delselModal" href="#" title="删除"><span class="glyphicon glyphicon-remove" tabindex="0" role="button" data-trigger="focus"></span></a>
 							 <c:choose>
-							 <c:when test="${user.lock}">
+							 <c:when test="${user.status eq '已锁定'}">
 							 	<a data-action="lock" data-toggle="modal" href="#" title="解锁"><span class="glyphicon glyphicon-ok-circle" tabindex="0" role="button" data-trigger="focus"></span></a>
 							 </c:when>
-							 <c:otherwise>
+							 <c:when test="${user.status eq '激活'}">
 							 	<a data-action="lock" data-toggle="modal" href="#" title="锁定"><span class="glyphicon glyphicon-ban-circle" tabindex="0" role="button" data-trigger="focus"></span></a>
-							 </c:otherwise>
+							 </c:when>
 							 </c:choose>
-							 <a data-action="del" data-toggle="modal" data-target="#delselModal" href="#" title="删除"><span class="glyphicon glyphicon-remove" tabindex="0" role="button" data-trigger="focus"></span></a>
 						</td>
 					</tr>
 				</c:forEach>
@@ -153,16 +144,14 @@
 	$(function() {
 		param={
 				adminid:"${search.adminid}",
-				pub:"${search.pub}",
-				lock:"${search.lock}",
+				status:"${search.status.code}",
 				username:"${search.username}",
 				cdkey:"${search.cdkey}",
 				tag:"${search.tag}"
 		};
 
 		$('#inputadminid').multiselect({nonSelectedText:"请选择",disableIfEmpty: true}).multiselect('select', [param["adminid"]]).multiselect('refresh');
-		$('#inputpub').multiselect().multiselect('select', [param["pub"]]).multiselect('refresh');
-		$('#inputlock').multiselect().multiselect('select', [param["lock"]]).multiselect('refresh');
+		$('#inputstatus').multiselect().multiselect('select', [param["status"]]).multiselect('refresh');
 		$('#inputusername').val(param["username"]);
 		$('#inputcdkey').val(param["cdkey"]);
 		$('#inputtag').val(param["tag"]);

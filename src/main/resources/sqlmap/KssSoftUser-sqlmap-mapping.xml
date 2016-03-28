@@ -112,32 +112,34 @@
 	
 	<select id="selectByIdWithSeg" parameterType="java.util.Map" resultMap="kssSoftUserResult">
 		<include refid="SelectList" />
-		WHERE id=#{id}
+		WHERE u.id=#{id}
 	</select>
 	
 	<select id="selectByIdsWithSeg" parameterType="java.util.Map" resultMap="kssSoftUserResult">
 		<include refid="SelectList" />
-		WHERE ID in
+		WHERE u.ID in
 		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
 	</select>
 
 	<delete id="deleteByIdWithSeg" parameterType="java.util.Map">
-		delete from KSS_SOFT_USER
-		WHERE ID=#{id}
+		delete from KSS_SOFT_USER u
+		WHERE u.ID=#{id}
 	</delete>
 
 	<delete id="deleteByIdsWithSeg" parameterType="java.util.Map">
-		delete from KSS_SOFT_USER
-		WHERE ID in
+		delete from KSS_SOFT_USER u
+		WHERE u.ID in
 		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
 	</delete>
 
 	<select id="selectCountByQueryConditionWithSeg" parameterType="java.util.Map" resultType="java.lang.Long">
-		select COUNT(*) from KSS_SOFT_USER u
+		select COUNT(*) FROM KSS_SOFT_USER u
+		left join kss_admin a on u.adminid = a.id
+		left join kss_admin p on a.parentid = p.id
 		<include refid="QueryCondition" />
 	</select>
 

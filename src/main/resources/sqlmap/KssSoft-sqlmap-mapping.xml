@@ -6,7 +6,6 @@
 <mapper namespace="KSS_SOFT">
 	<resultMap type="KssSoftDO" id="kssSoftResult">
 		<id property="id" column="ID" jdbcType="INTEGER" />
-		<result property="softcode" column="softcode" jdbcType="INTEGER" />
 		<result property="softkey" column="softkey" jdbcType="VARCHAR" />
 		<result property="softname" column="softname" jdbcType="VARCHAR" />
 		<result property="intervaltime" column="intervaltime" jdbcType="INTEGER" />
@@ -16,13 +15,11 @@
 
 	<insert id="insert" parameterType="KssSoftDO">
 		INSERT INTO KSS_SOFT (
-		softcode,
 		softkey,
 		softname,
 		intervaltime,
 		privkey)
 		VALUES (
-		#{softcode},
 		#{softkey},
 		#{softname},
 		#{intervaltime},
@@ -59,10 +56,9 @@
 	CREATE TABLE `kss_soft_user` (
 		`id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 		`adminid` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
-		`username` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-		`password` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+		`username` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+		`password` varchar(60) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
 		`cday` decimal(8,2) NOT NULL DEFAULT '0.00',
-		`tag` varchar(30) NOT NULL,
 		`linecode` varchar(10) NOT NULL DEFAULT '',
 		`pccode` varchar(128) NOT NULL DEFAULT '',
 		`addtime` datetime NOT NULL,
@@ -74,17 +70,8 @@
 		 PRIMARY KEY (`id`),
 		 UNIQUE KEY `username` (`username`(10)),
 		 KEY `adminid` (`adminid`),
-		 KEY `tag` (`tag`),
 		 KEY `status` (`status`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-	</update>
-	
-	<update id="updateSoftcode" parameterType="java.util.Map">
-		UPDATE KSS_SOFT
-		<set>
-			softcode = #{softcode}
-		</set>
-		where id=#{id}
 	</update>
 	
 	<update id="update" parameterType="java.util.Map">
@@ -159,9 +146,6 @@
 	<!-- 查询条件 -->
 	<sql id="QueryCondition">
 		<trim prefix="where" prefixOverrides="and|or">
-			<if test="softcode != null">
-				softcode = #{softcode}
-			</if>
 			<if test="softname != null">
 				and softname = #{softname}
 			</if>

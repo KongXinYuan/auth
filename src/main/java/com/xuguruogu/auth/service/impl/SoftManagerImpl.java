@@ -3,6 +3,8 @@ package com.xuguruogu.auth.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -56,19 +58,12 @@ public class SoftManagerImpl implements SoftManager {
 		return txTemplate.execute(new TransactionCallback<KssSoftDO>() {
 			@Override
 			public KssSoftDO doInTransaction(TransactionStatus status) {
-				// 删除未完成的记录
-				KssSoftDO badSoftDO = kssSoftDao.selectOneByQueryCondition(new KssSoftQueryCondition().putSoftcode(0L));
-				if (null != badSoftDO) {
-					kssSoftDao.deleteById(badSoftDO.getId());
-				}
-
 				// 插入
 				KssSoftDO kssSoftDO = new KssSoftDO();
 				kssSoftDO.setPrivkey(privkey);
 				kssSoftDO.setSoftkey(RandomUtil.getRandomCharAndNumr(24));
 				kssSoftDO.setSoftname(softname);
 				kssSoftDO.setIntervaltime(intervaltime);
-				kssSoftDO.setSoftcode(0L);
 				kssSoftDao.insert(kssSoftDO);
 
 				// 获取id
@@ -77,8 +72,6 @@ public class SoftManagerImpl implements SoftManager {
 				long softid = soft.getId();
 
 				kssSoftDao.creatTableWithSeg(softid);
-				// 更新softcode
-				kssSoftDao.updateSoftcode(softid, softid + 1000000);
 				// 获取DO
 				return kssSoftDao.selectById(softid);
 			}
@@ -86,7 +79,7 @@ public class SoftManagerImpl implements SoftManager {
 	}
 
 	@Override
-	@Secured({ "ROLE_OWNER" })
+	@Cacheable(value = "soft", key = "#softid")
 	public KssSoftDO detail(long softid) {
 		return kssSoftDao.selectById(softid);
 	}
@@ -101,12 +94,14 @@ public class SoftManagerImpl implements SoftManager {
 
 	@Override
 	@Secured({ "ROLE_OWNER" })
+	@CacheEvict(value = "soft", key = "#softid")
 	public void updateLock(long softid, boolean lock) {
 		kssSoftDao.updateStatusById(softid, SoftStatusType.fromLock(lock));
 	}
 
 	@Override
 	@Secured({ "ROLE_OWNER" })
+	@CacheEvict(value = "soft", allEntries = true)
 	public void deleteByIds(final List<Long> softids) {
 
 		txTemplate.execute(new TransactionCallbackWithoutResult() {
@@ -117,19 +112,6 @@ public class SoftManagerImpl implements SoftManager {
 				kssPowerDao.deleteBySoftIds(softids);
 			}
 		});
-
 	}
 
-	@Override
-	public KssSoftDO selectBySoftcode(long softcode) {
-		KssSoftQueryCondition query = new KssSoftQueryCondition();
-		query.putSoftcode(softcode);
-
-		KssSoftDO soft = kssSoftDao.selectOneByQueryCondition(query);
-		if (null == soft) {
-			return null;
-		}
-
-		return soft;
-	}
 }

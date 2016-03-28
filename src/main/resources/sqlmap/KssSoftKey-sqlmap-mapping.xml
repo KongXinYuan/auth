@@ -59,12 +59,14 @@
 		</foreach>
 	</update>
 	
-	
 	<update id="updateRechargeWithSeg" parameterType="java.util.Map">
 		UPDATE KSS_SOFT_KEY
 		<set>
 			usedtime = #{usedtime},
-			useduser = #{useduser}
+			userid = #{userid},
+			oldcday=#{oldcday},
+			newcday=#{newcday},
+			status=#{status}
 		</set>
 		WHERE
 		id=#{id}

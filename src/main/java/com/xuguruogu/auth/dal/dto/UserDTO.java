@@ -11,6 +11,7 @@ public class UserDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 549203465062431958L;
 
+	private long id;
 	private String adminname;
 	private String username;
 	private String password;
@@ -23,6 +24,14 @@ public class UserDTO implements Serializable {
 	// 充值计数
 	private long rechargetimes;
 	private String status;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	public String getAdminname() {
 		return adminname;

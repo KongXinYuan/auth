@@ -42,22 +42,6 @@ public class KssSoftDaoImpl extends KssDaoImplBase<KssSoftDO, KssSoftQueryCondit
 	}
 
 	@Override
-	public long updateSoftcode(long softid, long softcode) {
-
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("softcode", softcode);
-		param.put("id", softid);
-
-		try {
-			return getSqlSession().update(this.getMybatisStatementName("updateSoftcode"), param);
-		} catch (Exception e) {
-			logger.error("updateSoftcode({},{})", softid, softcode, e);
-			throw new KssSqlException(e);
-		}
-
-	}
-
-	@Override
 	public long updateStatusById(long id, SoftStatusType status) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("status", status);

@@ -9,13 +9,10 @@
 <title>软件列表</title>
 <style type="text/css">
     #addform, #editform{
-        max-width: 300px;
+        width: 85%;
 		margin: auto;
     }
 
-    .modal-dialog{
-        max-width: 420px;
-    }
     .pagination{
     	float: right;
     }
@@ -32,7 +29,6 @@
 				<tr>
 					<th><input type="checkbox" /></th>
 					<th>id</th>
-					<th>softcode</th>
 					<th>softkey</th>
 					<th>softname</th>
 					<th>intervaltime</th>
@@ -44,7 +40,6 @@
 					<tr>
 						<td><input type="checkbox" /></td>
 						<td>${soft.id}</td>
-						<td>${soft.softcode}</td>
 						<td>${soft.softkey}</td>
 						<td>${soft.softname}</td>
 						<td>${soft.intervaltime}</td>
@@ -141,19 +136,16 @@
 					<form:form class="form-horizontal" id="editform">
 						
 			        	<div class="form-group">
-							<input id="inputsoftid" name="softid" hidden=true>
-						</div>
-			        	<div class="form-group">
 							<label class="form-label col-xs-3">软件名</label>
-							<input type="text" id="inputsoftname" class="form-control-static col-xs-8" disabled>
+							<input type="text" id="inputsoftname" class="form-control-static col-xs-8" readonly>
 						</div>
 						<div class="form-group">
-							<label class="form-label col-xs-3">softcode</label>
-							<input type="text" id="inputsoftcode" class="form-control-static col-xs-8" disabled>
+							<label class="form-label col-xs-3">softid</label>
+							<input type="text" id="inputsoftid" name="softid" class="form-control-static col-xs-8" readonly>
 						</div>
 						<div class="form-group">
 							<label class="form-label col-xs-3">softkey</label>
-							<input type="text" id="inputsoftkey" class="form-control-static col-xs-8" disabled>
+							<input type="text" id="inputsoftkey" class="form-control-static col-xs-8" readonly>
 						</div>
 						<div class="form-group">
 							<label class="form-label col-xs-3">intervaltime</label>

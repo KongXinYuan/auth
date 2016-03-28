@@ -1,7 +1,6 @@
 package com.xuguruogu.auth.web.param;
 
 import java.io.Serializable;
-import java.util.List;
 
 import com.xuguruogu.auth.dal.enums.UserStatusType;
 
@@ -18,7 +17,7 @@ public class UserSearchParam implements Serializable {
 	private String username;
 	private String cdkey;
 	private String tag;
-	private List<UserStatusType> status;
+	private UserStatusType status;
 
 	public Integer getPageNo() {
 		return pageNo;
@@ -68,14 +67,18 @@ public class UserSearchParam implements Serializable {
 		this.tag = tag;
 	}
 
-	public List<UserStatusType> getStatus() {
+	public UserStatusType getStatus() {
 		return status;
 	}
 
 	public void setStatus(Long status) {
+		if (null == status) {
+			this.status = null;
+			return;
+		}
 		for (UserStatusType s : UserStatusType.values()) {
 			if (s.getCode() == status) {
-				this.status = UserStatusType.asList(s);
+				this.status = s;
 				return;
 			}
 		}

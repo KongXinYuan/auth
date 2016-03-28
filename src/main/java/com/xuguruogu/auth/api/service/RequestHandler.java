@@ -12,7 +12,7 @@ public interface RequestHandler {
 	 * @param param
 	 * @return 结果映射值
 	 */
-	public Map<String, Object> doRequest(Map<String, Object> param, KssSoftDO soft);
+	public Map<String, Object> doRequest(Map<String, String> param, KssSoftDO soft);
 
 	/**
 	 * @return 处理器名称

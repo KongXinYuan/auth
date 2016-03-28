@@ -41,6 +41,25 @@ public class UserWebController {
 		return "/user/list";
 	}
 
+	// 列表
+	@RequestMapping(value = { "/pub/{softid}" }, method = { RequestMethod.GET })
+	public String pub(@PathVariable(value = "softid") Long softid, Model model) {
+
+		model.addAttribute("admins", kssConverter.convert(adminManager.listAll()));
+		model.addAttribute("softid", softid);
+
+		return "/user/list";
+	}
+
+	@RequestMapping(value = { "/pub/{softid}" }, method = { RequestMethod.POST })
+	public String addpub(@PathVariable(value = "softid") Long softid, Model model) {
+
+		model.addAttribute("admins", kssConverter.convert(adminManager.listAll()));
+		model.addAttribute("softid", softid);
+
+		return "/user/list";
+	}
+
 	// 锁定
 	@RequestMapping(value = { "/lock.json" }, method = { RequestMethod.POST })
 	public void lock(@RequestParam(required = true) Long softid,

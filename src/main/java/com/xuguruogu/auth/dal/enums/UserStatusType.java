@@ -9,7 +9,9 @@ public enum UserStatusType {
 
 	LOCKED(1, "已锁定"),
 
-	DELETED(2, "已删除");
+	DELETED(2, "已删除"),
+
+	PUB(3, "公用");
 
 	/** 描述 */
 	private final long code;

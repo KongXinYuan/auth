@@ -18,8 +18,6 @@ public interface SoftManager {
 
 	public KssSoftDO update(long softid, long intervaltime, String privkey);
 
-	public KssSoftDO selectBySoftcode(long softcode);
-
 	public void updateLock(long softid, boolean lock);
 
 	public void deleteByIds(List<Long> softids);

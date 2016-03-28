@@ -57,7 +57,7 @@
 						aria-haspopup="true" aria-expanded="false">用户管理<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a href="#" data-toggle="modal" data-target="#userModal">用户列表</a></li>
-							<!-- <li><a href="#">批量操作</a></li> -->
+							<li><a href="/user/pub">添加公用账号</a></li>
 							<li><a href="#">公用账号日志</a></li>
 						</ul></li>
 					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
@@ -83,6 +83,9 @@
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a>你好,<sec:authentication property="principal.username"></sec:authentication></a></li>
+					<sec:authorize access="hasRole('ROLE_OWNER')">
+					<li><a href="/config">系统设置</a></li>
+					</sec:authorize>
 					<li><a href="#" onclick="$('#logout_form').submit();" title="退出系统">退出系统<span class="sr-only">(current)</span></a></li>
 					<form:form id="logout_form" action="/logout" method="post" />
 				</ul>
@@ -148,6 +151,8 @@
 			</div>
 		</div>
 	</div>
+	
+
 	
 	<div class="modal fade" id="cdkeyStatisticsModal" tabindex="-1" role="dialog" aria-labelledby="cdkeyStatisticsModalLabel">
 		<div class="modal-dialog">

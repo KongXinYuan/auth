@@ -35,7 +35,7 @@ public class KssExceptionHandler {
 	public ModelAndView handleAnyException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) throws IOException {
 
-		logger.warn("err:", ex);
+		logger.warn("err", ex);
 
 		if (allowedUrls.matcher(request.getServletPath()).matches()) {
 
@@ -43,7 +43,9 @@ public class KssExceptionHandler {
 					JsonEncoding.UTF8);
 
 			jsonGenerator.writeObject(new ErrorResult(ex));
+			// return new ModelAndView(new MappingJackson2JsonView()).;
 			return null;
+
 		} else {
 			return new ModelAndView("error/500");
 		}

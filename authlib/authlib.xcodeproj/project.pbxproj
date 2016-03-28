@@ -1,0 +1,316 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3789AED81C892EC400750D3D /* KssUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3789AED61C892EC400750D3D /* KssUtil.cpp */; };
+		3789AEDF1C899ADB00750D3D /* jsoncpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3789AEDE1C899ADB00750D3D /* jsoncpp.cpp */; };
+		37A9B87F1C87FBA4006BB72E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37A9B87E1C87FBA4006BB72E /* main.cpp */; };
+		37A9B8861C880913006BB72E /* libcryptopp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37A9B8851C880913006BB72E /* libcryptopp.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		37A9B8891C881315006BB72E /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37A9B8881C881315006BB72E /* libcurl.a */; };
+		37A9B88C1C882AD6006BB72E /* KssAuth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37A9B88A1C882AD6006BB72E /* KssAuth.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		37A9B8791C87FBA4006BB72E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		3789AED61C892EC400750D3D /* KssUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KssUtil.cpp; sourceTree = "<group>"; };
+		3789AED71C892EC400750D3D /* KssUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KssUtil.h; sourceTree = "<group>"; };
+		3789AEDC1C8999E600750D3D /* json-forwards.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "json-forwards.h"; sourceTree = "<group>"; };
+		3789AEDD1C8999E600750D3D /* json.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = json.h; sourceTree = "<group>"; };
+		3789AEDE1C899ADB00750D3D /* jsoncpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jsoncpp.cpp; sourceTree = "<group>"; };
+		37A9B87B1C87FBA4006BB72E /* authlib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = authlib; sourceTree = BUILT_PRODUCTS_DIR; };
+		37A9B87E1C87FBA4006BB72E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		37A9B8851C880913006BB72E /* libcryptopp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcryptopp.a; path = /usr/local/Cellar/cryptopp/5.6.3_1/lib/libcryptopp.a; sourceTree = "<absolute>"; };
+		37A9B8881C881315006BB72E /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = /usr/local/Cellar/curl/7.47.1/lib/libcurl.a; sourceTree = "<absolute>"; };
+		37A9B88A1C882AD6006BB72E /* KssAuth.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KssAuth.cpp; sourceTree = "<group>"; };
+		37A9B88B1C882AD6006BB72E /* KssAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KssAuth.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		37A9B8781C87FBA4006BB72E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				37A9B8891C881315006BB72E /* libcurl.a in Frameworks */,
+				37A9B8861C880913006BB72E /* libcryptopp.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3789AEDB1C8999E600750D3D /* json */ = {
+			isa = PBXGroup;
+			children = (
+				3789AEDC1C8999E600750D3D /* json-forwards.h */,
+				3789AEDD1C8999E600750D3D /* json.h */,
+			);
+			path = json;
+			sourceTree = "<group>";
+		};
+		3789AEE01C899B1400750D3D /* jsoncpp */ = {
+			isa = PBXGroup;
+			children = (
+				3789AEDE1C899ADB00750D3D /* jsoncpp.cpp */,
+				3789AEDB1C8999E600750D3D /* json */,
+			);
+			name = jsoncpp;
+			path = authlib;
+			sourceTree = "<group>";
+		};
+		37A9B8721C87FBA4006BB72E = {
+			isa = PBXGroup;
+			children = (
+				3789AEE01C899B1400750D3D /* jsoncpp */,
+				37A9B8871C88093C006BB72E /* lib */,
+				37A9B87D1C87FBA4006BB72E /* authlib */,
+				37A9B87C1C87FBA4006BB72E /* Products */,
+			);
+			sourceTree = "<group>";
+			usesTabs = 0;
+		};
+		37A9B87C1C87FBA4006BB72E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				37A9B87B1C87FBA4006BB72E /* authlib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		37A9B87D1C87FBA4006BB72E /* authlib */ = {
+			isa = PBXGroup;
+			children = (
+				37A9B87E1C87FBA4006BB72E /* main.cpp */,
+				37A9B88A1C882AD6006BB72E /* KssAuth.cpp */,
+				37A9B88B1C882AD6006BB72E /* KssAuth.h */,
+				3789AED61C892EC400750D3D /* KssUtil.cpp */,
+				3789AED71C892EC400750D3D /* KssUtil.h */,
+			);
+			name = authlib;
+			path = authlib;
+			sourceTree = "<group>";
+		};
+		37A9B8871C88093C006BB72E /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				37A9B8881C881315006BB72E /* libcurl.a */,
+				37A9B8851C880913006BB72E /* libcryptopp.a */,
+			);
+			name = lib;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		37A9B87A1C87FBA4006BB72E /* authlib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 37A9B8821C87FBA4006BB72E /* Build configuration list for PBXNativeTarget "authlib" */;
+			buildPhases = (
+				37A9B8771C87FBA4006BB72E /* Sources */,
+				37A9B8781C87FBA4006BB72E /* Frameworks */,
+				37A9B8791C87FBA4006BB72E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = authlib;
+			productName = authlib;
+			productReference = 37A9B87B1C87FBA4006BB72E /* authlib */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		37A9B8731C87FBA4006BB72E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "李本利";
+				TargetAttributes = {
+					37A9B87A1C87FBA4006BB72E = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+				};
+			};
+			buildConfigurationList = 37A9B8761C87FBA4006BB72E /* Build configuration list for PBXProject "authlib" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 37A9B8721C87FBA4006BB72E;
+			productRefGroup = 37A9B87C1C87FBA4006BB72E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				37A9B87A1C87FBA4006BB72E /* authlib */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		37A9B8771C87FBA4006BB72E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3789AED81C892EC400750D3D /* KssUtil.cpp in Sources */,
+				3789AEDF1C899ADB00750D3D /* jsoncpp.cpp in Sources */,
+				37A9B87F1C87FBA4006BB72E /* main.cpp in Sources */,
+				37A9B88C1C882AD6006BB72E /* KssAuth.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		37A9B8801C87FBA4006BB72E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		37A9B8811C87FBA4006BB72E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		37A9B8831C87FBA4006BB72E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					/usr/local/opt/cryptopp/include/,
+					/usr/local/opt/curl/include/,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/opt/cryptopp/lib/,
+					/usr/local/opt/curl/lib/,
+				);
+				PRODUCT_NAME = authlib;
+			};
+			name = Debug;
+		};
+		37A9B8841C87FBA4006BB72E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					/usr/local/opt/cryptopp/include/,
+					/usr/local/opt/curl/include/,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/opt/cryptopp/lib/,
+					/usr/local/opt/curl/lib/,
+				);
+				PRODUCT_NAME = authlib;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		37A9B8761C87FBA4006BB72E /* Build configuration list for PBXProject "authlib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				37A9B8801C87FBA4006BB72E /* Debug */,
+				37A9B8811C87FBA4006BB72E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		37A9B8821C87FBA4006BB72E /* Build configuration list for PBXNativeTarget "authlib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				37A9B8831C87FBA4006BB72E /* Debug */,
+				37A9B8841C87FBA4006BB72E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 37A9B8731C87FBA4006BB72E /* Project object */;
+}

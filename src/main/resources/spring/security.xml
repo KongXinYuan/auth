@@ -6,7 +6,7 @@
 		http://www.springframework.org/schema/security/spring-security.xsd">
 
 	<http pattern="/static/**" security="none" />
-	<http pattern="/api/**" security="none" />
+	<http pattern="/api/**" security="none" auto-config="false" create-session="stateless"/>
 	<http pattern="/favicon.ico" security="none" />
 
 	<http name="admin" pattern="/**" auto-config="true"
