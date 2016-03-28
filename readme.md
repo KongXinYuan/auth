@@ -19,21 +19,6 @@ java web用spring mvc, spring security, mybatis
 msg + AES key -> RSA public key encode -> Base64 encode -> server -> Base64 decode -> RSA private key decode -> AES key encode -> Base64 encode -> client -> Base64 decode -> EAS decode
 
 ```
-#图片
-
-![](https://github.com/xuguruogu/auth/blob/master/img/login.png)
-
-![](https://github.com/xuguruogu/auth/blob/master/img/admin.png)
-
-![](https://github.com/xuguruogu/auth/blob/master/img/cdkey.png)
-
-![](https://github.com/xuguruogu/auth/blob/master/img/addcdkey.png)
-
-![](https://github.com/xuguruogu/auth/blob/master/img/user.png)
-
-![](https://github.com/xuguruogu/auth/blob/master/img/statistic.png)
-
-![](https://github.com/xuguruogu/auth/blob/master/img/soft.png)
 
 #authlib
 
@@ -71,5 +56,21 @@ msg + AES key -> RSA public key encode -> Base64 encode -> server -> Base64 deco
     auth.valid();
 
 ```
+
+#图片
+
+![](https://github.com/xuguruogu/auth/blob/master/img/login.png)
+
+![](https://github.com/xuguruogu/auth/blob/master/img/admin.png)
+
+![](https://github.com/xuguruogu/auth/blob/master/img/cdkey.png)
+
+![](https://github.com/xuguruogu/auth/blob/master/img/addcdkey.png)
+
+![](https://github.com/xuguruogu/auth/blob/master/img/user.png)
+
+![](https://github.com/xuguruogu/auth/blob/master/img/statistic.png)
+
+![](https://github.com/xuguruogu/auth/blob/master/img/soft.png)
 
 
