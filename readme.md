@@ -14,9 +14,11 @@ java web用spring mvc, spring security, mybatis
 功能：通信流程
 
 ```
-客户端每次生成AES密匙对，并随机生成verify字符串，使用RSA送给服务器。服务器采用AES加密返回。客户端需要校验verify字符串是否正确。
 
-msg + AES key -> RSA public key encode -> Base64 encode -> server -> Base64 decode -> RSA private key decode -> AES key encode -> Base64 encode -> client -> Base64 decode -> EAS decode
+	客户端每次生成AES密匙对，并随机生成verify字符串，使用RSA送给服务器。服务器采用AES加密返回。客户端需要校验verify字符串是否正确。
+
+	msg + AES key -> RSA public key encode -> Base64 encode -> server -> Base64 decode -> RSA private key decode -> AES key encode -> Base64 encode -> client -> Base64 decode -> EAS decode
+
 
 ```
 
