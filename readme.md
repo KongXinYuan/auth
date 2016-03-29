@@ -26,6 +26,14 @@ java web用spring mvc, spring security, mybatis
 #web打包安装
 采用的是阿里云应用引擎，ace
 
+修改数据库信息
+	
+	/auth/src/main/resources/application.production.properties
+	jdbc.driver=com.mysql.jdbc.Driver
+	jdbc.url=jdbc:mysql://rdss74pb4a7fvckl0pqxy.mysql.rds.aliyuncs.com:3306/r27q822zoqb3024v?useUnicode=true&characterEncoding=utf-8
+	jdbc.username=kent
+	jdbc.password=kent123
+
 在项目下打包
 
 	mvn package -Dmaven.test.skip=ture
