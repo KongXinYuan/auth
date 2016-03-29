@@ -22,7 +22,7 @@ public class KssLogLoginDO extends Entity {
 	private String parentname;
 
 	/** ip地址 */
-	private int loginip;
+	private long loginip;
 
 	/** 登录时间 */
 	private Date logintime;
@@ -59,11 +59,11 @@ public class KssLogLoginDO extends Entity {
 		this.parentname = parentname;
 	}
 
-	public int getLoginip() {
+	public long getLoginip() {
 		return loginip;
 	}
 
-	public void setLoginip(int loginip) {
+	public void setLoginip(long loginip) {
 		this.loginip = loginip;
 	}
 

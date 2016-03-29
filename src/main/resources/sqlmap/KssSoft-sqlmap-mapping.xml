@@ -64,7 +64,7 @@
 		`addtime` datetime NOT NULL,
 		`endtime` datetime NOT NULL,
 		`lastlogintime` datetime NOT NULL,
-		`lastloginip` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
+		`lastloginip` int(11) NOT NULL DEFAULT '0',
 		`rechargetimes` int(5) UNSIGNED NOT NULL DEFAULT '0',
 		`status` varchar(10) NOT NULL DEFAULT 'ACTIVE',
 		 PRIMARY KEY (`id`),

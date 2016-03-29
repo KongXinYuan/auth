@@ -77,7 +77,7 @@ public class AdminManagerImpl implements AdminManager {
 				.getPrincipal();
 
 		// 更新最新记录
-		int ipint = IPv4Util.ipToIntWithDefault(ip);
+		long ipint = IPv4Util.ipToLongWithDefault(ip);
 		Date now = new Date();
 		kssAdminDao.updateLastLogin(currentAdmin.getId(), now, ipint);
 

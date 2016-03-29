@@ -28,7 +28,7 @@ public class AdminDTOConverter extends AbstractConverter<KssAdminDO, AdminDTO> {
 		dto.setUsername(kssAdminDO.getUsername());
 		dto.setAddtime(kssAdminDO.getAddtime());
 		dto.setLastlogintime(kssAdminDO.getLastlogintime());
-		dto.setLastloginip(IPv4Util.intToIpWithDefault(kssAdminDO.getLastloginip()));
+		dto.setLastloginip(IPv4Util.longToIpWithDefault(kssAdminDO.getLastloginip()));
 		dto.setMoney(kssAdminDO.getMoney());
 		dto.setExmoney(kssAdminDO.getExmoney());
 

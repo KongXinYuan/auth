@@ -57,7 +57,9 @@
 						aria-haspopup="true" aria-expanded="false">用户管理<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a href="#" data-toggle="modal" data-target="#userModal">用户列表</a></li>
+							<sec:authorize access="hasRole('ROLE_OWNER')">
 							<li><a href="/user/pub">添加公用账号</a></li>
+							</sec:authorize>
 							<li><a href="#">公用账号日志</a></li>
 						</ul></li>
 					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"

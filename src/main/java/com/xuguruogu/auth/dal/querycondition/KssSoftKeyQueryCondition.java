@@ -2,7 +2,7 @@ package com.xuguruogu.auth.dal.querycondition;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.xuguruogu.auth.dal.enums.CDKeyStatusType;
 

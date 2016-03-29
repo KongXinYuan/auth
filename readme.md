@@ -23,6 +23,27 @@ java web用spring mvc, spring security, mybatis
 - server -> Base64 decode -> RSA private key decode -> AES key encode -> Base64 encode -> client
 - client -> Base64 decode -> EAS decode
 
+#web打包安装
+采用的是阿里云应用引擎，ace
+
+在项目下打包
+
+	mvn package -Dmaven.test.skip=ture
+
+将target目录下的root.war上传至阿里云app引擎ace
+	
+ace相关参考 [阿里云](https://www.aliyun.com/)
+
+样例参考 <http://auth.xuguruogu.com/>
+	
+	默认作者
+	用户名：root
+	密码：admin
+	示例中下属两个账号：
+	一级代理：虚谷若谷
+	密码：kent
+	代理：test
+	密码：test
 
 
 #authlib

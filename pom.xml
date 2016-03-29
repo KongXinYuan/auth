@@ -165,6 +165,11 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>${commons-lang3.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+		</dependency>
 
 		<!-- TEST -->
 		<dependency>
@@ -315,8 +320,8 @@
 					<artifactId>maven-war-plugin</artifactId>
 					<version>2.4</version>
 					<configuration>
-						<outputDirectory>bae/lingxi</outputDirectory>
-						<warName>root</warName>
+						<outputDirectory></outputDirectory>
+						<warName>auth</warName>
 					</configuration>
 				</plugin>
 

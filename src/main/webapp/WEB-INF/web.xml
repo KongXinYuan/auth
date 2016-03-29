@@ -17,6 +17,12 @@
 		</param-value>
 	</context-param>
 
+	<!-- 设置Spring的默认profile为production生产环境 -->
+	<context-param>
+		<param-name>spring.profiles.default</param-name>
+		<param-value>production</param-value>
+	</context-param>
+	
 	<!-- 规定编码 -->
 	<filter>
 		<filter-name>encoding</filter-name>

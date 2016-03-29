@@ -5,7 +5,7 @@ import java.net.InetAddress;
 public class IPv4Util {
 
 	private final static int INADDRSZ = 4;
-	private final static int DEFAULTIP = 0;
+	private final static long DEFAULTIP = 0;
 
 	public static byte[] ipToBytesByInet(String ipAddr) {
 		try {
@@ -42,8 +42,8 @@ public class IPv4Util {
 	 * @param bytes
 	 * @return int
 	 */
-	public static int bytesToInt(byte[] bytes) {
-		int addr = bytes[3] & 0xFF;
+	public static long bytesToLong(byte[] bytes) {
+		long addr = bytes[3] & 0xFF;
 		addr |= ((bytes[2] << 8) & 0xFF00);
 		addr |= ((bytes[1] << 16) & 0xFF0000);
 		addr |= ((bytes[0] << 24) & 0xFF000000);
@@ -56,9 +56,9 @@ public class IPv4Util {
 	 * @param ipAddr
 	 * @return int
 	 */
-	public static int ipToInt(String ipAddr) {
+	public static long ipToLong(String ipAddr) {
 		try {
-			return bytesToInt(ipToBytesByInet(ipAddr));
+			return bytesToLong(ipToBytesByInet(ipAddr));
 		} catch (Exception e) {
 			throw new IllegalArgumentException(ipAddr + " is invalid IP");
 		}
@@ -70,7 +70,7 @@ public class IPv4Util {
 	 * @param ipInt
 	 * @return byte[]
 	 */
-	public static byte[] intToBytes(int ipInt) {
+	public static byte[] longToBytes(long ipInt) {
 		byte[] ipAddr = new byte[INADDRSZ];
 		ipAddr[0] = (byte) ((ipInt >>> 24) & 0xFF);
 		ipAddr[1] = (byte) ((ipInt >>> 16) & 0xFF);
@@ -85,24 +85,24 @@ public class IPv4Util {
 	 * @param ipInt
 	 * @return String
 	 */
-	public static String intToIp(int ipInt) {
+	public static String longToIp(long ipInt) {
 		return new StringBuilder().append(((ipInt >> 24) & 0xff)).append('.').append((ipInt >> 16) & 0xff).append('.')
 				.append((ipInt >> 8) & 0xff).append('.').append((ipInt & 0xff)).toString();
 	}
 
-	public static int ipToIntWithDefault(String ipAddr) {
+	public static long ipToLongWithDefault(String ipAddr) {
 		try {
-			return bytesToInt(ipToBytesByInet(ipAddr));
+			return bytesToLong(ipToBytesByInet(ipAddr));
 		} catch (Exception e) {
 			return DEFAULTIP;
 		}
 	};
 
-	public static String intToIpWithDefault(int ipInt) {
+	public static String longToIpWithDefault(long ipInt) {
 		if (DEFAULTIP == ipInt) {
 			return "0";
 		}
-		return intToIp(ipInt);
+		return longToIp(ipInt);
 	};
 
 }

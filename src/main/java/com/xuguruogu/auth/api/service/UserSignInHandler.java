@@ -78,7 +78,7 @@ public class UserSignInHandler implements RequestHandler {
 			ipAddr = ipAddr.substring(ipAddr.lastIndexOf(",") + 1, ipAddr.length()).trim();
 		}
 
-		return IPv4Util.ipToIntWithDefault(ipAddr);
+		return IPv4Util.ipToLongWithDefault(ipAddr);
 	}
 
 	@Override

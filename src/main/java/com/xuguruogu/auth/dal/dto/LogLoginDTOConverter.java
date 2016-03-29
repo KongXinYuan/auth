@@ -24,7 +24,7 @@ public class LogLoginDTOConverter extends AbstractConverter<KssLogLoginDO, LogLo
 		dto.setId(kssLogLoginDO.getId());
 		dto.setUsername(kssLogLoginDO.getUsername());
 		dto.setParentname(kssLogLoginDO.getParentname());
-		dto.setLoginip(IPv4Util.intToIpWithDefault(kssLogLoginDO.getLoginip()));
+		dto.setLoginip(IPv4Util.longToIpWithDefault(kssLogLoginDO.getLoginip()));
 		dto.setLogintime(kssLogLoginDO.getLogintime());
 
 		return dto;
