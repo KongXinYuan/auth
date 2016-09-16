@@ -40,7 +40,7 @@
 	</insert>
 
 	<update id="updatePassword" parameterType="java.util.Map">
-		UPDATE KSS_ADMIN
+		UPDATE kss_admin
 		<set>
 			password = #{password}
 		</set>
@@ -67,7 +67,7 @@
 	</update>
 
 	<update id="updateLastLogin" parameterType="java.util.Map">
-		UPDATE KSS_ADMIN
+		UPDATE kss_admin
 		<set>
 			lastlogintime = #{lastlogintime},
 			lastloginip = #{lastloginip}
@@ -77,7 +77,7 @@
 	</update>
 	
 	<update id="updateMoney" parameterType="java.util.Map">
-		UPDATE KSS_ADMIN
+		UPDATE kss_admin
 		<set>
 			money = #{money}
 		</set>

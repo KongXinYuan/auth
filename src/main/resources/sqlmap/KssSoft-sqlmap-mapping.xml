@@ -14,12 +14,12 @@
 	</resultMap>
 
 	<insert id="insert" parameterType="KssSoftDO">
-		INSERT INTO KSS_SOFT (
+		insert into kss_soft (
 		softkey,
 		softname,
 		intervaltime,
 		privkey)
-		VALUES (
+		values (
 		#{softkey},
 		#{softname},
 		#{intervaltime},
@@ -75,7 +75,7 @@
 	</update>
 	
 	<update id="update" parameterType="java.util.Map">
-		UPDATE KSS_SOFT
+		update kss_soft
 		<set>
 			intervaltime = #{intervaltime},
 			<if test="privkey != null">
@@ -132,12 +132,12 @@
 	</delete>
 
 	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
-		select COUNT(*) from KSS_SOFT
+		select count(*) from kss_soft
 		<include refid="QueryCondition" />
 	</select>
 
 	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="kssSoftResult">
-		SELECT * FROM KSS_SOFT
+		select * from kss_soft
 		<include refid="QueryCondition" />
 		<include refid="Pagination" />
 	</select>
@@ -170,7 +170,7 @@
 	<!-- 分页 -->
 	<sql id="Pagination">
 		<if test="startIndex != null and pageSize != null">
-			LIMIT #{startIndex},#{pageSize}
+			limit #{startIndex},#{pageSize}
 		</if>
 	</sql>
 

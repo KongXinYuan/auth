@@ -17,7 +17,7 @@
 	</resultMap>
 
 	<insert id="insert" parameterType="KssKeySetDO">
-		INSERT INTO KSS_KEYSET (
+		INSERT INTO kss_keyset (
 		softid,
 		keyname,
 		cday,

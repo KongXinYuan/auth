@@ -21,14 +21,14 @@
 	</resultMap>
 
 	<insert id="insert" parameterType="KssOrderDO" >
-		INSERT INTO KSS_ORDER (
+		insert into kss_order (
 		ordernum,
 		softid,
 		adminid,
 		keysetid,
 		keycount,
 		addtime)
-		VALUES (
+		values (
 		#{ordernum},
 		#{softid},
 		#{adminid},
@@ -38,7 +38,7 @@
 	</insert>
 	
 	<update id="update" parameterType="java.util.Map">
-		UPDATE KSS_ORDER
+		update kss_order
 		<set>
 			beginid = #{beginid}
 		</set>
@@ -47,32 +47,32 @@
 	
 	<select id="selectById" parameterType="long" resultMap="KssOrderResult">
 		<include refid="selectList"/>
-		WHERE o.id=#{id}
+		where o.id=#{id}
 	</select>
 	
 	<select id="selectByIds" parameterType="list" resultMap="KssOrderResult">
 		<include refid="selectList"/>
-		WHERE o.id in
+		where o.id in
 		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
 	</select>
 
 	<delete id="deleteById" parameterType="long">
-		delete from KSS_ORDER
-		WHERE ID=#{id}
+		delete from kss_order
+		where ID=#{id}
 	</delete>
 	
 	<delete id="deleteByIds" parameterType="java.util.List">
-		delete from KSS_ORDER
-		WHERE ID in
+		delete from kss_order
+		where ID in
 		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
 	</delete>
 
 	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
-		select COUNT(*) from kss_order o 
+		select count(*) from kss_order o 
 		left join kss_admin a on a.id = o.adminid
 		left join kss_admin p on a.parentid = p.id
 		<include refid="QueryCondition" />
@@ -116,7 +116,7 @@
 	<!-- 分页 -->
 	<sql id="Pagination">
 		<if test="startIndex != null and pageSize != null">
-			LIMIT #{startIndex},#{pageSize}
+			limit #{startIndex},#{pageSize}
 		</if>
 	</sql>
 </mapper>

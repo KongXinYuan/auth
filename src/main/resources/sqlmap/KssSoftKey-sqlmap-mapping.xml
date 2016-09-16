@@ -27,13 +27,13 @@
 	</resultMap>
 	
 	<insert id="insertWithSeg" parameterType="KssSoftKeyDO">
-		INSERT ignore INTO KSS_SOFT_KEY (adminid, keysetid, cdkey, addtime, ordernum, cday, tag)
-		VALUES (#{item.adminid}, #{item.keysetid}, #{item.cdkey}, #{item.addtime}, #{item.ordernum}, #{item.cday}, #{item.tag})
+		insert ignore into kss_soft_key (adminid, keysetid, cdkey, addtime, ordernum, cday, tag)
+		values (#{item.adminid}, #{item.keysetid}, #{item.cdkey}, #{item.addtime}, #{item.ordernum}, #{item.cday}, #{item.tag})
 	</insert>
 
 	<insert id="insertListWithSeg" parameterType="java.util.Map">
-		INSERT INTO KSS_SOFT_KEY (adminid, keysetid, cdkey, addtime, ordernum, cday, tag)
-		VALUES
+		insert into kss_soft_key (adminid, keysetid, cdkey, addtime, ordernum, cday, tag)
+		values
 		<foreach collection="cdkeys" item="item" index="index" separator=",">
 			(#{item.adminid}, #{item.keysetid}, #{item.cdkey}, #{item.addtime}, #{item.ordernum}, #{item.cday}, #{item.tag})
 		</foreach>
@@ -60,7 +60,7 @@
 	</update>
 	
 	<update id="updateRechargeWithSeg" parameterType="java.util.Map">
-		UPDATE KSS_SOFT_KEY
+		update kss_soft_key
 		<set>
 			usedtime = #{usedtime},
 			userid = #{userid},
@@ -86,13 +86,13 @@
 	</select>
 
 	<delete id="deleteByIdWithSeg" parameterType="java.util.Map">
-		delete from KSS_SOFT_KEY
-		WHERE ID=#{id}
+		delete from kss_soft_key
+		where ID=#{id}
 	</delete>
 
 	<delete id="deleteByIdsWithSeg" parameterType="java.util.Map">
-		delete from KSS_SOFT_KEY
-		WHERE ID in
+		delete from kss_soft_key
+		where ID in
 		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
@@ -163,7 +163,7 @@
 	<!-- 分页 -->
 	<sql id="Pagination">
 		<if test="startIndex != null and pageSize != null">
-			LIMIT #{startIndex},#{pageSize}
+			limit #{startIndex},#{pageSize}
 		</if>
 	</sql>
 

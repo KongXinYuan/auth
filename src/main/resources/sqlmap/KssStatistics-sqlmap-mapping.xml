@@ -19,22 +19,22 @@
 	</resultMap>
 	
 	<select id="selectCDKeyStatisticsWithSeg" parameterType="java.util.Map" resultMap="KssCDKeyStatisticsResult">
-		SELECT k.adminid, a.username AS adminname, a.parentid, p.username as parentname, k.keysetid, s.keyname,
+		select k.adminid, a.username AS adminname, a.parentid, p.username as parentname, k.keysetid, s.keyname,
 		count(k.status) as 'total',
 		sum(case when k.status='LOCKED' then 1 else 0 end) as 'locked',
 		sum(case when k.status='USED' then 1 else 0 end) as 'used',
 		sum(case when k.status='DELETED' then 1 else 0 end) as 'deleted'
 		
-		FROM kss_soft_key k 
-		LEFT JOIN kss_admin a on a.id=k.adminid
-		LEFT JOIN kss_admin p on p.id=a.parentid
-		LEFT JOIN kss_keyset s on k.keysetid=s.id
+		from kss_soft_key k 
+		left join kss_admin a on a.id=k.adminid
+		left join kss_admin p on p.id=a.parentid
+		left join kss_keyset s on k.keysetid=s.id
 		<trim prefix="where" prefixOverrides="and|or">
 			<if test="adminid != null">
 				(k.adminid = #{adminid} or a.parentid=#{adminid} or p.parentid=#{adminid} )
 			</if>
 		</trim>
-		GROUP BY k.adminid, a.username, a.parentid, p.username, k.keysetid, s.keyname
+		group BY k.adminid, a.username, a.parentid, p.username, k.keysetid, s.keyname
 		
 	</select>
 	

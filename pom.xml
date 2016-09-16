@@ -318,7 +318,7 @@
 					<version>2.4</version>
 					<configuration>
 						<outputDirectory></outputDirectory>
-						<warName>auth</warName>
+						<warName>ROOT</warName>
 					</configuration>
 				</plugin>
 

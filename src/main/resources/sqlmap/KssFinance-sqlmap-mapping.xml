@@ -20,7 +20,7 @@
 
 	
 	<insert id="insert" parameterType="KssFinanceDO">
-		INSERT INTO KSS_FINANCE (
+		INSERT INTO kss_finance (
 		adminid,
 		isin,
 		relatedid,
@@ -42,16 +42,16 @@
 	</insert>
 	
 	<select id="selectById" parameterType="long" resultMap="KssFinanceResult">
-		select * from KSS_FINANCE WHERE id=#{id}
+		select * from kss_finance WHERE id=#{id}
 	</select>
 
 	<delete id="deleteById" parameterType="long">
-		delete from KSS_FINANCE
+		delete from kss_finance
 		WHERE ID=#{id}
 	</delete>
 	
 	<delete id="deleteByIds" parameterType="java.util.List">
-		delete from KSS_FINANCE
+		delete from kss_finance
 		WHERE ID in
 		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
@@ -59,7 +59,7 @@
 	</delete>
 
 	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
-		select COUNT(*) from KSS_FINANCE f 
+		select COUNT(*) from kss_finance f 
 		<include refid="QueryCondition" />
 	</select>
 

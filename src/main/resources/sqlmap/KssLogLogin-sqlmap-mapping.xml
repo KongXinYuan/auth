@@ -15,7 +15,7 @@
 	</resultMap>
 
 	<insert id="insert" parameterType="KssLogLoginDO">
-		INSERT INTO KSS_LOG_LOGIN (
+		INSERT INTO kss_log_login (
 		adminid,
 		loginip,
 		logintime
@@ -40,12 +40,12 @@
 	</select>
 	
 	<delete id="deleteById" parameterType="long">
-		delete from KSS_LOG_LOGIN
+		delete from kss_log_login
 		WHERE ID=#{id}
 	</delete>
 	
 	<delete id="deleteByIds" parameterType="list">
-		delete from KSS_LOG_LOGIN
+		delete from kss_log_login
 		WHERE ID in
 		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
@@ -53,7 +53,7 @@
 	</delete>
 
 	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
-		select COUNT(*) from KSS_LOG_LOGIN g
+		select COUNT(*) from kss_log_login g
 		LEFT JOIN kss_admin a ON g.adminid=a.id
 		LEFT JOIN kss_admin p ON a.parentid=p.id
 		<include refid="QueryCondition" />
@@ -67,7 +67,7 @@
 	
 	<sql id="selectList">
 		SELECT g.*, a.username, a.parentid, p.username AS parentname
-		FROM KSS_LOG_LOGIN g
+		FROM kss_log_login g
 		LEFT JOIN kss_admin a ON g.adminid=a.id 
 		LEFT JOIN kss_admin p ON a.parentid=p.id
 	</sql>
@@ -85,7 +85,7 @@
 	<sql id="Pagination">
 		ORDER BY ID DESC
 		<if test="startIndex != null and pageSize != null">
-			LIMIT #{startIndex},#{pageSize}
+			limit #{startIndex},#{pageSize}
 		</if>
 	</sql>
 </mapper>

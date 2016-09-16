@@ -17,19 +17,19 @@
 	</resultMap>
 
 	<insert id="insert" parameterType="KssKeySetDO">
-		INSERT INTO KSS_POWER (
+		insert into kss_power (
 		adminid,
 		keysetid,
 		sellprice)
-		VALUES (
+		values (
 		#{adminid},
 		#{keysetid},
 		#{sellprice})
 	</insert>
 	
 	<insert id="insertList" parameterType="java.util.List">
-		INSERT ignore INTO KSS_POWER (adminid, keysetid, sellprice)
-		VALUES
+		insert ignore into kss_power (adminid, keysetid, sellprice)
+		values
 		<foreach collection="list" item="item" index="index" separator=",">
 			(#{item.adminid}, #{item.keysetid}, #{item.sellprice})
 		</foreach>
@@ -37,7 +37,7 @@
 	
 	
 	<update id="update" parameterType="java.util.Map">
-		UPDATE kss_power
+		update kss_power
 		<set>
 			sellprice = #{sellprice}
 		</set>
@@ -156,7 +156,7 @@
 	<!-- 分页 -->
 	<sql id="Pagination">
 		<if test="startIndex != null and pageSize != null">
-			LIMIT #{startIndex},#{pageSize}
+			limit #{startIndex},#{pageSize}
 		</if>
 	</sql>
 

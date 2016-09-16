@@ -25,7 +25,7 @@
 	</resultMap>
 	
 	<insert id="insertWithSeg" parameterType="KssSoftUserDO">
-		INSERT INTO KSS_SOFT_USER (
+		insert into kss_soft_user (
 		adminid,
 		username,
 		password,
@@ -35,7 +35,7 @@
 		lastlogintime,
 		lastloginip,
 		rechargetimes)
-		VALUES (
+		values (
 		#{adminid},
 		#{username},
 		#{password},
@@ -49,7 +49,7 @@
 	
 
 	<update id="updatePasswordWithSeg" parameterType="java.util.Map">
-		UPDATE KSS_SOFT_USER
+		update kss_soft_user
 		<set>
 			password = #{password}
 		</set>
@@ -78,66 +78,66 @@
 	
 	
 	<update id="updateLastLoginWithSeg" parameterType="java.util.Map">
-		UPDATE KSS_SOFT_USER
+		update kss_soft_user
 		<set>
 			lastlogintime = #{lastlogintime},
 			lastloginip = #{lastloginip},
 			pccode = #{pccode},
 			linecode = #{linecode}
 		</set>
-		WHERE
+		where
 		id=#{id}
 	</update>
 	
 	<update id="updateRechargeWithSeg" parameterType="java.util.Map">
-		UPDATE KSS_SOFT_USER
+		update kss_soft_user
 		<set>
 			cday = #{cday},
 			endtime = #{endtime}
 		</set>
-		WHERE
+		where
 		id=#{id}
 	</update>
 
 	<update id="updateWithSeg" parameterType="java.util.Map">
-		UPDATE KSS_SOFT_USER
+		update kss_soft_user
 		<set>
 			cday = #{cday},
 			password = #{password},
 			endtime = #{endtime}
 		</set>
-		WHERE
+		where
 		id=#{id}
 	</update>
 	
 	<select id="selectByIdWithSeg" parameterType="java.util.Map" resultMap="kssSoftUserResult">
 		<include refid="SelectList" />
-		WHERE u.id=#{id}
+		where u.id=#{id}
 	</select>
 	
 	<select id="selectByIdsWithSeg" parameterType="java.util.Map" resultMap="kssSoftUserResult">
 		<include refid="SelectList" />
-		WHERE u.ID in
+		where u.ID in
 		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
 	</select>
 
 	<delete id="deleteByIdWithSeg" parameterType="java.util.Map">
-		delete from KSS_SOFT_USER u
-		WHERE u.ID=#{id}
+		delete from kss_soft_user u
+		where u.ID=#{id}
 	</delete>
 
 	<delete id="deleteByIdsWithSeg" parameterType="java.util.Map">
-		delete from KSS_SOFT_USER u
-		WHERE u.ID in
+		delete from kss_soft_user u
+		where u.ID in
 		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
 	</delete>
 
 	<select id="selectCountByQueryConditionWithSeg" parameterType="java.util.Map" resultType="java.lang.Long">
-		select COUNT(*) FROM KSS_SOFT_USER u
+		select count(*) from kss_soft_user u
 		left join kss_admin a on u.adminid = a.id
 		left join kss_admin p on a.parentid = p.id
 		<include refid="QueryCondition" />
@@ -150,8 +150,8 @@
 	</select>
 	
 	<sql id="SelectList">
-		SELECT u.*,a.username as adminname,p.id as parentid, p.username as parentname, p.parentid as ownerid
-		FROM KSS_SOFT_USER u
+		select u.*,a.username as adminname,p.id as parentid, p.username as parentname, p.parentid as ownerid
+		from kss_soft_user u
 		left join kss_admin a on u.adminid = a.id
 		left join kss_admin p on a.parentid = p.id
 	</sql>
@@ -187,7 +187,7 @@
 	<!-- 分页 -->
 	<sql id="Pagination">
 		<if test="startIndex != null and pageSize != null">
-			LIMIT #{startIndex},#{pageSize}
+			limit #{startIndex},#{pageSize}
 		</if>
 	</sql>
 
