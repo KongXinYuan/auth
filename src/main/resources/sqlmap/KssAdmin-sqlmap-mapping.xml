@@ -21,7 +21,7 @@
 	
 	
 	<insert id="insert" parameterType="KssAdminDO">
-		INSERT INTO KSS_ADMIN (
+		insert into kss_admin (
 		parentid,
 		role,
 		username,
@@ -29,7 +29,7 @@
 		addtime,
 		lastlogintime,
 		money)
-		VALUES (
+		values (
 		#{parentid},
 		#{role},
 		#{username},
@@ -40,7 +40,7 @@
 	</insert>
 
 	<update id="updatePassword" parameterType="java.util.Map">
-		UPDATE kss_admin
+		update kss_admin
 		<set>
 			password = #{password}
 		</set>
@@ -67,12 +67,12 @@
 	</update>
 
 	<update id="updateLastLogin" parameterType="java.util.Map">
-		UPDATE kss_admin
+		update kss_admin
 		<set>
 			lastlogintime = #{lastlogintime},
 			lastloginip = #{lastloginip}
 		</set>
-		WHERE
+		where
 		id=#{id}
 	</update>
 	
@@ -87,7 +87,7 @@
 
 	<select id="selectById" parameterType="long" resultMap="kssAdminResult">
 		<include refid="SelectList" />
-		WHERE a.id=#{id}
+		where a.id=#{id}
 	</select>
 
 	<select id="selectByIds" parameterType="java.util.List" resultMap="kssAdminResult">
@@ -123,7 +123,7 @@
 	</select>
 	
 	<sql id="SelectList">
-		SELECT a.*, p.username as parentname, o.id as ownerid
+		select a.*, p.username as parentname, o.id as ownerid
 		from kss_admin a
 		left join kss_admin p on a.parentid=p.id
 		left join kss_admin o on p.parentid=o.id
@@ -152,7 +152,7 @@
 	<!-- 分页 -->
 	<sql id="Pagination">
 		<if test="startIndex != null and pageSize != null">
-			LIMIT #{startIndex},#{pageSize}
+			limit #{startIndex},#{pageSize}
 		</if>
 	</sql>
 

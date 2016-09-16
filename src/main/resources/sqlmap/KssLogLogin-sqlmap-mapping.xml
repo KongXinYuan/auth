@@ -15,12 +15,12 @@
 	</resultMap>
 
 	<insert id="insert" parameterType="KssLogLoginDO">
-		INSERT INTO kss_log_login (
+		insert into kss_log_login (
 		adminid,
 		loginip,
 		logintime
 		)
-		VALUES (
+		values (
 		#{adminid},
 		#{loginip},
 		#{logintime})
@@ -28,7 +28,7 @@
 	
 	<select id="selectById" parameterType="long" resultMap="KssLogLoginResult">
 		<include refid="selectList"/>
-		WHERE g.id=#{id}
+		where g.id=#{id}
 	</select>
 	
 	<select id="selectByIds" parameterType="list" resultMap="KssLogLoginResult">
@@ -41,21 +41,21 @@
 	
 	<delete id="deleteById" parameterType="long">
 		delete from kss_log_login
-		WHERE ID=#{id}
+		where ID=#{id}
 	</delete>
 	
 	<delete id="deleteByIds" parameterType="list">
 		delete from kss_log_login
-		WHERE ID in
+		where ID in
 		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
 	</delete>
 
 	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
-		select COUNT(*) from kss_log_login g
-		LEFT JOIN kss_admin a ON g.adminid=a.id
-		LEFT JOIN kss_admin p ON a.parentid=p.id
+		select count(*) from kss_log_login g
+		left join kss_admin a on g.adminid=a.id
+		left join kss_admin p on a.parentid=p.id
 		<include refid="QueryCondition" />
 	</select>
 
@@ -66,10 +66,10 @@
 	</select>
 	
 	<sql id="selectList">
-		SELECT g.*, a.username, a.parentid, p.username AS parentname
-		FROM kss_log_login g
-		LEFT JOIN kss_admin a ON g.adminid=a.id 
-		LEFT JOIN kss_admin p ON a.parentid=p.id
+		select g.*, a.username, a.parentid, p.username as parentname
+		from kss_log_login g
+		left join kss_admin a on g.adminid=a.id 
+		left join kss_admin p on a.parentid=p.id
 	</sql>
 
 	<!-- 查询条件 -->
@@ -83,7 +83,7 @@
 
 	<!-- 分页 -->
 	<sql id="Pagination">
-		ORDER BY ID DESC
+		order by id desc
 		<if test="startIndex != null and pageSize != null">
 			limit #{startIndex},#{pageSize}
 		</if>

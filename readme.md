@@ -1,4 +1,4 @@
-#auth
+### auth
 
 java web用spring mvc, spring security, mybatis
 
@@ -23,7 +23,7 @@ java web用spring mvc, spring security, mybatis
 - server -> Base64 decode -> RSA private key decode -> AES key encode -> Base64 encode -> client
 - client -> Base64 decode -> EAS decode
 
-#web打包安装
+### web打包安装
 
 修改spring.profiles
 
@@ -47,9 +47,23 @@ java web用spring mvc, spring security, mybatis
 
 在项目下打包
 
-	mvn package -Dmaven.test.skip=ture
+- mvn package -Dmaven.test.skip=ture
+- 将target目录下的auth.war放在tomcat对应目录下
+- 应当部署在域名下(auth.xuguruogu.com)而不是子目录下(auth.xuguruogu.com/auth)
 
-将target目录下的auth.war放在tomcat对应目录下
+### 使用步奏
+- 软件管理->软件列表->添加
+- 软件管理->卡类售价设置->添加
+- 注册卡管理->添加注册卡->生成注册卡
+- 后台账号->账号列表->添加代理
+- 后台账号->账号列表->后侧编辑图标->设置代理的权限，代理价格和余额
+
+
+### 软件接入指南
+- 参考authlib设置RSA公匙(添加软件时生成)
+- 开始时验证signin
+- 运行时valid验证是否到期以及合法
+
 
 样例参考 <http://auth.xuguruogu.com/>
 	
@@ -59,6 +73,8 @@ java web用spring mvc, spring security, mybatis
 	示例中下属两个账号：
 	一级代理：虚谷若谷
 	密码：kent
+	一级代理：kent
+	密码：kent123
 	代理：test
 	密码：test
 

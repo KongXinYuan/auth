@@ -17,13 +17,13 @@
 	</resultMap>
 
 	<insert id="insert" parameterType="KssKeySetDO">
-		INSERT INTO kss_keyset (
+		insert into kss_keyset (
 		softid,
 		keyname,
 		cday,
 		prefix,
 		retailprice)
-		VALUES (
+		values (
 		#{softid},
 		#{keyname},
 		#{cday},
@@ -153,7 +153,7 @@
 	<!-- 分页 -->
 	<sql id="Pagination">
 		<if test="startIndex != null and pageSize != null">
-			LIMIT #{startIndex},#{pageSize}
+			limit #{startIndex},#{pageSize}
 		</if>
 	</sql>
 

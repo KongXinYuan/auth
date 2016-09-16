@@ -20,7 +20,7 @@
 
 	
 	<insert id="insert" parameterType="KssFinanceDO">
-		INSERT INTO kss_finance (
+		insert into kss_finance (
 		adminid,
 		isin,
 		relatedid,
@@ -30,7 +30,7 @@
 		addtime,
 		disc
 		)
-		VALUES (
+		values (
 		#{adminid},
 		#{in},
 		#{relatedid},
@@ -42,32 +42,32 @@
 	</insert>
 	
 	<select id="selectById" parameterType="long" resultMap="KssFinanceResult">
-		select * from kss_finance WHERE id=#{id}
+		select * from kss_finance where id=#{id}
 	</select>
 
 	<delete id="deleteById" parameterType="long">
 		delete from kss_finance
-		WHERE ID=#{id}
+		where ID=#{id}
 	</delete>
 	
 	<delete id="deleteByIds" parameterType="java.util.List">
 		delete from kss_finance
-		WHERE ID in
+		where ID in
 		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
 	</delete>
 
 	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
-		select COUNT(*) from kss_finance f 
+		select count(*) from kss_finance f 
 		<include refid="QueryCondition" />
 	</select>
 
 	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="KssFinanceResult">
-		SELECT f.*, a.username, r.username as relatedname
-		from KSS_FINANCE f
-		LEFT JOIN kss_admin a ON f.adminid=a.id 
-		LEFT JOIN kss_admin r ON f.relatedid=r.id
+		select f.*, a.username, r.username as relatedname
+		from kss_finance f
+		left join kss_admin a ON f.adminid=a.id 
+		left join kss_admin r ON f.relatedid=r.id
 		<include refid="QueryCondition" />
 		<include refid="Pagination" />
 	</select>
@@ -83,9 +83,9 @@
 
 	<!-- 分页 -->
 	<sql id="Pagination">
-		ORDER BY ID DESC
+		order by id desc
 		<if test="startIndex != null and pageSize != null">
-			LIMIT #{startIndex},#{pageSize}
+			limit #{startIndex},#{pageSize}
 		</if>
 	</sql>
 </mapper>
