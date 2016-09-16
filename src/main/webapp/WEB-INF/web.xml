@@ -21,8 +21,8 @@
 	<context-param>
 		<param-name>spring.profiles.default</param-name>
 		<!-- 生产环境需要使用production profile -->
-		<!-- <param-value>production</param-value> -->
-		<param-value>development</param-value>
+		<param-value>production</param-value>
+		<!-- <param-value>development</param-value> -->
 	</context-param>
 
 	<!-- 规定编码 -->

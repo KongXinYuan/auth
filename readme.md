@@ -24,11 +24,22 @@ java web用spring mvc, spring security, mybatis
 - client -> Base64 decode -> EAS decode
 
 #web打包安装
-采用的是阿里云应用引擎，ace
+
+修改spring.profiles
+
+	/auth/src/webapp/WEB-INF/web.xml
+	<context-param>
+		<param-name>spring.profiles.default</param-name>
+		<!-- 生产环境需要使用production profile -->
+		<param-value>production</param-value>
+		<!-- <param-value>development</param-value> -->
+	</context-param>
 
 修改数据库信息
 	
+	下面两个文件和上述的配置绑定
 	/auth/src/main/resources/application.production.properties
+	/auth/src/main/resources/application.development.properties
 	jdbc.driver=com.mysql.jdbc.Driver
 	jdbc.url=jdbc:mysql://rdss74pb4a7fvckl0pqxy.mysql.rds.aliyuncs.com:3306/r27q822zoqb3024v?useUnicode=true&characterEncoding=utf-8
 	jdbc.username=kent
@@ -38,9 +49,7 @@ java web用spring mvc, spring security, mybatis
 
 	mvn package -Dmaven.test.skip=ture
 
-将target目录下的root.war上传至阿里云app引擎ace
-	
-ace相关参考 [阿里云](https://www.aliyun.com/)
+将target目录下的auth.war放在tomcat对应目录下
 
 样例参考 <http://auth.xuguruogu.com/>
 	
@@ -52,7 +61,6 @@ ace相关参考 [阿里云](https://www.aliyun.com/)
 	密码：kent
 	代理：test
 	密码：test
-
 
 #authlib
 
