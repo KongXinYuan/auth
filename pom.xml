@@ -252,13 +252,6 @@
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${spring-security.version}</version>
 		</dependency>
-		<!-- ace libs -->
-		<dependency>
-			<groupId>com.alibaba.appengine</groupId>
-			<artifactId>services-api</artifactId>
-			<version>1.4.24</version>
-			<scope>provided</scope>
-		</dependency>
 
 	</dependencies>
 
